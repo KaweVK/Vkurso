@@ -5,8 +5,8 @@ services:
     container_name: vkursos-postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-vkursos}
-      POSTGRES_USER: ${POSTGRES_USER:-vkursos}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vkursos}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - "5432:5432"
     volumes:
