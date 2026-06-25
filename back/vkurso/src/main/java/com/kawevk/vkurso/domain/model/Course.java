@@ -17,7 +17,7 @@ public class Course {
     private String title;
     private String description;
     private final Long instructorId;
-    private CourseStatus status;
+    private Status status;
     private String category;
     private String thumbnailUrl;
     private BigDecimal price;
@@ -27,7 +27,7 @@ public class Course {
 
     //Construtores
 
-    public Course(Long id, String title, String description, Long instructorId, CourseStatus status, String category, String thumbnailUrl, BigDecimal price, List<Module> modules, Instant createdAt, Instant updatedAt) {
+    public Course(Long id, String title, String description, Long instructorId, Status status, String category, String thumbnailUrl, BigDecimal price, List<Module> modules, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -51,7 +51,7 @@ public class Course {
         this.instructorId = instructorId;
         this.price = price;
         this.category = category;
-        this.status = CourseStatus.DRAFT;
+        this.status = Status.DRAFT;
         this.modules = new ArrayList<>();
         this.createdAt = Instant.now();
         this.updatedAt = this.createdAt;
@@ -64,30 +64,30 @@ public class Course {
     //Regras de Negócio
 
     public void publish() {
-        if (this.status == CourseStatus.ARCHIVED) {
+        if (this.status == Status.ARCHIVED) {
             throw new CourseArchivedException(this.id);
         }
-        if (this.status == CourseStatus.PUBLISHED) {
+        if (this.status == Status.PUBLISHED) {
             throw new CourseAlreadyPublishedException(this.id);
         }
         if (!hasContent()) {
             throw new CourseWithoutContentException(this.id);
         }
-        this.status = CourseStatus.PUBLISHED;
+        this.status = Status.PUBLISHED;
         touch();
     }
 
     public void archive() {
-        if (this.status == CourseStatus.ARCHIVED) {
+        if (this.status == Status.ARCHIVED) {
             return;
         }
-        this.status = CourseStatus.ARCHIVED;
+        this.status = Status.ARCHIVED;
         touch();
     }
 
     public void backToDraft() {
         ensureNotArchived();
-        this.status = CourseStatus.DRAFT;
+        this.status = Status.DRAFT;
         touch();
     }
 
@@ -129,7 +129,7 @@ public class Course {
     //Consultas
 
     public boolean isEnrollable() {
-        return this.status == CourseStatus.PUBLISHED;
+        return this.status == Status.PUBLISHED;
     }
 
     public boolean isOwnedBy(Long instructorId) {
@@ -137,7 +137,7 @@ public class Course {
     }
 
     public boolean isPublished() {
-        return this.status == CourseStatus.PUBLISHED;
+        return this.status == Status.PUBLISHED;
     }
 
     public boolean hasContent() {
@@ -151,7 +151,7 @@ public class Course {
     //Helpers internos
 
     private void ensureNotArchived() {
-        if (this.status == CourseStatus.ARCHIVED) {
+        if (this.status == Status.ARCHIVED) {
             throw new CourseArchivedException(this.id);
         }
     }
@@ -187,7 +187,7 @@ public class Course {
     public String getTitle() { return title; }
     public String getDescription() { return description; }
     public Long getInstructorId() { return instructorId; }
-    public CourseStatus getStatus() { return status; }
+    public Status getStatus() { return status; }
     public BigDecimal getPrice() { return price; }
     public String getCategory() { return category; }
     public String getThumbnailUrl() { return thumbnailUrl; }
