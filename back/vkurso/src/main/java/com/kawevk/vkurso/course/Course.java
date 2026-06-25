@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class Course extends Auditable {
 
     @Column(nullable = false, length = 150)
     private String title;
+
+    @Column(nullable = false, length = 200, unique = true)
+    private String slug;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -43,6 +47,7 @@ public class Course extends Auditable {
 
     public Course(String title, String description, CourseLevel level, Long instructorId) {
         this.title = title;
+        this.slug = toSlug(title);
         this.description = description;
         this.level = level;
         this.status = CourseStatus.DRAFT;
@@ -59,6 +64,15 @@ public class Course extends Auditable {
     public void removeModule(Module module) {
         modules.remove(module);
         module.setCourse(null);
+    }
+
+    public String toSlug(String input) {
+        String semAcento = Normalizer.normalize(input, Normalizer.Form.NFD).replaceAll("\\p{M}", ""); // remove acentos
+        return semAcento.toLowerCase()
+                .replaceAll("[^a-z0-9\\s-]", "") // tira o que não é letra/número
+                .replaceAll("\\s+", "-") // espaço vira hífen
+                .replaceAll("-{2,}", "-") // colapsa hífens repetidos
+                .replaceAll("^-|-$", ""); // tira hífen das pontas
     }
 
     public void publish() {
