@@ -86,6 +86,22 @@ public class Course extends Auditable {
         this.status = CourseStatus.ARCHIVED;
     }
 
+    public void changeModuleOrder(Long moduleId, int newOrder) {
+        Module target = modules.stream()
+                .filter(m -> m.getId() != null && m.getId().equals(moduleId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Módulo não pertence a este curso: " + moduleId));
+
+        modules.remove(target);
+        int destino = Math.max(0, Math.min(newOrder, modules.size()));
+        modules.add(destino, target);
+
+        for (int i = 0; i < modules.size(); i++) {
+            modules.get(i).setOrderIndex(i);
+        }
+    }
+
     public boolean isPublished() {
         return status == CourseStatus.PUBLISHED;
     }
