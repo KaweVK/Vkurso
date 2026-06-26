@@ -56,6 +56,22 @@ public class Module extends Auditable {
         lesson.setModule(null);
     }
 
+    public void changeLessonOrder(Long lessonId, int newOrder) {
+        Lesson target = lessons.stream()
+                .filter(l -> l.getId() != null && l.getId().equals(lessonId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Lição não pertence a este curso: " + lessonId));
+
+        lessons.remove(target);
+        int destino = Math.max(0, Math.min(newOrder, lessons.size()));
+        lessons.add(destino, target);
+
+        for (int i = 0; i < lessons.size(); i++) {
+            lessons.get(i).setOrderIndex(i);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
