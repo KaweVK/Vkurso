@@ -25,10 +25,10 @@ public class Lesson extends Auditable {
     @Column(name = "order_index", nullable = false)
     private int orderIndex;
 
-    @Column(name = "video_url", length = 500)
-    private String videoUrl;
+    @Column(name = "video_key", length = 500)
+    private String videoKey;
 
-    @Column(name = "duration_seconds", nullable = false)
+    @Column(name = "duration_seconds")
     private Duration durationSeconds;
 
     @Column(name = "free_preview", nullable = false)
@@ -40,12 +40,10 @@ public class Lesson extends Auditable {
 
     protected Lesson() {}
 
-    public Lesson(String title, String description, int orderIndex, String videoUrl, int durationSeconds) {
+    public Lesson(String title, String description, int orderIndex) {
         this.title = title;
         this.description = description;
         this.orderIndex = orderIndex;
-        this.videoUrl = videoUrl;
-        this.durationSeconds = Duration.ofSeconds(durationSeconds);
     }
 
     @Override
