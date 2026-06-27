@@ -3,12 +3,10 @@ spring:
     name: vkurso
   config:
     import: optional:file:.env[.properties]
-
   datasource:
     url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:vkurso}
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:postgres}
-
   data:
     redis:
       host: localhost
@@ -20,19 +18,21 @@ spring:
           max-active: 16
           max-idle: 8
           min-idle: 2
-
-  storage:
-    minio:
-      endpoint: http://localhost:9000
-      access-key: ${MINIO_ROOT_USER:minioadmin}
-      secret-key: ${MINIO_ROOT_PASSWORD:minioadmin}
-      bucket: ${MINIO_BUCKET:vkurso-videos}
-      presigned-ttl-seconds: 3600   # 1h
-
   jpa:
     hibernate:
       ddl-auto: validate
-
   docker:
     compose:
       enabled: false
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+
+storage:
+  minio:
+    endpoint: http://localhost:9000
+    access-key: ${MINIO_ROOT_USER:minioadmin}
+    secret-key: ${MINIO_ROOT_PASSWORD:minioadmin}
+    bucket: ${MINIO_BUCKET:vkurso-videos}
+    presigned-ttl-seconds: 3600   # 1h
