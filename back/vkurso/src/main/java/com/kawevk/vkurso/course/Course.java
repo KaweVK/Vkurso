@@ -98,7 +98,7 @@ public class Course extends Auditable {
         modules.add(destino, target);
 
         for (int i = 0; i < modules.size(); i++) {
-            modules.get(i).setOrderIndex(i);
+            modules.get(i).setOrderIndex((long) i);
         }
     }
 

@@ -3,8 +3,10 @@ package com.kawevk.vkurso.course.dtos;
 import com.kawevk.vkurso.course.Course;
 import com.kawevk.vkurso.course.CourseLevel;
 import com.kawevk.vkurso.course.CourseStatus;
+import com.kawevk.vkurso.module.dtos.ModuleResponse;
 
 import java.time.Instant;
+import java.util.List;
 
 public record CourseResponse(
         Long id,
@@ -14,6 +16,7 @@ public record CourseResponse(
         CourseLevel level,
         CourseStatus status,
         Long instructorId,
+        List<ModuleResponse> modules,
         Instant createdAt,
         Instant updatedAt
 ) {
@@ -27,6 +30,7 @@ public record CourseResponse(
                 course.getLevel(),
                 course.getStatus(),
                 course.getInstructorId(),
+                course.getModules().stream().map(ModuleResponse::from).toList(),
                 course.getCreatedAt(),
                 course.getUpdatedAt()
         );
