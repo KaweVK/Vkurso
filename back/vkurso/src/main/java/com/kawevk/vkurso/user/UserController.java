@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -34,8 +35,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public UserResponse getCurrentUser(@RequestParam Long userId) {
-        return service.getCurrentUser(userId);
+    public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
+        return service.get(user.getId());
     }
 
     @PostMapping
