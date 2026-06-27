@@ -28,6 +28,11 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
+  session:
+    store-type: redis
+    timeout: 120m
+    redis:
+      namespace: vkurso:session
 
 storage:
   minio:
@@ -35,4 +40,13 @@ storage:
     access-key: ${MINIO_ROOT_USER:minioadmin}
     secret-key: ${MINIO_ROOT_PASSWORD:minioadmin}
     bucket: ${MINIO_BUCKET:vkurso-videos}
-    presigned-ttl-seconds: 3600   # 1h
+    presigned-ttl-seconds: 7200   # 2h
+
+server:
+  servlet:
+    session:
+      cookie:
+        name: VKURSO_SESSION
+        http-only: true     # JS não acessa -> protege contra XSS
+        secure: false       # MUDAR para true em produção (HTTPS)
+        same-site: lax       # bloqueia POST/PUT/DELETE cross-site -> protege contra CSRF
