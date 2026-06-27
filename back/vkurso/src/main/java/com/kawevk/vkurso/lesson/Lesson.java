@@ -23,7 +23,7 @@ public class Lesson extends Auditable {
     private String description;
 
     @Column(name = "order_index", nullable = false)
-    private int orderIndex;
+    private Long orderIndex;
 
     @Column(name = "video_key", length = 500)
     private String videoKey;
@@ -40,7 +40,7 @@ public class Lesson extends Auditable {
 
     protected Lesson() {}
 
-    public Lesson(String title, String description, int orderIndex) {
+    public Lesson(String title, String description, Long orderIndex) {
         this.title = title;
         this.description = description;
         this.orderIndex = orderIndex;

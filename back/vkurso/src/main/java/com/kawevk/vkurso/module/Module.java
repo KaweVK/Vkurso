@@ -26,7 +26,7 @@ public class Module extends Auditable {
     private String description;
 
     @Column(name = "order_index", nullable = false)
-    private int orderIndex;
+    private Long orderIndex;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "course_id", nullable = false)
@@ -38,7 +38,7 @@ public class Module extends Auditable {
 
     protected Module() {}
 
-    public Module(String title, String description, int orderIndex) {
+    public Module(String title, String description, Long orderIndex) {
         this.title = title;
         this.description = description;
         this.orderIndex = orderIndex;
@@ -56,7 +56,7 @@ public class Module extends Auditable {
         lesson.setModule(null);
     }
 
-    public void changeLessonOrder(Long lessonId, int newOrder) {
+    public void changeLessonOrder(Long lessonId, Long newOrder) {
         Lesson target = lessons.stream()
                 .filter(l -> l.getId() != null && l.getId().equals(lessonId))
                 .findFirst()
@@ -64,11 +64,11 @@ public class Module extends Auditable {
                         "Lição não pertence a este curso: " + lessonId));
 
         lessons.remove(target);
-        int destino = Math.max(0, Math.min(newOrder, lessons.size()));
+        int destino = Math.max(0, Math.min(newOrder.intValue(), lessons.size()));
         lessons.add(destino, target);
 
         for (int i = 0; i < lessons.size(); i++) {
-            lessons.get(i).setOrderIndex(i);
+            lessons.get(i).setOrderIndex((long) i);
         }
     }
 
