@@ -3,11 +3,13 @@ package com.kawevk.vkurso.course;
 import com.kawevk.vkurso.course.dtos.CourseResponse;
 import com.kawevk.vkurso.course.dtos.CreateCourseRequest;
 import com.kawevk.vkurso.course.dtos.UpdateCourseRequest;
+import com.kawevk.vkurso.user.User;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -48,28 +50,28 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public CourseResponse update(@PathVariable Long id, @RequestBody @Valid UpdateCourseRequest request) {
-        return service.update(id, request);
+    public CourseResponse update(@PathVariable Long id, @RequestBody @Valid UpdateCourseRequest request, @AuthenticationPrincipal User user) {
+        return service.update(id, request, user);
     }
 
     @PostMapping("/{id}/publish")
-    public CourseResponse publish(@PathVariable Long id) {
-        return service.publish(id);
+    public CourseResponse publish(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        return service.publish(id, user);
     }
 
     @PostMapping("/{id}/archive")
-    public CourseResponse archive(@PathVariable Long id) {
-        return service.archive(id);
+    public CourseResponse archive(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        return service.archive(id, user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    public void delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        service.delete(id, user);
     }
 
     @PutMapping("/{id}/modules/{moduleId}/order")
-    public CourseResponse order(@PathVariable Long id, @PathVariable Long moduleId, @RequestParam int newOrder) {
-        return service.changeModuleOrder(id, moduleId, newOrder);
+    public CourseResponse order(@PathVariable Long id, @PathVariable Long moduleId, @RequestParam int newOrder, @AuthenticationPrincipal User user) {
+        return service.changeModuleOrder(id, moduleId, newOrder, user);
     }
 }
