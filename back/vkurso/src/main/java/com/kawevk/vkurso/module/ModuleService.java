@@ -43,6 +43,8 @@ public class ModuleService {
                 request.description(),
                 request.orderIndex()
         );
+
+        course.addModule(module);
         module.setCourse(course);
 
         return ModuleResponse.from(repository.save(module));
