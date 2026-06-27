@@ -21,11 +21,24 @@ public class CourseService {
 
     @Transactional(readOnly = true)
     public Page<CourseResponse> list(Pageable pageable) {
-        return repository.findAll(pageable).map(CourseResponse::from);
+        try {
+            return repository.findAll(pageable).map(CourseResponse::from);
+        } catch (CourseNotFoundException e) {
+            throw new CourseNotFoundException();
+        }
+    }
+
+    @Transactional
+    public Page<CourseResponse> listByInstructor(Long instructorId, Pageable pageable) {
+        try {
+            return repository.findAllByInstructorId(instructorId, pageable).map(CourseResponse::from);
+        } catch (CourseNotFoundException e) {
+            throw new CourseNotFoundException();
+        }
     }
 
     @Transactional(readOnly = true)
-    public CourseResponse findById(Long id) {
+    public CourseResponse get(Long id) {
         return CourseResponse.from(getCourseOrThrow(id));
     }
 
@@ -81,6 +94,11 @@ public class CourseService {
     public void delete(Long id) {
         Course course = getCourseOrThrow(id);
         repository.delete(course);
+    }
+
+    @Transactional
+    public void deleteByInstructor(Long instructorId) {
+        repository.deleteAll(repository.findByInstructorId(instructorId, Pageable.unpaged()));
     }
 
     private Course getCourseOrThrow(Long id) {

@@ -30,7 +30,12 @@ public class CourseController {
 
     @GetMapping("/{id}")
     public CourseResponse get(@PathVariable Long id) {
-        return service.findById(id);
+        return service.get(id);
+    }
+
+    @GetMapping("/by-instructor")
+    public Page<CourseResponse> listByInstructor(@RequestParam Long instructorId, Pageable pageable) {
+        return service.listByInstructor(instructorId, pageable);
     }
 
     @PostMapping

@@ -1,5 +1,6 @@
 package com.kawevk.vkurso.course;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Page<Course> findByStatus(CourseStatus status, Pageable pageable);
 
     Page<Course> findByInstructorId(Long instructorId, Pageable pageable);
+
+    Page<Course> findAllByInstructorId(Long instructorId, Pageable pageable);
 }
