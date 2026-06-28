@@ -9,7 +9,6 @@ import com.kawevk.vkurso.user.exceptions.UserNotFoundException;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -68,15 +67,11 @@ public class UserService implements UserDetailsService {
 
     @Override
     @NullMarked
-    public UserDetails loadUserByUsername(String email) {
+    public User loadUserByUsername(String email) {
         User user = repository.findByEmail(email)
                 .orElseThrow(() -> new UserNotCreatedException(email));
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
-                .password(user.getPasswordHash())
-                .authorities("ROLE_" + user.getRole().name())
-                .build();
+        return user;
     }
 
     private User getUserOrThrow(Long userId) {
