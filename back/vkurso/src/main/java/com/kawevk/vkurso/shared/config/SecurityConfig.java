@@ -31,11 +31,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
 
+                        // >>> INSCRIÇÃO: qualquer autenticado (aluno) pode se inscrever/cancelar
+                        //     precisa vir ANTES das regras amplas de /api/courses/** abaixo
+                        .requestMatchers(HttpMethod.POST, "/api/courses/*/enrollments").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/courses/*/enrollments").authenticated()
+
                         // leitura de todo o agregado (curso, módulos, aulas): qualquer autenticado
                         .requestMatchers(HttpMethod.GET, "/api/courses/**").authenticated()
 
-                        // escrita no agregado (curso, módulos, aulas e upload de vídeo):
-                        // só INSTRUCTOR ou ADMIN
+                        // escrita no agregado: só INSTRUCTOR ou ADMIN
                         .requestMatchers(HttpMethod.POST, "/api/courses/**").hasAnyRole("INSTRUCTOR", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/courses/**").hasAnyRole("INSTRUCTOR", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/courses/**").hasAnyRole("INSTRUCTOR", "ADMIN")
