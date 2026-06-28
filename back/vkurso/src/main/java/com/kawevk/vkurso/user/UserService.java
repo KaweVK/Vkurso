@@ -4,7 +4,7 @@ import com.kawevk.vkurso.course.CourseService;
 import com.kawevk.vkurso.user.dtos.CreateUserRequest;
 import com.kawevk.vkurso.user.dtos.UpdateUserRequest;
 import com.kawevk.vkurso.user.dtos.UserResponse;
-import com.kawevk.vkurso.user.exceptions.UserNotCreatedException;
+import com.kawevk.vkurso.user.exceptions.UserNotCreatedWithEmailException;
 import com.kawevk.vkurso.user.exceptions.UserNotFoundException;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
@@ -69,7 +69,7 @@ public class UserService implements UserDetailsService {
     @NullMarked
     public User loadUserByUsername(String email) {
         User user = repository.findByEmail(email)
-                .orElseThrow(() -> new UserNotCreatedException(email));
+                .orElseThrow(() -> new UserNotCreatedWithEmailException(email));
 
         return user;
     }
