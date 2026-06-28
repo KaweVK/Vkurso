@@ -3,12 +3,15 @@ package com.kawevk.vkurso.lesson;
 import com.kawevk.vkurso.lesson.dtos.CreateLessonRequest;
 import com.kawevk.vkurso.lesson.dtos.LessonResponse;
 import com.kawevk.vkurso.lesson.dtos.UpdateLessonRequest;
+import com.kawevk.vkurso.lesson.dtos.VideoUrlResponse;
+import com.kawevk.vkurso.user.User;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -58,6 +61,11 @@ public class LessonController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         service.delete(id);
+    }
+
+    @GetMapping("/{id}/video-url")
+    public VideoUrlResponse videoUrl(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        return service.videoUrl(id, user.getId());
     }
 
 }

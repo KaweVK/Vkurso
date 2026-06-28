@@ -1,9 +1,13 @@
 package com.kawevk.vkurso.lesson;
 
+import com.kawevk.vkurso.enrollment.EnrollmentService;
 import com.kawevk.vkurso.lesson.dtos.CreateLessonRequest;
 import com.kawevk.vkurso.lesson.dtos.LessonResponse;
 import com.kawevk.vkurso.lesson.dtos.UpdateLessonRequest;
+import com.kawevk.vkurso.lesson.dtos.VideoUrlResponse;
 import com.kawevk.vkurso.lesson.exceptions.LessonNotFoundException;
+import com.kawevk.vkurso.lesson.exceptions.LessonWithoutVideoException;
+import com.kawevk.vkurso.lesson.exceptions.VideoAccessDeniedException;
 import com.kawevk.vkurso.module.Module;
 import com.kawevk.vkurso.module.ModuleRepository;
 import com.kawevk.vkurso.module.exceptions.ModuleNotFoundException;
@@ -20,11 +24,13 @@ public class LessonService {
     private final LessonRepository repository;
     private final VideoStorageService storage;
     private final ModuleRepository moduleRepository;
+    private final EnrollmentService enrollmentService;
 
-    public LessonService(LessonRepository repository, VideoStorageService storage, ModuleRepository moduleRepository) {
+    public LessonService(LessonRepository repository, VideoStorageService storage, ModuleRepository moduleRepository, EnrollmentService enrollmentService) {
         this.repository = repository;
         this.storage = storage;
         this.moduleRepository = moduleRepository;
+        this.enrollmentService = enrollmentService;
     }
 
     @Transactional(readOnly = true)
@@ -34,7 +40,7 @@ public class LessonService {
 
     @Transactional(readOnly = true)
     public LessonResponse findById(Long id) {
-        return LessonResponse.from(getLessonOrThrow(id), storage);
+        return LessonResponse.from(getLessonOrThrow(id));
     }
 
     @Transactional
@@ -76,11 +82,6 @@ public class LessonService {
         repository.delete(lesson);
     }
 
-    private Lesson getLessonOrThrow(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new LessonNotFoundException(id));
-    }
-
     @Transactional
     public LessonResponse attachVideo(Long lessonId, MultipartFile file) {
         Lesson lesson = getLessonOrThrow(lessonId);
@@ -94,5 +95,27 @@ public class LessonService {
         lesson.setVideoKey(key);
         // duration: extrair do arquivo aqui (ex. ffprobe / lib de metadata)
         return LessonResponse.from(lesson, storage);
+    }
+
+    @Transactional(readOnly = true)
+    public VideoUrlResponse videoUrl(Long lessonId, Long studentId) {
+        Lesson lesson = getLessonOrThrow(lessonId);
+
+        if (lesson.getVideoKey() == null) {
+            throw new LessonWithoutVideoException();
+        }
+
+        Long courseId = lesson.getModule().getCourse().getId();
+        boolean liberado = lesson.isFreePreview() || enrollmentService.isEnrolled(studentId, courseId);
+        if (!liberado) {
+            throw new VideoAccessDeniedException(lessonId);
+        }
+
+        return new VideoUrlResponse(storage.presignedGetUrl(lesson.getVideoKey()));
+    }
+
+    private Lesson getLessonOrThrow(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new LessonNotFoundException(id));
     }
 }
