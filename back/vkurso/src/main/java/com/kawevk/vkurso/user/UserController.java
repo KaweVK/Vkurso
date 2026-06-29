@@ -49,13 +49,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserResponse update(@PathVariable Long id, @RequestBody @Valid UpdateUserRequest request) {
-        return service.update(id, request);
+    public UserResponse update(@PathVariable Long id, @RequestBody @Valid UpdateUserRequest request, @AuthenticationPrincipal User user) {
+        return service.update(id, request, user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    public void delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        service.delete(id, user);
     }
 }

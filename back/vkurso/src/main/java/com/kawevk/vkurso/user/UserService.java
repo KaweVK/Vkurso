@@ -1,6 +1,8 @@
 package com.kawevk.vkurso.user;
 
+import com.kawevk.vkurso.course.Course;
 import com.kawevk.vkurso.course.CourseService;
+import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.user.dtos.CreateUserRequest;
 import com.kawevk.vkurso.user.dtos.UpdateUserRequest;
 import com.kawevk.vkurso.user.dtos.UserResponse;
@@ -49,18 +51,22 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public UserResponse update(Long userId, UpdateUserRequest request) {
+    public UserResponse update(Long userId, UpdateUserRequest request, User userLoged) {
         User user = getUserOrThrow(userId);
+        ensureCanModify(user, userLoged);
+
         user.setFullName(request.fullName());
         user.setEmail(request.email());
         user.setPasswordHash(passwordEncoder.encode(request.passwordHash()));
         user.setRole(request.role());
+
         return UserResponse.from(repository.save(user));
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, User userLoged) {
         User user = getUserOrThrow(id);
+        ensureCanModify(user, userLoged);
         courseService.deleteByInstructor(user.getId());
         repository.delete(user);
     }
@@ -76,5 +82,13 @@ public class UserService implements UserDetailsService {
 
     private User getUserOrThrow(Long userId) {
         return repository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    private void ensureCanModify(User targetUser, User userLoged) {
+        boolean isAdmin = userLoged.getRole() == Role.ADMIN;
+        boolean isOwner = targetUser.getId().equals(userLoged.getId());
+        if (!isAdmin && !isOwner) {
+            throw new CourseRequestNotAllowed();
+        }
     }
 }
