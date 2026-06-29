@@ -39,28 +39,29 @@ public class LessonController {
     }
 
     @PostMapping
-    public ResponseEntity<LessonResponse> create(@PathVariable Long courseId, @PathVariable Long moduleId, @RequestBody @Valid CreateLessonRequest req, UriComponentsBuilder uri) {
+    public ResponseEntity<LessonResponse> create(@PathVariable Long courseId, @PathVariable Long moduleId, @RequestBody @Valid CreateLessonRequest req, UriComponentsBuilder uri, @AuthenticationPrincipal User user) {
 
-        LessonResponse created = service.create(moduleId, req);
+        LessonResponse created = service.create(moduleId, req, user);
         URI location = uri.path("api/courses/{courseId}/modules/{moduleId}/lessons/").buildAndExpand(courseId, moduleId, created.id()).toUri();
         return ResponseEntity.created(location).body(created);
     }
 
     @PostMapping(value = "/{id}/video", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public LessonResponse uploadVideo(@PathVariable Long id,
-                                      @RequestParam("file") MultipartFile file) {
-        return service.attachVideo(id, file);
+                                      @RequestParam("file") MultipartFile file,
+                                      @AuthenticationPrincipal User user) {
+        return service.attachVideo(id, file, user);
     }
 
     @PutMapping("/{id}")
-    public LessonResponse update(@PathVariable Long id, @RequestBody @Valid UpdateLessonRequest request) {
-        return service.update(id, request);
+    public LessonResponse update(@PathVariable Long id, @RequestBody @Valid UpdateLessonRequest request, @AuthenticationPrincipal User user) {
+        return service.update(id, request,user );
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    public void delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        service.delete(id, user);
     }
 
     @GetMapping("/{id}/video-url")

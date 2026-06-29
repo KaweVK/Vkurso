@@ -1,5 +1,7 @@
 package com.kawevk.vkurso.lesson;
 
+import com.kawevk.vkurso.course.Course;
+import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.enrollment.EnrollmentService;
 import com.kawevk.vkurso.lesson.dtos.CreateLessonRequest;
 import com.kawevk.vkurso.lesson.dtos.LessonResponse;
@@ -12,6 +14,8 @@ import com.kawevk.vkurso.module.Module;
 import com.kawevk.vkurso.module.ModuleRepository;
 import com.kawevk.vkurso.module.exceptions.ModuleNotFoundException;
 import com.kawevk.vkurso.shared.storage.VideoStorageService;
+import com.kawevk.vkurso.user.Role;
+import com.kawevk.vkurso.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -44,9 +48,11 @@ public class LessonService {
     }
 
     @Transactional
-    public LessonResponse create(Long moduleId, CreateLessonRequest request) {
+    public LessonResponse create(Long moduleId, CreateLessonRequest request, User user) {
         Module module = moduleRepository.findById(moduleId)
                 .orElseThrow(() -> new ModuleNotFoundException(moduleId));
+
+        ensureCanModify(module.getCourse(), user);
 
         Lesson lesson = new Lesson(
                 request.title(),
@@ -60,8 +66,10 @@ public class LessonService {
     }
 
     @Transactional
-    public LessonResponse update(Long id, UpdateLessonRequest request) {
+    public LessonResponse update(Long id, UpdateLessonRequest request, User user) {
         Lesson lesson = getLessonOrThrow(id);
+
+        ensureCanModify(lesson.getModule().getCourse(), user);
 
         lesson.setTitle(request.title());
         lesson.setDescription(request.description());
@@ -71,8 +79,10 @@ public class LessonService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, User user) {
         Lesson lesson = getLessonOrThrow(id);
+
+        ensureCanModify(lesson.getModule().getCourse(), user);
 
         lesson.getModule().removeLesson(lesson);
 
@@ -83,9 +93,11 @@ public class LessonService {
     }
 
     @Transactional
-    public LessonResponse attachVideo(Long lessonId, MultipartFile file) {
+    public LessonResponse attachVideo(Long lessonId, MultipartFile file, User user) {
         Lesson lesson = getLessonOrThrow(lessonId);
         Long courseId = lesson.getModule().getCourse().getId();
+
+        ensureCanModify(lesson.getModule().getCourse(), user);
 
         if (lesson.getVideoKey() != null) {
             storage.delete(lesson.getVideoKey());
@@ -117,5 +129,13 @@ public class LessonService {
     private Lesson getLessonOrThrow(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new LessonNotFoundException(id));
+    }
+
+    private void ensureCanModify(Course course, User user) {
+        boolean isAdmin = user.getRole() == Role.ADMIN;
+        boolean isOwner = course.getInstructorId().equals(user.getId());
+        if (!isAdmin && !isOwner) {
+            throw new CourseRequestNotAllowed();
+        }
     }
 }
