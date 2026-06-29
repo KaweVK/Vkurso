@@ -41,8 +41,8 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<CourseResponse> create(@RequestBody @Valid CreateCourseRequest request, UriComponentsBuilder uriBuilder) {
-        CourseResponse created = service.create(request);
+    public ResponseEntity<CourseResponse> create(@RequestBody @Valid CreateCourseRequest request, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
+        CourseResponse created = service.create(request, user);
         URI location = uriBuilder.path("/api/courses/{id}")
                 .buildAndExpand(created.id())
                 .toUri();

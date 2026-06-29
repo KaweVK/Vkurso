@@ -46,12 +46,12 @@ public class CourseService {
     }
 
     @Transactional
-    public CourseResponse create(CreateCourseRequest request) {
+    public CourseResponse create(CreateCourseRequest request, User user) {
         Course course = new Course(
                 request.title(),
                 request.description(),
                 request.level(),
-                request.instructorId()
+                user.getId()
         );
 
         if (repository.existsBySlug(course.getSlug())) {

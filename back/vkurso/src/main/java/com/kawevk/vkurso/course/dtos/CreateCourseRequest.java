@@ -10,7 +10,5 @@ public record CreateCourseRequest(
         String title,
         String description,
         @NotNull
-        CourseLevel level,
-        @NotNull
-        Long instructorId
+        CourseLevel level
 ) {}
