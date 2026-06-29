@@ -3,11 +3,13 @@ package com.kawevk.vkurso.module;
 import com.kawevk.vkurso.module.dtos.CreateModuleRequest;
 import com.kawevk.vkurso.module.dtos.ModuleResponse;
 import com.kawevk.vkurso.module.dtos.UpdateModuleRequest;
+import com.kawevk.vkurso.user.User;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -34,8 +36,8 @@ public class ModuleController {
     }
 
     @PostMapping
-    public ResponseEntity<ModuleResponse> create(@PathVariable Long courseId, @RequestBody @Valid CreateModuleRequest request, UriComponentsBuilder uriBuilder) {
-        ModuleResponse created = service.create(courseId, request);
+    public ResponseEntity<ModuleResponse> create(@PathVariable Long courseId, @RequestBody @Valid CreateModuleRequest request, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
+        ModuleResponse created = service.create(courseId, request, user);
         URI location = uriBuilder.path("/api/courses/{courseId}/modules/{id}")
                 .buildAndExpand(courseId, created.id())
                 .toUri();
@@ -43,18 +45,18 @@ public class ModuleController {
     }
 
     @PutMapping("/{id}")
-    public ModuleResponse update(@PathVariable Long id, @RequestBody @Valid UpdateModuleRequest request) {
-        return service.update(id, request);
+    public ModuleResponse update(@PathVariable Long id, @RequestBody @Valid UpdateModuleRequest request, @AuthenticationPrincipal User user) {
+        return service.update(id, request, user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    public void delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        service.delete(id, user);
     }
 
     @PutMapping("/{id}/lessons/{lessonId}/order")
-    public ModuleResponse order(@PathVariable Long id, @PathVariable Long lessonId, @RequestParam Long newOrder) {
-        return service.changeLessonOrder(id, lessonId, newOrder);
+    public ModuleResponse order(@PathVariable Long id, @PathVariable Long lessonId, @RequestParam Long newOrder, @AuthenticationPrincipal User user) {
+        return service.changeLessonOrder(id, lessonId, newOrder, user);
     }
 }

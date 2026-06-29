@@ -3,10 +3,13 @@ package com.kawevk.vkurso.module;
 import com.kawevk.vkurso.course.Course;
 import com.kawevk.vkurso.course.CourseRepository;
 import com.kawevk.vkurso.course.exceptions.CourseNotFoundException;
+import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.module.dtos.CreateModuleRequest;
 import com.kawevk.vkurso.module.dtos.ModuleResponse;
 import com.kawevk.vkurso.module.dtos.UpdateModuleRequest;
 import com.kawevk.vkurso.module.exceptions.ModuleNotFoundException;
+import com.kawevk.vkurso.user.Role;
+import com.kawevk.vkurso.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,9 +37,11 @@ public class ModuleService {
     }
 
     @Transactional
-    public ModuleResponse create(Long courseId, CreateModuleRequest request) {
+    public ModuleResponse create(Long courseId, CreateModuleRequest request, User user) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException(courseId));
+
+        ensureCanModify(course, user);
 
         Module module = new Module(
                 request.title(),
@@ -51,8 +56,10 @@ public class ModuleService {
     }
 
     @Transactional
-    public ModuleResponse update(Long id, UpdateModuleRequest request) {
+    public ModuleResponse update(Long id, UpdateModuleRequest request, User user) {
         Module module = getModuleOrThrow(id);
+
+        ensureCanModify(module.getCourse(), user);
 
         module.setTitle(request.title());
         module.setDescription(request.description());
@@ -62,13 +69,22 @@ public class ModuleService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, User user) {
         Module module = getModuleOrThrow(id);
 
+        ensureCanModify(module.getCourse(), user);
         //remove módulo
         module.getCourse().removeModule(module);
 
         repository.delete(module);
+    }
+
+    @Transactional
+    public ModuleResponse changeLessonOrder(Long id, Long lessonId, Long newOrder, User user) {
+        Module module = getModuleOrThrow(id);
+        ensureCanModify(module.getCourse(), user);
+        module.changeLessonOrder(lessonId, newOrder);
+        return ModuleResponse.from(module);
     }
 
     private Module getModuleOrThrow(Long id) {
@@ -76,10 +92,11 @@ public class ModuleService {
                 .orElseThrow(() -> new ModuleNotFoundException(id));
     }
 
-    @Transactional
-    public ModuleResponse changeLessonOrder(Long id, Long lessonId, Long newOrder) {
-        Module module = getModuleOrThrow(id);
-        module.changeLessonOrder(lessonId, newOrder);
-        return ModuleResponse.from(module);
+    private void ensureCanModify(Course course, User user) {
+        boolean isAdmin = user.getRole() == Role.ADMIN;
+        boolean isOwner = course.getInstructorId().equals(user.getId());
+        if (!isAdmin && !isOwner) {
+            throw new CourseRequestNotAllowed();
+        }
     }
 }
