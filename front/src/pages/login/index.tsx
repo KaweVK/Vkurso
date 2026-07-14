@@ -1,12 +1,13 @@
 import '../../index.css'
+import Logo from '../../assets/logo.png'
 
 function Login() {
     return (
         <div className="flex h-screen w-full">
             {/* Lado Direito - 75% Azul */}
-            <div className="w-3/4 bg-blue-600">
-                <div className="flex items-center bg-white">
-                    <p>Olá</p>
+            <div className="flex w-3/4 items-center justify-center bg-blue-600">
+                <div className="flex w-3/5 h-3/5 justify-center items-center bg-white">
+                    <img src={Logo} alt="Logo" className='bg-blue-400 rounded-xl w-[50px] h-[50px]'/>
                 </div>
             </div>
 
@@ -38,4 +39,4 @@ function Login() {
     )
 }
 
-export default Login
+export default Login;
