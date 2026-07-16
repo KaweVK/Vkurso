@@ -45,6 +45,10 @@ public class CourseService {
         return CourseResponse.from(getCourseOrThrow(id));
     }
 
+    public CourseResponse getBySlug(String slug) {
+        return CourseResponse.from(repository.findBySlug(slug).orElseThrow(() -> new CourseNotFoundException(slug)));
+    }
+
     @Transactional
     public CourseResponse create(CreateCourseRequest request, User user) {
         Course course = new Course(
@@ -78,6 +82,7 @@ public class CourseService {
         course.setSlug(novoSlug);
         course.setDescription(request.description());
         course.setLevel(request.level());
+        course.setPrice(request.price());
 
         return CourseResponse.from(course);
     }
