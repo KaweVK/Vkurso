@@ -50,6 +50,7 @@ public class CourseService {
         Course course = new Course(
                 request.title(),
                 request.description(),
+                request.price(),
                 request.level(),
                 user.getId()
         );
