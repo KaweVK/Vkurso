@@ -4,7 +4,7 @@ import Logo from '../../assets/logo.png'
 
 export default function Navbar() {
     return (
-        <div className="flex bg-white dark:bg-blue-900 fixed w-full h-[50px] justify-center font-mono">
+        <div className="flex bg-white dark:bg-blue-900 w-full h-[50px] justify-center font-mono">
             <div className='flex justify-center'>
                 <img src={Logo} alt="logo" className='bg-blue-400 rounded-xl h-[90%] self-center'/>
                 <p className='self-center p-2 dark:text-blue-200'>Vkursos</p>
