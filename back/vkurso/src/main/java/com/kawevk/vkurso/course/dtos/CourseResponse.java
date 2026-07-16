@@ -5,6 +5,7 @@ import com.kawevk.vkurso.course.CourseLevel;
 import com.kawevk.vkurso.course.CourseStatus;
 import com.kawevk.vkurso.module.dtos.ModuleResponse;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public record CourseResponse(
         String title,
         String slug,
         String description,
+        BigDecimal price,
         CourseLevel level,
         CourseStatus status,
         Long instructorId,
@@ -27,6 +29,7 @@ public record CourseResponse(
                 course.getTitle(),
                 course.getSlug(),
                 course.getDescription(),
+                course.getPrice(),
                 course.getLevel(),
                 course.getStatus(),
                 course.getInstructorId(),
