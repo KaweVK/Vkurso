@@ -1,6 +1,7 @@
 package com.kawevk.vkurso.shared.web;
 
 import com.kawevk.vkurso.course.exceptions.CourseNotFoundException;
+import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.course.exceptions.DuplicateSlugException;
 import com.kawevk.vkurso.enrollment.exceptions.AlreadyEnrolledException;
 import com.kawevk.vkurso.enrollment.exceptions.CourseNotPublishedException;
@@ -34,6 +35,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CourseNotPublishedException.class)
     public ProblemDetail handleCourseNotPublished(CourseNotPublishedException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
+    }
+
+    @ExceptionHandler(CourseRequestNotAllowed.class)
+    public ProblemDetail handleCourseRequestNotAllowed(CourseRequestNotAllowed ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     //Modules Exceptions

@@ -5,6 +5,10 @@ public class CourseNotFoundException extends RuntimeException {
         super("Curso não encontrado com id: " + id);
     }
 
+    public CourseNotFoundException(String slug) {
+        super("Curso não encontrado com slug: " + slug);
+    }
+
     public CourseNotFoundException() {
         super("Nenhum curso encontrado.");
     }
