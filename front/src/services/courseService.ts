@@ -2,12 +2,13 @@ import api from './api'
 import type { Course } from '../types/course'
 
 const courseService = {
-    findBySlug(slug: string) {
+    async findBySlug(slug: string) {
         return api.get(`/courses/${slug}`)
     },
 
-    findAll(): Promise<Course[]> {
-        return api.get('/courses')
+    async findAll(): Promise<Course[]> {
+        const res = await api.get('/courses')
+        return res.data.content
     }
 };
 

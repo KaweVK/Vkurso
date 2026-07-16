@@ -8,9 +8,15 @@ function useCourses() {
 
     useEffect(() => {
         async function load() {
-            const data = await courseService.findAll();
-            setCourses(data);
-            setLoading(false);
+            try {
+                const data = await courseService.findAll();
+                setCourses(data);
+            } catch (err){
+                console.log(err)
+                setCourses([]);
+            } finally {
+                setLoading(false);
+            }
         }
 
         load();
