@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '../../services/api'
 import '../../index.css'
 import Logo from '../../assets/logo.png'
+import Loading from '../../components/loading'
 
 function Login() {
     const navigate = useNavigate()
@@ -16,7 +17,7 @@ function Login() {
         setError('')
         setLoading(true)
         try {
-            await api.post('/api/auth/login', { email, password })
+            await api.post('/auth/login', { email, password })
             navigate('/')
         } catch {
             setError('Email ou senha inválidos.')
@@ -55,9 +56,10 @@ function Login() {
                     {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
                     <button 
                         className="rounded bg-blue-600 p-3 font-semibold text-white transition hover:bg-blue-700" 
-                        type="submit" disabled={loading}
+                        type="submit" 
+                        disabled={loading}
                     >
-                        {loading ? 'Entrando...' : 'Entrar'}
+                        {loading ? <Loading/> : 'Entrar'}
                     </button>
                 </form>
             </div>
