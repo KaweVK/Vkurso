@@ -6,9 +6,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
@@ -28,9 +31,20 @@ public class Course extends Auditable {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private CourseLevel level;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "course_categories",
+            joinColumns = @JoinColumn(name = "course_id")
+    )
+    @Column(name = "category_id")
+    private Set<Long> categoryIds = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -45,10 +59,11 @@ public class Course extends Auditable {
 
     protected Course() {}
 
-    public Course(String title, String description, CourseLevel level, Long instructorId) {
+    public Course(String title, String description, BigDecimal price, CourseLevel level, Long instructorId) {
         this.title = title;
         this.slug = toSlug(title);
         this.description = description;
+        this.price = price;
         this.level = level;
         this.status = CourseStatus.DRAFT;
         this.instructorId = instructorId;
@@ -64,6 +79,14 @@ public class Course extends Auditable {
     public void removeModule(Module module) {
         modules.remove(module);
         module.setCourse(null);
+    }
+
+    public void addCategory(Long categoryId) {
+        categoryIds.add(categoryId);
+    }
+
+    public void removeCategory(Long categoryId) {
+        categoryIds.remove(categoryId);
     }
 
     public String toSlug(String input) {
