@@ -6,6 +6,8 @@ import com.kawevk.vkurso.course.dtos.UpdateCourseRequest;
 import com.kawevk.vkurso.course.exceptions.CourseNotFoundException;
 import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.course.exceptions.DuplicateSlugException;
+import com.kawevk.vkurso.courseCategory.CourseCategory;
+import com.kawevk.vkurso.courseCategory.CourseCategoryRepository;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
 import org.springframework.data.domain.Page;
@@ -17,9 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class CourseService {
 
     private final CourseRepository repository;
+    private final CourseCategoryRepository courseCategoryRepository;
 
-    public CourseService(CourseRepository repository) {
+    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository) {
         this.repository = repository;
+        this.courseCategoryRepository = courseCategoryRepository;
     }
 
     @Transactional(readOnly = true)
@@ -104,6 +108,22 @@ public class CourseService {
     }
 
     @Transactional
+    public CourseResponse addCategory(Long id, Long idCategory, User user) {
+        Course course = getCourseOrThrow(id);
+        ensureCanModify(course, user);
+        course.addCategory(idCategory);
+        return CourseResponse.from(course);
+    }
+
+    @Transactional
+    public CourseResponse removeCategory(Long id, Long idCategory, User user) {
+        Course course = getCourseOrThrow(id);
+        ensureCanModify(course, user);
+        course.removeCategory(idCategory);
+        return CourseResponse.from(course);
+    }
+
+    @Transactional
     public void delete(Long id, User user) {
         Course course = getCourseOrThrow(id);
         ensureCanModify(course, user);
@@ -125,6 +145,11 @@ public class CourseService {
 
     private Course getCourseOrThrow(Long id) {
         return repository.findById(id)
+                .orElseThrow(() -> new CourseNotFoundException(id));
+    }
+
+    private CourseCategory getCourseCategoryOrThrow(Long id) {
+        return courseCategoryRepository.findById(id)
                 .orElseThrow(() -> new CourseNotFoundException(id));
     }
 

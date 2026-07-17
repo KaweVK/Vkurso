@@ -8,6 +8,7 @@ import com.kawevk.vkurso.module.dtos.ModuleResponse;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 public record CourseResponse(
         Long id,
@@ -16,6 +17,7 @@ public record CourseResponse(
         String description,
         BigDecimal price,
         CourseLevel level,
+        Set<Long> categoryIds,
         CourseStatus status,
         Long instructorId,
         List<ModuleResponse> modules,
@@ -31,6 +33,7 @@ public record CourseResponse(
                 course.getDescription(),
                 course.getPrice(),
                 course.getLevel(),
+                course.getCategoryIds(),
                 course.getStatus(),
                 course.getInstructorId(),
                 course.getModules().stream().map(ModuleResponse::from).toList(),

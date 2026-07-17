@@ -54,6 +54,16 @@ public class CourseController {
         return ResponseEntity.created(location).body(created);
     }
 
+    @PostMapping("/{id}/categories/{idCategory}")
+    public CourseResponse addCategory(@PathVariable Long id, @PathVariable Long idCategory, @AuthenticationPrincipal User user) {
+        return service.addCategory(id, idCategory, user);
+    }
+
+    @DeleteMapping("/{id}/categories/{idCategory}")
+    public CourseResponse removeCategory(@PathVariable Long id, @PathVariable Long idCategory, @AuthenticationPrincipal User user) {
+        return service.removeCategory(id, idCategory, user);
+    }
+
     @PutMapping("/{id}")
     public CourseResponse update(@PathVariable Long id, @RequestBody @Valid UpdateCourseRequest request, @AuthenticationPrincipal User user) {
         return service.update(id, request, user);
