@@ -7,6 +7,7 @@ import Loading from '../../components/loading';
 import { useParams } from 'react-router-dom';
 import Thumb from '../../assets/image.png'
 import { useCategories } from '../../hooks/useCategories';
+import { Link } from 'react-router-dom';
 
 function Course() {
     const { slug } = useParams<{ slug: string }>();
@@ -49,12 +50,7 @@ function Course() {
                                     {module?.lessons?.map(lesson =>
                                         <div className="py-1">
                                             <MenuItem>
-                                                <a
-                                                    href="#"
-                                                    className="block px-4 py-2 text-sm text-gray-300 data-focus:bg-white/5 data-focus:text-white data-focus:outline-hidden"
-                                                >
-                                                    {lesson.title}
-                                                </a>
+                                                <Link to={`/course/${slug}/module/${module.id}/lesson/${lesson.id}`} className="block px-4 py-2 text-sm text-gray-300 data-focus:bg-white/5 data-focus:text-white data-focus:outline-hidden">{lesson.title}</Link>
                                             </MenuItem>
                                         </div>
                                     )}
