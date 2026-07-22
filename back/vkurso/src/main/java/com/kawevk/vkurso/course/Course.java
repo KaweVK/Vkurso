@@ -102,6 +102,10 @@ public class Course extends Auditable {
         if (modules.isEmpty()) {
             throw new IllegalStateException("Um curso não pode ser publicado sem módulos.");
         }
+        boolean existeModuloSemAula = modules.stream().anyMatch(m -> m.getLessons().isEmpty());
+        if (existeModuloSemAula) {
+            throw new IllegalStateException("Um curso não pode ser publicado com módulos sem aulas.");
+        }
         this.status = CourseStatus.PUBLISHED;
     }
 
