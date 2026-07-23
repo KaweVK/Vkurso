@@ -4,10 +4,8 @@ import com.kawevk.vkurso.support.IntegrationTestSupport;
 import com.kawevk.vkurso.user.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,9 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AuthIntegrationTest extends IntegrationTestSupport {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() throws Exception {
