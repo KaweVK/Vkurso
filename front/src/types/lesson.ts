@@ -7,5 +7,4 @@ export interface Lesson {
     lessons: Lesson[];
     freePreview: boolean;
     moduleId: number;
-    
 }
