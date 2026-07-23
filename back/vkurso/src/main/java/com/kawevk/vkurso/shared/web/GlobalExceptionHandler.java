@@ -15,6 +15,7 @@ import com.kawevk.vkurso.user.exceptions.UserNotCreatedWithEmailException;
 import com.kawevk.vkurso.user.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -73,6 +74,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotCreatedWithEmailException.class)
     public ProblemDetail handleUserNotCreatedWithEmail(UserNotCreatedWithEmailException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    //Login
+    @ExceptionHandler(AuthenticationException.class)
+    public ProblemDetail handleAuthenticationException(AuthenticationException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
     //Storage Exceptions
