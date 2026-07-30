@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import Thumb from '../../assets/image.png'
 import { useCategories } from '../../hooks/useCategories';
 import { useEnrollment } from '../../hooks/useEnrollment';
+import { useAuth } from "../../hooks/useAuth";
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -15,6 +16,7 @@ function Course() {
     const { slug } = useParams<{ slug: string }>();
     const [confirmOpen, setConfirmOpen] = useState(false);
     const { course, loading: loadingCourse } = useCourse(slug);
+    const { isAuthenticated } = useAuth();
     const { categories, loading: loadingCategories } = useCategories()
     const { enrolled, loading: loadingEnroll, enroll, cancel } = useEnrollment(course?.id);
 
@@ -41,36 +43,38 @@ function Course() {
                     <div className='w-3/5'>
                         <img src={Thumb} alt="Thumnail" className='ml-[6%] w-[90%] rounded-lg' />
 
-                        {course?.modules?.map(module =>
-                            <Menu
-                                as="div"
-                                key={module.id}
-                                className="mb-2 ml-[6%] mt-[10px] w-[90%]"
-                            >
-                                <MenuButton className="flex w-full justify-between bg-indigo-600 text-white rounded p-3">
-                                    {module.title}
-                                    <ChevronDownIcon className="w-5 h-5" />
-                                </MenuButton>
-                                <MenuItems className="bg-gray-100">
-                                    {module.lessons.map((lesson) => (
-                                        <MenuItem key={lesson.id}>
-                                            {enrolled || lesson.freePreview ? (
-                                                <Link
-                                                    to={`/course/${slug}/module/${module.id}/lesson/${lesson.id}`}
-                                                    className="block p-3 bg-indigo-300"
-                                                >
-                                                    {lesson.title}
-                                                </Link>
-                                            ) : (
-                                                <div className="block p-3 bg-indigo-300 cursor-not-allowed">
-                                                    {lesson.title}
-                                                </div>
-                                            )}
-                                        </MenuItem>
-                                    ))}
-                                </MenuItems>
-                            </Menu>
-                        )}
+                        <div>
+                            {course?.modules?.map(module =>
+                                <Menu
+                                    as="div"
+                                    key={module.id}
+                                    className="mb-2 ml-[6%] mt-[10px] w-[90%]"
+                                >
+                                    <MenuButton className="flex w-full justify-between bg-indigo-600 text-white rounded p-3">
+                                        {module.title}
+                                        <ChevronDownIcon className="w-5 h-5" />
+                                    </MenuButton>
+                                    <MenuItems className="bg-gray-100">
+                                        {module.lessons.map((lesson) => (
+                                            <MenuItem key={lesson.id}>
+                                                {isAuthenticated && (enrolled || lesson.freePreview) ? (
+                                                    <Link
+                                                        to={`/course/${slug}/module/${module.id}/lesson/${lesson.id}`}
+                                                        className="block p-3 bg-indigo-300"
+                                                    >
+                                                        {lesson.title}
+                                                    </Link>
+                                                ) : (
+                                                    <div className="block p-3 bg-indigo-300 cursor-not-allowed">
+                                                        {lesson.title}
+                                                    </div>
+                                                )}
+                                            </MenuItem>
+                                        ))}
+                                    </MenuItems>
+                                </Menu>
+                            )}
+                        </div>
                     </div>
 
                     <div className="bg-white dark:bg-white px-10 py-8 ml-[3%] w-2/5 rounded-xl">
