@@ -2,6 +2,11 @@ import api from './api'
 import type { Course } from '../types/course'
 
 const courseService = {
+    async findById(id: number): Promise<Course> {
+        const res = await api.get(`/courses/id/${id}`)
+        return res.data
+    },
+
     async findBySlug(slug?: string): Promise<Course> {
         const res = await api.get(`/courses/${slug}`)
         return res.data
@@ -10,7 +15,22 @@ const courseService = {
     async findAll(): Promise<Course[]> {
         const res = await api.get('/courses')
         return res.data.content
-    }
+    },
+
+    async create(data: { title: string; description: string; level: Course['level']; price: number }): Promise<Course> {
+        const res = await api.post('/courses', data)
+        return res.data
+    },
+
+    async update(id: number, data: { title: string; description: string; level: Course['level']; price: number }): Promise<Course> {
+        const res = await api.put(`/courses/${id}`, data)
+        return res.data
+    },
+
+    async publish(id: number): Promise<Course> {
+        const res = await api.post(`/courses/${id}/publish`)
+        return res.data
+    },
 };
 
 export default courseService;
