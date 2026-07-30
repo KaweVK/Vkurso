@@ -66,7 +66,7 @@ public class LessonController {
 
     @GetMapping("/{id}/video-url")
     public VideoUrlResponse videoUrl(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        return service.videoUrl(id, user.getId());
+        return service.videoUrl(id, user);
     }
 
 }

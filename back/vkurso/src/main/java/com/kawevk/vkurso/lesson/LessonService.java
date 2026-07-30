@@ -110,7 +110,7 @@ public class LessonService {
     }
 
     @Transactional(readOnly = true)
-    public VideoUrlResponse videoUrl(Long lessonId, Long studentId) {
+    public VideoUrlResponse videoUrl(Long lessonId, User user) {
         Lesson lesson = getLessonOrThrow(lessonId);
 
         if (lesson.getVideoKey() == null) {
@@ -118,7 +118,9 @@ public class LessonService {
         }
 
         Long courseId = lesson.getModule().getCourse().getId();
-        boolean liberado = lesson.isFreePreview() || enrollmentService.isEnrolled(studentId, courseId);
+        boolean isOwner = lesson.getModule().getCourse().getInstructorId().equals(user.getId());
+        boolean isAdmin = user.getRole() == Role.ADMIN;
+        boolean liberado = isOwner || isAdmin || lesson.isFreePreview() || enrollmentService.isEnrolled(user.getId(), courseId);
         if (!liberado) {
             throw new VideoAccessDeniedException(lessonId);
         }
