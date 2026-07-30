@@ -26,6 +26,7 @@ export default function CardCurso({ course }: Props) {
         <div className="flex bg-white h-[230px] w-[180px] justify-center font-mono grid grid-rows-2 rounded-xl dark:bg-sky-100">
             <div className="relative row-span-1">
                 <img src={Image} alt="Thumbnail do curso" className='rounded-t-xl'/>
+                {course.status === 'DRAFT' && <span className="absolute left-2 top-2 rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">Rascunho</span>}
             </div>
             <div className="relative row-span-1 grid grid-rows-3">
                 <p className='m-[5px]'>{course.title}</p>
