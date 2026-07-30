@@ -4,7 +4,7 @@ import Logo from '../../assets/logo.png'
 import { useAuth } from "../../hooks/useAuth";
 
 export default function Navbar() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, role } = useAuth();
 
     return (
         <div className="flex bg-white dark:bg-blue-900 w-full h-[50px] justify-center font-mono">
@@ -17,7 +17,9 @@ export default function Navbar() {
                     <Link to='/me' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>Meu aprendizado</Link>
                     <Link to='/' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>Painel do instrutor</Link>
                 </div>
-                <Link to='/' className='self-center p-2 dark:text-white  hover:bg-sky-500 rounded-xl'>Ensinar</Link>
+                {role === 'INSTRUCTOR' && (
+                    <Link to='/instructor/courses/new' className='self-center p-2 dark:text-white hover:bg-sky-500 rounded-xl'>Criar curso</Link>
+                )}
                 {isAuthenticated ? (
                     <Link to='/me'>
                         <button className='bg-blue-400 dark:bg-white rounded-full m-[9px] p-2'>
