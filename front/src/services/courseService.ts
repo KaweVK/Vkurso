@@ -31,6 +31,10 @@ const courseService = {
         const res = await api.post(`/courses/${id}/publish`)
         return res.data
     },
+
+    async delete(id: number): Promise<void> {
+        await api.delete(`/courses/${id}`)
+    },
 };
 
 export default courseService;
