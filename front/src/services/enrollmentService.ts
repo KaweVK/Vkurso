@@ -14,7 +14,7 @@ const enrollmentService = {
 
     async myEnrollment(courseId: number): Promise<Enrollment | null> {
         try {
-            const res = await api.get(`courses/${courseId}/enrollments/me`);
+            const res = await api.get(`/courses/${courseId}/enrollments/me`);
             return res.data;
         } catch (err) {
             if (axios.isAxiosError(err) && err.response?.status === 404) return null;

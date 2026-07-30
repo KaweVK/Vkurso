@@ -78,7 +78,7 @@ function Lesson() {
                     <div className="flex justify-between mt-5">
                         {previousLesson ? (
                             <Link
-                                to={`/courses/${slug}/modules/${moduleId}/lessons/${previousLesson.id}`}
+                                to={`/course/${slug}/module/${moduleId}/lesson/${previousLesson.id}`}
                                 className="bg-indigo-600 px-5 py-3 rounded text-white"
                             >
                                 ← {previousLesson.title}
@@ -88,7 +88,7 @@ function Lesson() {
                         )}
                         {nextLesson && (
                             <Link
-                                to={`/courses/${slug}/module/${moduleId}/lesson/${nextLesson.id}`}
+                                to={`/course/${slug}/module/${moduleId}/lesson/${nextLesson.id}`}
                                 className="bg-indigo-600 px-5 py-3 rounded text-white"
                             >
                                 {nextLesson.title} →
@@ -111,7 +111,7 @@ function Lesson() {
                                 {module.lessons.map((lesson) => (
                                     <MenuItem key={lesson.id}>
                                         <Link
-                                            to={`/courses/${slug}/module/${moduleId}/lesson/${lesson.id}`}
+                                            to={`/course/${slug}/module/${moduleId}/lesson/${lesson.id}`}
                                             className={`block p-3 ${lesson.id === currentLesson.id
                                                 ? "bg-indigo-300"
                                                 : ""
