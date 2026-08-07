@@ -19,90 +19,83 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.URI;
+import java.time.Instant;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    //Courses Exceptions
-    @ExceptionHandler(CourseNotFoundException.class)
-    public ProblemDetail handleNotFound(CourseNotFoundException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    @ExceptionHandler({
+            CourseNotFoundException.class, ModuleNotFoundException.class,
+            LessonNotFoundException.class, LessonWithoutVideoException.class,
+            UserNotFoundException.class, UserNotCreatedWithEmailException.class,
+            NotEnrolledException.class
+    })
+    public ProblemDetail handleNotFound(RuntimeException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problem.setType(URI.create("https://api.vkurso.com/errors/not-found"));
+        problem.setTitle("Recurso não encontrado");
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
     }
 
-    @ExceptionHandler(DuplicateSlugException.class)
-    public ProblemDetail handleDuplicate(DuplicateSlugException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    @ExceptionHandler({DuplicateSlugException.class, AlreadyEnrolledException.class})
+    public ProblemDetail handleConflict(RuntimeException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problem.setType(URI.create("https://api.vkurso.com/errors/conflict"));
+        problem.setTitle("Conflito de estado");
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
     }
 
     @ExceptionHandler(CourseNotPublishedException.class)
     public ProblemDetail handleCourseNotPublished(CourseNotPublishedException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
+        problem.setType(URI.create("https://api.vkurso.com/errors/course-not-published"));
+        problem.setTitle("Curso não publicado");
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
     }
 
-    @ExceptionHandler(CourseRequestNotAllowed.class)
-    public ProblemDetail handleCourseRequestNotAllowed(CourseRequestNotAllowed ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+    @ExceptionHandler({VideoAccessDeniedException.class, CourseRequestNotAllowed.class})
+    public ProblemDetail handleForbidden(RuntimeException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+        problem.setType(URI.create("https://api.vkurso.com/errors/forbidden"));
+        problem.setTitle("Requisição não permitida");
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
     }
 
-    //Modules Exceptions
-    @ExceptionHandler(ModuleNotFoundException.class)
-    public ProblemDetail handleModuleNotFound(ModuleNotFoundException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    //Lessons Exceptions
-    @ExceptionHandler(LessonNotFoundException.class)
-    public ProblemDetail handleLessonNotFound(LessonNotFoundException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    @ExceptionHandler(VideoAccessDeniedException.class)
-    public ProblemDetail handleVideoAccessDenied(VideoAccessDeniedException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
-    }
-
-    @ExceptionHandler(LessonWithoutVideoException.class)
-    public ProblemDetail handleLessonWithoutVideo(LessonWithoutVideoException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    //Users Exceptions
-    @ExceptionHandler(UserNotFoundException.class)
-    public ProblemDetail handleUserNotFound(UserNotFoundException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    @ExceptionHandler(UserNotCreatedWithEmailException.class)
-    public ProblemDetail handleUserNotCreatedWithEmail(UserNotCreatedWithEmailException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    //Login
     @ExceptionHandler(AuthenticationException.class)
-    public ProblemDetail handleAuthenticationException(AuthenticationException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    public ProblemDetail handleAuthentication(AuthenticationException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        problem.setType(URI.create("https://api.vkurso.com/errors/unauthorized"));
+        problem.setTitle("Não autorizado");
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
     }
 
-    //Storage Exceptions
+    // Storage (AWS S3) Exceptions
     @ExceptionHandler(StorageException.class)
     public ProblemDetail handleStorageException(StorageException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Ocorreu um problema inesperado ao acessar o serviço de armazenamento."
+        );
+        problem.setType(URI.create("https://api.vkurso.com/errors/storage-failure"));
+        problem.setTitle("Falha no Armazenamento de Arquivos");
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
     }
 
-    //Enrollment Exceptions
-    @ExceptionHandler(AlreadyEnrolledException.class)
-    public ProblemDetail handleAlreadyEnrolled(AlreadyEnrolledException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
-    }
-
-    @ExceptionHandler(NotEnrolledException.class)
-    public ProblemDetail handleNotEnrolled(NotEnrolledException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    //Others Exceptions
+    // Erros de estado/regras de negócio
     @ExceptionHandler(IllegalStateException.class)
     public ProblemDetail handleIllegalState(IllegalStateException ex) {
-        // ex.: publicar curso sem módulos
-        return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage()
+        );
+        problem.setType(URI.create("https://api.vkurso.com/errors/illegal-state"));
+        problem.setTitle("Estado inválido para a operação");
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
     }
 }
