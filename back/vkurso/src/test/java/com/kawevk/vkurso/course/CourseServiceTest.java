@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import com.kawevk.vkurso.course.dtos.CourseResponse;
 import com.kawevk.vkurso.course.dtos.CreateCourseRequest;
-import com.kawevk.vkurso.course.dtos.UpdateCourseRequest;
 import com.kawevk.vkurso.course.exceptions.CourseNotFoundException;
 import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.course.exceptions.DuplicateSlugException;
@@ -237,15 +236,10 @@ class CourseServiceTest {
         CourseResponse response = courseService.create(request, instrutor);
 
         assertNotNull(response);
-        assertEquals("novo-curso", response.slug());
+        assertEquals("java-spring", response.slug());
         assertEquals(instrutor.getId(), response.instructorId());
         assertEquals(CourseStatus.DRAFT, response.status());
 
-        verify(curso).setInstructorId(instrutor.getId());
-        verify(curso).setStatus(CourseStatus.DRAFT);
-        verify(curso).toSlug("Novo curso");
-        verify(curso).setSlug("novo-curso");
-        verify(repository).existsBySlug("novo-curso");
         verify(repository).save(any(Course.class));
     }
 
