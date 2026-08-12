@@ -41,6 +41,11 @@ storage:
     secret-key: ${MINIO_ROOT_PASSWORD:minioadmin}
     bucket: ${MINIO_BUCKET:vkurso-videos}
     presigned-ttl-seconds: 7200   # 2h
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, info
 
 server:
   servlet:
