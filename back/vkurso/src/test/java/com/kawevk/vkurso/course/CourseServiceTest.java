@@ -153,6 +153,30 @@ class CourseServiceTest {
         verify(repository).findAllByInstructorId(instrutor.getId(), pageable);
     }
 
+    @Test
+    void ListByInstructor_DeveRetornarListaVaziaQuandoNaoHouverCursosPublicadosPeloInstrutorInformado() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Course> page = new PageImpl<>(
+                List.of(),
+                pageable,
+                0
+        );
+
+        when(repository.findAllByInstructorId(instrutor.getId(), pageable)).thenReturn(page);
+
+        Page<CourseResponse> response =
+                courseService.listByInstructor(
+                        instrutor.getId(),
+                        pageable
+                );
+
+        assertNotNull(response);
+        assertEquals(0, response.getTotalElements());
+        assertTrue(response.isEmpty());
+
+        verify(repository).findAllByInstructorId(instrutor.getId(), pageable);
+    }
+
     // -- gets
 
     @Test
@@ -194,10 +218,12 @@ class CourseServiceTest {
         verify(repository).findBySlug("java-spring");
     }
 
+    // =========================
     // --- TESTES DE CRIAÇÃO ---
+    // =========================
 
     @Test
-    void create_DeveSalvarERetornarCurso() {
+    void create_DeveSalvarERetornarCursoComoDraftSlugGeradoEInstrutorAssociado() {
         CreateCourseRequest request = new CreateCourseRequest(
                 "Novo Curso",
                 "Desc",
@@ -211,8 +237,46 @@ class CourseServiceTest {
         CourseResponse response = courseService.create(request, instrutor);
 
         assertNotNull(response);
+        assertEquals("novo-curso", response.slug());
+        assertEquals(instrutor.getId(), response.instructorId());
+        assertEquals(CourseStatus.DRAFT, response.status());
 
-        verify(repository).existsBySlug(anyString());
+        verify(curso).setInstructorId(instrutor.getId());
+        verify(curso).setStatus(CourseStatus.DRAFT);
+        verify(curso).toSlug("Novo curso");
+        verify(curso).setSlug("novo-curso");
+        verify(repository).existsBySlug("novo-curso");
         verify(repository).save(any(Course.class));
     }
+
+    @Test
+    void create_DeveRetornarExcecaoQuandoUserNaoForInstrutor() {
+        CreateCourseRequest request = new CreateCourseRequest(
+                "Novo Curso",
+                "Desc",
+                CourseLevel.BEGINNER,
+                BigDecimal.ONE
+        );
+
+        assertThrows(CourseRequestNotAllowed.class, () -> courseService.create(request, aluno));
+    }
+
+    @Test
+    void create_DeveRetornarExcecaoSeSlugJaExistir() {
+        CreateCourseRequest request = new CreateCourseRequest(
+                "Novo Curso",
+                "Desc",
+                CourseLevel.BEGINNER,
+                BigDecimal.ONE
+        );
+
+        when(repository.existsBySlug("novo-curso")).thenReturn(true);
+
+        assertThrows(DuplicateSlugException.class, () -> courseService.create(request, instrutor));
+
+        verify(repository).existsBySlug("novo-curso");
+    }
+
+
+
 }
