@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import com.kawevk.vkurso.course.dtos.CourseResponse;
 import com.kawevk.vkurso.course.dtos.CreateCourseRequest;
+import com.kawevk.vkurso.course.dtos.UpdateCourseRequest;
 import com.kawevk.vkurso.course.exceptions.CourseNotFoundException;
 import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.course.exceptions.DuplicateSlugException;
@@ -272,5 +273,110 @@ class CourseServiceTest {
     }
 
 
+    // =====================
+    // --- Update course ---
+    // =====================
+
+    @Test
+    void update_DeveAtualizarCursoQuandoProprietario() {
+        UpdateCourseRequest request = new UpdateCourseRequest(
+                "Java Spring Avançado",
+                "Curso avançado de backend",
+                CourseLevel.ADVANCED,
+                BigDecimal.valueOf(20)
+        );
+
+        when(repository.findById(curso.getId())).thenReturn(Optional.of(curso));
+        when(repository.existsBySlug("java-spring-avancado")).thenReturn(false);
+        when(repository.save(any(Course.class))).thenReturn(curso);
+
+        CourseResponse response = courseService.update(curso.getId(), request, instrutor);
+
+        assertNotNull(response);
+        assertEquals("java-spring-avancado", response.slug());
+        assertEquals("Java Spring Avançado", response.title());
+        assertEquals("Curso avançado de backend", response.description());
+        assertEquals(CourseLevel.ADVANCED, response.level());
+        assertEquals(BigDecimal.valueOf(20), response.price());
+
+        verify(repository).findById(curso.getId());
+        verify(repository).existsBySlug("java-spring-avancado");
+        verify(repository).save(any(Course.class));
+    }
+
+    @Test
+    void update_DeveAtualizarCursoQuandoAdmin() {
+        UpdateCourseRequest request = new UpdateCourseRequest(
+                "Java Spring",
+                "Curso avançado de backend",
+                CourseLevel.ADVANCED,
+                BigDecimal.valueOf(20)
+        );
+
+        when(repository.findById(curso.getId())).thenReturn(Optional.of(curso));
+        when(repository.save(any(Course.class))).thenReturn(curso);
+
+        CourseResponse response = courseService.update(curso.getId(), request, admin);
+
+        assertNotNull(response);
+        assertEquals("java-spring", response.slug());
+        assertEquals("Java Spring", response.title());
+        assertEquals("Curso avançado de backend", response.description());
+        assertEquals(CourseLevel.ADVANCED, response.level());
+        assertEquals(BigDecimal.valueOf(20), response.price());
+
+        verify(repository).findById(curso.getId());
+        verify(repository).save(any(Course.class));
+    }
+
+    @Test
+    void update_DeveRetornarExceptionQuandoCursoNaoExistir() {
+        UpdateCourseRequest request = new UpdateCourseRequest(
+                "Java Spring",
+                "Curso avançado de backend",
+                CourseLevel.ADVANCED,
+                BigDecimal.valueOf(20)
+        );
+
+        when(repository.findById(curso.getId())).thenReturn(Optional.empty());
+
+        assertThrows(CourseNotFoundException.class, () -> courseService.update(curso.getId(), request, instrutor));
+
+        verify(repository).findById(curso.getId());
+    }
+
+    @Test
+    void update_DeveRetornarExceptionQuandoUsuarioNaoForProprietarioNemAdmin() {
+        UpdateCourseRequest request = new UpdateCourseRequest(
+                "Java Spring",
+                "Curso avançado de backend",
+                CourseLevel.ADVANCED,
+                BigDecimal.valueOf(20)
+        );
+
+        when(repository.findById(curso.getId())).thenReturn(Optional.of(curso));
+
+        assertThrows(CourseRequestNotAllowed.class, () -> courseService.update(curso.getId(), request, aluno));
+
+        verify(repository).findById(curso.getId());
+    }
+
+    @Test
+    void update_DeveRetornarExceptionQuandoNovoSlugJaExistir() {
+        UpdateCourseRequest request = new UpdateCourseRequest(
+                "Java Spring Avançado",
+                "Curso avançado de backend",
+                CourseLevel.ADVANCED,
+                BigDecimal.valueOf(20)
+        );
+
+        when(repository.findById(curso.getId())).thenReturn(Optional.of(curso));
+        when(repository.existsBySlug("java-spring-avancado")).thenReturn(true);
+
+        assertThrows(DuplicateSlugException.class, () -> courseService.update(curso.getId(), request, instrutor));
+
+        verify(repository).findById(curso.getId());
+        verify(repository).existsBySlug("java-spring-avancado");
+    }
 
 }
