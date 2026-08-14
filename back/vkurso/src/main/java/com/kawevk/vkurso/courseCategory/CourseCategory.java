@@ -4,7 +4,6 @@ import com.kawevk.vkurso.shared.persistence.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.checkerframework.common.aliasing.qual.Unique;
 
 @Entity
 @Table(name = "categories")
@@ -15,8 +14,7 @@ public class CourseCategory extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    @Unique
+    @Column(nullable = false, length = 100, unique = true)
     private String name;
 
     public CourseCategory() {}
