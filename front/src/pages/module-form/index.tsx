@@ -38,12 +38,25 @@ function ModuleForm() {
         finally { setSaving(false); }
     }
 
-    if (loading) return <FormShell title="Carregando módulo" description="" onSubmit={(event) => event.preventDefault()} onCancel={() => navigate(-1)} loading error="" submitLabel="Salvar"><></></FormShell>;
+    if (loading) return
+    <FormShell title="Carregando módulo" description="" onSubmit={(event) => event.preventDefault()} onCancel={() => navigate(-1)} loading error="" submitLabel="Salvar">
+        <></>
+    </FormShell>;
 
     return <FormShell title={editing ? 'Editar módulo' : 'Criar módulo'} description="Organize o conteúdo do curso em uma sequência fácil de acompanhar." onSubmit={handleSubmit} onCancel={() => navigate(-1)} loading={saving} error={error} submitLabel={editing ? 'Salvar alterações' : 'Criar módulo'}>
-        <div><FieldLabel htmlFor="title">Título</FieldLabel><input id="title" required maxLength={150} className={inputClassName} value={title} onChange={(event) => setTitle(event.target.value)} /></div>
-        <div><FieldLabel htmlFor="description">Descrição</FieldLabel><textarea id="description" rows={5} className={inputClassName} value={description} onChange={(event) => setDescription(event.target.value)} /></div>
-        <div><FieldLabel htmlFor="orderIndex">Ordem</FieldLabel><input id="orderIndex" required min="0" type="number" className={inputClassName} value={orderIndex} onChange={(event) => setOrderIndex(event.target.value)} /></div>
+        <div>
+            <FieldLabel htmlFor="title">Título</FieldLabel>
+            <input id="title" required maxLength={150} className={inputClassName} value={title} onChange={(event) => setTitle(event.target.value)} />
+        </div>
+        <div>
+            <FieldLabel htmlFor="description">Descrição</FieldLabel>
+            <textarea id="description" rows={5} className={inputClassName} value={description} onChange={(event) => setDescription(event.target.value)} />
+
+        </div>
+        <div>
+            <FieldLabel htmlFor="orderIndex">Ordem</FieldLabel>
+            <input id="orderIndex" required min="0" type="number" className={inputClassName} value={orderIndex} onChange={(event) => setOrderIndex(event.target.value)} />
+        </div>
     </FormShell>;
 }
 
