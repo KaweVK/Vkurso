@@ -55,6 +55,10 @@ public class CourseService {
 
     @Transactional
     public CourseResponse create(CreateCourseRequest request, User user) {
+        if (user.getRole() != Role.INSTRUCTOR) {
+            throw new CourseRequestNotAllowed();
+        }
+
         Course course = new Course(
                 request.title(),
                 request.description(),
