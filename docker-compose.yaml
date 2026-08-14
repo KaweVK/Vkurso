@@ -1,4 +1,28 @@
 services:
+  backend:
+    container_name: vkursos-api
+    build:
+      context: ./back/vkurso
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis
+      - minio
+      - prometheus
+      - loki
+      - grafana
+
+  frontend:
+    container_name: vkursos-frontend
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 
   postgres:
     image: postgres:16-alpine
