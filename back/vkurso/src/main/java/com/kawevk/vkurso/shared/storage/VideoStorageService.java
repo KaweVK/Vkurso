@@ -2,6 +2,7 @@ package com.kawevk.vkurso.shared.storage;
 
 import io.minio.*;
 import io.minio.http.Method;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,11 +13,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class VideoStorageService {
 
-    private final MinioClient client;
+    private final MinioClient internalClient;
+    private final MinioClient publicClient;
     private final StorageProperties props;
 
-    public VideoStorageService(MinioClient client, StorageProperties props) {
-        this.client = client;
+    public VideoStorageService(@Qualifier("internalMinioClient") MinioClient internalClient, @Qualifier("publicMinioClient") MinioClient publicClient, StorageProperties props) {
+        this.internalClient = internalClient;
+        this.publicClient = publicClient;
         this.props = props;
     }
 
@@ -27,7 +30,7 @@ public class VideoStorageService {
     public String upload(Long courseId, Long lessonId, MultipartFile file) {
         String key = buildKey(courseId, lessonId, file.getOriginalFilename());
         try (InputStream in = file.getInputStream()) {
-            client.putObject(
+            internalClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(props.bucket())
                             .object(key)
@@ -46,7 +49,7 @@ public class VideoStorageService {
      */
     public String presignedGetUrl(String objectKey) {
         try {
-            return client.getPresignedObjectUrl(
+            return publicClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .method(Method.GET)
                             .bucket(props.bucket())
@@ -61,7 +64,7 @@ public class VideoStorageService {
 
     public void delete(String objectKey) {
         try {
-            client.removeObject(
+            internalClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(props.bucket())
                             .object(objectKey)
