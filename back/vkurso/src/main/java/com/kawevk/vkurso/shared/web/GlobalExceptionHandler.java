@@ -80,7 +80,7 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleStorageException(StorageException ex) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Ocorreu um problema inesperado ao acessar o serviço de armazenamento."
+                String.format("Ocorreu um problema inesperado ao acessar o serviço de armazenamento: %s.", ex.getMessage())
         );
         problem.setType(URI.create("https://api.vkurso.com/errors/storage-failure"));
         problem.setTitle("Falha no Armazenamento de Arquivos");
