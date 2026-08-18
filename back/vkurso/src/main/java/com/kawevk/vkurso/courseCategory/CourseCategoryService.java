@@ -6,6 +6,8 @@ import com.kawevk.vkurso.courseCategory.dtos.UpdateCourseCategoryRequest;
 import com.kawevk.vkurso.courseCategory.exceptions.CourseCategoryRequestNotAllowed;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class CourseCategoryService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "courseCategories", key = "#id")
     public CourseCategoryResponse get(Long id) {
         return CourseCategoryResponse.from(getCourseCategoryOrThrow(id));
     }
@@ -39,6 +42,7 @@ public class CourseCategoryService {
     }
 
     @Transactional
+    @CacheEvict(value = "courseCategories", key = "#id")
     public CourseCategoryResponse update(UpdateCourseCategoryRequest courseCategory, Long id, User user) {
         CourseCategory courseCategoryEntity = getCourseCategoryOrThrow(id);
 
@@ -50,6 +54,7 @@ public class CourseCategoryService {
     }
 
     @Transactional
+    @CacheEvict(value = "courseCategories", key = "#id")
     public void delete(Long id, User user) {
         ensureCanModify(user);
         repository.deleteById(id);
