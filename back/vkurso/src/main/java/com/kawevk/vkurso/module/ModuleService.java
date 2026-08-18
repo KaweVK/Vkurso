@@ -10,6 +10,8 @@ import com.kawevk.vkurso.module.dtos.UpdateModuleRequest;
 import com.kawevk.vkurso.module.exceptions.ModuleNotFoundException;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class ModuleService {
         return repository.findAll(pageable).map(ModuleResponse::from);
     }
 
+    @Cacheable(value = "modules", key = "#id")
     @Transactional(readOnly = true)
     public ModuleResponse findById(Long id) {
         return ModuleResponse.from(getModuleOrThrow(id));
@@ -56,6 +59,7 @@ public class ModuleService {
     }
 
     @Transactional
+    @CacheEvict(value = "modules", key = "#id")
     public ModuleResponse update(Long id, UpdateModuleRequest request, User user) {
         Module module = getModuleOrThrow(id);
 
@@ -69,6 +73,7 @@ public class ModuleService {
     }
 
     @Transactional
+    @CacheEvict(value = "modules", key = "#id")
     public void delete(Long id, User user) {
         Module module = getModuleOrThrow(id);
 
@@ -80,6 +85,7 @@ public class ModuleService {
     }
 
     @Transactional
+    @CacheEvict(value = "modules", key = "#id")
     public ModuleResponse changeLessonOrder(Long id, Long lessonId, Long newOrder, User user) {
         Module module = getModuleOrThrow(id);
         ensureCanModify(module.getCourse(), user);
