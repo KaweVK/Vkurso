@@ -163,15 +163,14 @@ public class CourseService {
     }
 
     @Transactional
-    @CacheEvict(value = "courses", key = "#id")
     public void deleteByInstructor(Long instructorId) {
         repository.deleteAll(repository.findByInstructorId(instructorId, Pageable.unpaged()));
     }
 
     @Transactional
     @CacheEvict(value = "courses", key = "#id")
-    public CourseResponse changeModuleOrder(Long Id, Long moduleId, int newOrder, User user) {
-        Course course = getCourseOrThrow(Id);
+    public CourseResponse changeModuleOrder(Long id, Long moduleId, int newOrder, User user) {
+        Course course = getCourseOrThrow(id);
         ensureCanModify(course, user);
         course.changeModuleOrder(moduleId, newOrder);
         evictCourseCache(course.getSlug());
