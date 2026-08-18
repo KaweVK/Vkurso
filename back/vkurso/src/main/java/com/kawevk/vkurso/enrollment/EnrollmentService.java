@@ -7,6 +7,8 @@ import com.kawevk.vkurso.enrollment.dtos.EnrollmentResponse;
 import com.kawevk.vkurso.enrollment.exceptions.AlreadyEnrolledException;
 import com.kawevk.vkurso.enrollment.exceptions.CourseNotPublishedException;
 import com.kawevk.vkurso.enrollment.exceptions.NotEnrolledException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,10 @@ public class EnrollmentService {
     }
 
     @Transactional
+    @CacheEvict(
+            value = "enrollments",
+            key = "#studentId + ':' + #courseId"
+    )
     public EnrollmentResponse enroll(Long studentId, Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException(courseId));
@@ -44,6 +50,10 @@ public class EnrollmentService {
     }
 
     @Transactional
+    @CacheEvict(
+            value = "enrollments",
+            key = "#studentId + ':' + #courseId"
+    )
     public void cancel(Long studentId, Long courseId) {
         Enrollment enrollment = repository.findByStudentIdAndCourseId(studentId, courseId)
                 .filter(Enrollment::isActive)
@@ -62,6 +72,10 @@ public class EnrollmentService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(
+            value = "enrollments",
+            key = "#studentId + ':' + #courseId"
+    )
     public boolean isEnrolled(Long studentId, Long courseId) {
         return repository.existsByStudentIdAndCourseIdAndStatus(
                 studentId, courseId, EnrollmentStatus.ACTIVE);
