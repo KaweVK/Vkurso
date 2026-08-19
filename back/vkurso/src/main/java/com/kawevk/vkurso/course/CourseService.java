@@ -10,15 +10,13 @@ import com.kawevk.vkurso.courseCategory.CourseCategory;
 import com.kawevk.vkurso.courseCategory.CourseCategoryRepository;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class CourseService {
 
@@ -37,6 +35,7 @@ public class CourseService {
         try {
             return repository.findAll(pageable).map(CourseResponse::from);
         } catch (CourseNotFoundException e) {
+            log.warn("Course not found!", e);
             throw new CourseNotFoundException();
         }
     }
@@ -46,6 +45,7 @@ public class CourseService {
         try {
             return repository.findAllByInstructorId(instructorId, pageable).map(CourseResponse::from);
         } catch (CourseNotFoundException e) {
+            log.warn("Course not found!", e);
             throw new CourseNotFoundException();
         }
     }
@@ -58,7 +58,10 @@ public class CourseService {
     @Cacheable(value = "courses", key = "#slug")
     @Transactional(readOnly = true)
     public CourseResponse getBySlug(String slug) {
-        return CourseResponse.from(repository.findBySlug(slug).orElseThrow(() -> new CourseNotFoundException(slug)));
+        return CourseResponse.from(repository.findBySlug(slug).orElseThrow(() -> {
+            log.warn("Course with slug '{}' not found!", slug);
+            return new CourseNotFoundException(slug);
+        }));
     }
 
     @Transactional
@@ -76,6 +79,7 @@ public class CourseService {
         );
 
         if (repository.existsBySlug(course.getSlug())) {
+            log.warn("Course created with slug '{}' already exists!", course.getSlug());
             throw new DuplicateSlugException(course.getSlug());
         }
 
@@ -93,6 +97,7 @@ public class CourseService {
         String novoSlug = course.toSlug(request.title());
 
         if (!novoSlug.equals(course.getSlug()) && repository.existsBySlug(novoSlug)) {
+            log.warn("Course updated with slug '{}' already exists!", novoSlug);
             throw new DuplicateSlugException(novoSlug);
         }
 
@@ -179,12 +184,18 @@ public class CourseService {
 
     private Course getCourseOrThrow(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new CourseNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Course with ID '{}' not found!", id);
+                    return new CourseNotFoundException(id);
+                });
     }
 
     private CourseCategory getCourseCategoryOrThrow(Long id) {
         return courseCategoryRepository.findById(id)
-                .orElseThrow(() -> new CourseNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Course category with ID '{}' not found!", id);
+                    return new CourseNotFoundException(id);
+                });
     }
 
     private void evictCourseCache(String slug) {
@@ -199,6 +210,7 @@ public class CourseService {
         boolean isAdmin = user.getRole() == Role.ADMIN;
         boolean isOwner = course.getInstructorId().equals(user.getId());
         if (!isAdmin && !isOwner) {
+            log.warn("User with ID '{}' is not the owner of course with ID '{}' or admin", user.getId(), course.getId());
             throw new CourseRequestNotAllowed();
         }
     }

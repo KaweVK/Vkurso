@@ -2,6 +2,7 @@ package com.kawevk.vkurso.enrollment;
 
 import com.kawevk.vkurso.enrollment.dtos.EnrollmentResponse;
 import com.kawevk.vkurso.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/courses/{courseId}/enrollments")
 public class EnrollmentController {
@@ -22,6 +24,7 @@ public class EnrollmentController {
 
     @PostMapping
     public ResponseEntity<EnrollmentResponse> enroll(@PathVariable Long courseId, @AuthenticationPrincipal User user, UriComponentsBuilder uri) {
+        log.debug("User {} is enrolling for course {}", user.getId(), courseId);
         EnrollmentResponse created = service.enroll(user.getId(), courseId);
         URI location = uri.path("/api/courses/{courseId}/enrollments/me")
                 .buildAndExpand(courseId)
@@ -32,6 +35,7 @@ public class EnrollmentController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancel(@PathVariable Long courseId, @AuthenticationPrincipal User user) {
+        log.debug("User {} is canceling enrollment for course {}", user.getId(), courseId);
         service.cancel(user.getId(), courseId);
     }
 

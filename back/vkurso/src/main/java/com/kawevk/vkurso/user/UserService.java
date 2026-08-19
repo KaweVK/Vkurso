@@ -8,6 +8,7 @@ import com.kawevk.vkurso.user.dtos.UpdateUserRequest;
 import com.kawevk.vkurso.user.dtos.UserResponse;
 import com.kawevk.vkurso.user.exceptions.UserNotCreatedWithEmailException;
 import com.kawevk.vkurso.user.exceptions.UserNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class UserService implements UserDetailsService {
 
@@ -75,19 +77,26 @@ public class UserService implements UserDetailsService {
     @NullMarked
     public User loadUserByUsername(String email) {
         User user = repository.findByEmail(email)
-                .orElseThrow(() -> new UserNotCreatedWithEmailException(email));
+                .orElseThrow(() -> {
+                    log.warn("User not found with email: {}", email);
+                    return new UserNotCreatedWithEmailException(email);
+                });
 
         return user;
     }
 
     private User getUserOrThrow(Long userId) {
-        return repository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        return repository.findById(userId).orElseThrow(() -> {
+            log.warn("User not found! {}", userId);
+            return new UserNotFoundException(userId);
+        });
     }
 
     private void ensureCanModify(User targetUser, User userLoged) {
         boolean isAdmin = userLoged.getRole() == Role.ADMIN;
         boolean isOwner = targetUser.getId().equals(userLoged.getId());
         if (!isAdmin && !isOwner) {
+            log.warn("User {} attempted to modify user {} without permission", userLoged.getId(), targetUser.getId());
             throw new CourseRequestNotAllowed();
         }
     }

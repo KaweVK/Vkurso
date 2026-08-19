@@ -7,11 +7,11 @@ import com.kawevk.vkurso.enrollment.dtos.EnrollmentResponse;
 import com.kawevk.vkurso.enrollment.exceptions.AlreadyEnrolledException;
 import com.kawevk.vkurso.enrollment.exceptions.CourseNotPublishedException;
 import com.kawevk.vkurso.enrollment.exceptions.NotEnrolledException;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class EnrollmentService {
 
@@ -30,15 +30,20 @@ public class EnrollmentService {
     )
     public EnrollmentResponse enroll(Long studentId, Long courseId) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new CourseNotFoundException(courseId));
+                .orElseThrow(() -> {
+                    log.warn("Course with ID '{}' not found!", courseId);
+                    return new CourseNotFoundException(courseId);
+                });
 
         if (!course.isPublished()) {
+            log.warn("Course with ID '{}' is not published!", courseId);
             throw new CourseNotPublishedException(courseId);
         }
 
         Enrollment enrollment = repository.findByStudentIdAndCourseId(studentId, courseId)
                 .map(existing -> {
                     if (existing.isActive()) {
+                    log.warn("Course with ID '{}' is already in active state!", courseId);
                         throw new AlreadyEnrolledException(courseId);
                     }
                     existing.reactivate(); // re-inscrição reaproveita a linha (soft delete)
@@ -57,7 +62,10 @@ public class EnrollmentService {
     public void cancel(Long studentId, Long courseId) {
         Enrollment enrollment = repository.findByStudentIdAndCourseId(studentId, courseId)
                 .filter(Enrollment::isActive)
-                .orElseThrow(() -> new NotEnrolledException(courseId));
+                .orElseThrow(() -> {
+                    log.warn("User {} is not enrolled in course {}", studentId, courseId);
+                    return new NotEnrolledException(courseId);
+                });
 
         enrollment.cancel();
     }
@@ -66,7 +74,10 @@ public class EnrollmentService {
     public EnrollmentResponse myEnrollment(Long studentId, Long courseId) {
         Enrollment enrollment = repository.findByStudentIdAndCourseId(studentId, courseId)
                 .filter(Enrollment::isActive)
-                .orElseThrow(() -> new NotEnrolledException(courseId));
+                .orElseThrow(() -> {
+                    log.warn("User {} is not enrolled in course {}", studentId, courseId);
+                    return new NotEnrolledException(courseId);
+                });
 
         return EnrollmentResponse.from(enrollment);
     }

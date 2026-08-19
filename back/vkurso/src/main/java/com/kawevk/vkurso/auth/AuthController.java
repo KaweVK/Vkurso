@@ -5,6 +5,7 @@ import com.kawevk.vkurso.shared.redis.RateLimitService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -48,8 +50,12 @@ public class AuthController {
             return ResponseEntity.status(429).build();
         }
 
+        log.debug("Login request: {}", request);
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+
+        log.debug("Authentication successful for user: {}", request.email());
 
         // grava o contexto na sessão -> Spring Session persiste no Redis e devolve o cookie
         SecurityContext context = SecurityContextHolder.createEmptyContext();

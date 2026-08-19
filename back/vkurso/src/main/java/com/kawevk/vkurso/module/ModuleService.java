@@ -10,13 +10,13 @@ import com.kawevk.vkurso.module.dtos.UpdateModuleRequest;
 import com.kawevk.vkurso.module.exceptions.ModuleNotFoundException;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class ModuleService {
 
@@ -42,7 +42,10 @@ public class ModuleService {
     @Transactional
     public ModuleResponse create(Long courseId, CreateModuleRequest request, User user) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new CourseNotFoundException(courseId));
+                .orElseThrow(() -> {
+                    log.warn("Course not found! {}", courseId);
+                    return new CourseNotFoundException(courseId);
+                });
 
         ensureCanModify(course, user);
 
@@ -95,13 +98,17 @@ public class ModuleService {
 
     private Module getModuleOrThrow(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ModuleNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Module not found! {}", id);
+                    return new ModuleNotFoundException(id);
+                });
     }
 
     private void ensureCanModify(Course course, User user) {
         boolean isAdmin = user.getRole() == Role.ADMIN;
         boolean isOwner = course.getInstructorId().equals(user.getId());
         if (!isAdmin && !isOwner) {
+            log.warn("User {} attempted to modify course {} without permission", user.getId(), course.getId());
             throw new CourseRequestNotAllowed();
         }
     }
