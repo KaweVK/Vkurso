@@ -69,7 +69,7 @@ public class CourseController {
     @GetMapping("/id/{id}")
     public CourseResponse get(
             @Parameter(description = "ID do curso", example = "1") @PathVariable Long id) {
-        log.info("Getting course by ID: {}", id);
+        log.debug("Getting course by ID: {}", id);
         return service.get(id);
     }
 
@@ -90,7 +90,7 @@ public class CourseController {
     @GetMapping("/{slug}")
     public CourseResponse getBySlug(
             @Parameter(description = "Slug do curso", example = "titulo-do-curso") @PathVariable String slug) {
-        log.info("Getting course by slug: {}", slug);
+        log.debug("Getting course by slug: {}", slug);
         return service.getBySlug(slug);
     }
 
@@ -111,7 +111,7 @@ public class CourseController {
     @GetMapping("/by-instructor")
     public Page<CourseResponse> listByInstructor(
             @Parameter(description = "ID do instrutor", example = "1") @RequestParam Long instructorId, Pageable pageable) {
-        log.info("Listing courses by instructor. instructorId={}, page={}, size={}", instructorId, pageable.getPageNumber(), pageable.getPageSize());
+        log.debug("Listing courses by instructor. instructorId={}, page={}, size={}", instructorId, pageable.getPageNumber(), pageable.getPageSize());
         return service.listByInstructor(instructorId, pageable);
     }
 
@@ -135,7 +135,7 @@ public class CourseController {
     })
     @PostMapping
     public ResponseEntity<CourseResponse> create(@RequestBody @Valid CreateCourseRequest request, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
-        log.info("Creating course. Request={}", request);
+        log.debug("Creating course. Request={}", request);
         CourseResponse created = service.create(request, user);
         URI location = uriBuilder.path("/api/courses/{id}")
                 .buildAndExpand(created.id())
@@ -166,7 +166,7 @@ public class CourseController {
             @Parameter(description = "ID do curso", example = "1") @PathVariable Long id,
             @Parameter(description = "ID da categoria", example = "1") @PathVariable Long idCategory,
             @AuthenticationPrincipal User user) {
-        log.info("Adding category to course. courseId={}, categoryId={}", id, idCategory);
+        log.debug("Adding category to course. courseId={}, categoryId={}", id, idCategory);
         return service.addCategory(id, idCategory, user);
     }
 
@@ -193,7 +193,7 @@ public class CourseController {
             @Parameter(description = "ID do curso", example = "1") @PathVariable Long id,
             @Parameter(description = "ID da categoria", example = "1") @PathVariable Long idCategory,
             @AuthenticationPrincipal User user) {
-        log.info("Removing category from course. courseId={}, categoryId={}", id, idCategory);
+        log.debug("Removing category from course. courseId={}, categoryId={}", id, idCategory);
         return service.removeCategory(id, idCategory, user);
     }
 
@@ -220,7 +220,7 @@ public class CourseController {
             @Parameter(description = "ID do curso", example = "1") @PathVariable Long id,
             @RequestBody @Valid UpdateCourseRequest request,
             @AuthenticationPrincipal User user) {
-        log.info("Updating course. courseId={}, request={}", id, request);
+        log.debug("Updating course. courseId={}, request={}", id, request);
         return service.update(id, request, user);
     }
 
@@ -246,7 +246,7 @@ public class CourseController {
     public CourseResponse publish(
             @Parameter(description = "ID do curso", example = "1") @PathVariable Long id,
             @AuthenticationPrincipal User user) {
-        log.info("Publishing course. courseId={}", id);
+        log.debug("Publishing course. courseId={}", id);
         return service.publish(id, user);
     }
 
@@ -272,7 +272,7 @@ public class CourseController {
     public CourseResponse archive(
             @Parameter(description = "ID do curso", example = "1") @PathVariable Long id,
             @AuthenticationPrincipal User user) {
-        log.info("Archiving course. courseId={}", id);
+        log.debug("Archiving course. courseId={}", id);
         return service.archive(id, user);
     }
 
@@ -299,7 +299,7 @@ public class CourseController {
     public void delete(
             @Parameter(description = "ID do curso", example = "1") @PathVariable Long id,
             @AuthenticationPrincipal User user) {
-        log.info("Deleting course. courseId={}", id);
+        log.debug("Deleting course. courseId={}", id);
         service.delete(id, user);
     }
 
@@ -327,7 +327,7 @@ public class CourseController {
             @Parameter(description = "ID do módulo", example = "1") @PathVariable Long moduleId,
             @Parameter(description = "Nova ordem", example = "1") @RequestParam int newOrder,
             @AuthenticationPrincipal User user) {
-        log.info("Changing module order. courseId={}, moduleId={}, newOrder={}", id, moduleId, newOrder);
+        log.debug("Changing module order. courseId={}, moduleId={}, newOrder={}", id, moduleId, newOrder);
         return service.changeModuleOrder(id, moduleId, newOrder, user);
     }
 }
