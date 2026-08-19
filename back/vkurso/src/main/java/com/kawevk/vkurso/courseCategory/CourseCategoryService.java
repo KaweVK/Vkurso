@@ -6,11 +6,13 @@ import com.kawevk.vkurso.courseCategory.dtos.UpdateCourseCategoryRequest;
 import com.kawevk.vkurso.courseCategory.exceptions.CourseCategoryRequestNotAllowed;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class CourseCategoryService {
 
@@ -57,13 +59,17 @@ public class CourseCategoryService {
 
     private CourseCategory getCourseCategoryOrThrow(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Course category not found"));
+                .orElseThrow(() -> {
+                    log.warn("Course category with id {} not found", id);
+                    return new IllegalArgumentException("Course category not found");
+                });
     }
 
     private void ensureCanModify(User user) {
         boolean isAdmin = user.getRole() == Role.ADMIN;
         boolean isInstructor = user.getRole() == Role.INSTRUCTOR;
         if (!isAdmin && !isInstructor) {
+            log.warn("User with id {} and role {} is not allowed to modify course categories", user.getId(), user.getRole());
             throw new CourseCategoryRequestNotAllowed();
         }
     }

@@ -5,6 +5,7 @@ import com.kawevk.vkurso.courseCategory.dtos.CreateCourseCategoryRequest;
 import com.kawevk.vkurso.courseCategory.dtos.UpdateCourseCategoryRequest;
 import com.kawevk.vkurso.user.User;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/course-category")
 public class CourseCategoryController {
@@ -27,17 +29,21 @@ public class CourseCategoryController {
 
     @GetMapping
     public Page<CourseCategoryResponse> list(Pageable pageable) {
+        log.debug("Listing users with pagination: page {}, size {}", pageable.getPageNumber(), pageable.getPageSize());
         return service.list(pageable);
     }
 
     @GetMapping("/{id}")
     public CourseCategoryResponse get(@PathVariable Long id) {
+        log.debug("Getting user with id: {}", id);
         return service.get(id);
     }
 
     @PostMapping
     public ResponseEntity<CourseCategoryResponse> create(@RequestBody @Valid CreateCourseCategoryRequest request, UriComponentsBuilder uriBuilder) {
+        log.debug("Creating user: {}", request);
         CourseCategoryResponse created = service.create(request);
+        log.debug("Created user: {}", created);
         URI location = uriBuilder.path("/api/course-category/{id}")
                 .buildAndExpand(created.id())
                 .toUri();
@@ -46,12 +52,14 @@ public class CourseCategoryController {
 
     @PutMapping("/{id}")
     public CourseCategoryResponse update(@PathVariable Long id, @RequestBody @Valid UpdateCourseCategoryRequest request, @AuthenticationPrincipal User user) {
+        log.debug("Updating user with id: {}", id);
         return service.update(request, id, user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        log.debug("Deleting user with id: {}", id);
         service.delete(id, user);
     }
 
