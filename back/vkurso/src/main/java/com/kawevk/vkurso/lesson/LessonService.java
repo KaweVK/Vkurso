@@ -45,6 +45,7 @@ public class LessonService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "lessons", key = "#id")
     public LessonResponse findById(Long id) {
         return LessonResponse.from(getLessonOrThrow(id));
     }
@@ -71,6 +72,7 @@ public class LessonService {
     }
 
     @Transactional
+    @CacheEvict(value = "lessons", key = "#id")
     public LessonResponse update(Long id, UpdateLessonRequest request, User user) {
         Lesson lesson = getLessonOrThrow(id);
 
@@ -84,6 +86,7 @@ public class LessonService {
     }
 
     @Transactional
+    @CacheEvict(value = "lessons", key = "#id")
     public void delete(Long id, User user) {
         Lesson lesson = getLessonOrThrow(id);
 
@@ -98,6 +101,7 @@ public class LessonService {
     }
 
     @Transactional
+    @CacheEvict(value = "lessons", key = "#lessonId")
     public LessonResponse attachVideo(Long lessonId, MultipartFile file, User user) {
         Lesson lesson = getLessonOrThrow(lessonId);
         Long courseId = lesson.getModule().getCourse().getId();

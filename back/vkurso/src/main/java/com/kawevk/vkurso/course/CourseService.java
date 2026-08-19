@@ -22,10 +22,12 @@ public class CourseService {
 
     private final CourseRepository repository;
     private final CourseCategoryRepository courseCategoryRepository;
+    private final CacheManager cacheManager;
 
-    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository) {
+    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, CacheManager cacheManager) {
         this.repository = repository;
         this.courseCategoryRepository = courseCategoryRepository;
+        this.cacheManager = cacheManager;
     }
 
     @Transactional(readOnly = true)
@@ -38,7 +40,7 @@ public class CourseService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<CourseResponse> listByInstructor(Long instructorId, Pageable pageable) {
         try {
             return repository.findAllByInstructorId(instructorId, pageable).map(CourseResponse::from);
@@ -53,6 +55,8 @@ public class CourseService {
         return CourseResponse.from(getCourseOrThrow(id));
     }
 
+    @Cacheable(value = "courses", key = "#slug")
+    @Transactional(readOnly = true)
     public CourseResponse getBySlug(String slug) {
         return CourseResponse.from(repository.findBySlug(slug).orElseThrow(() -> {
             log.warn("Course with slug '{}' not found!", slug);
@@ -62,6 +66,10 @@ public class CourseService {
 
     @Transactional
     public CourseResponse create(CreateCourseRequest request, User user) {
+        if (user.getRole() != Role.INSTRUCTOR) {
+            throw new CourseRequestNotAllowed();
+        }
+
         Course course = new Course(
                 request.title(),
                 request.description(),
@@ -79,11 +87,13 @@ public class CourseService {
     }
 
     @Transactional
+    @CacheEvict(value = "courses", key = "#id")
     public CourseResponse update(Long id, UpdateCourseRequest request, User user) {
         Course course = getCourseOrThrow(id);
 
         ensureCanModify(course, user);
 
+        String oldSlug = course.getSlug();
         String novoSlug = course.toSlug(request.title());
 
         if (!novoSlug.equals(course.getSlug()) && repository.existsBySlug(novoSlug)) {
@@ -97,45 +107,63 @@ public class CourseService {
         course.setLevel(request.level());
         course.setPrice(request.price());
 
-        return CourseResponse.from(course);
+        CourseResponse response = CourseResponse.from(course);
+
+        evictCourseCache(oldSlug);
+
+        if (!oldSlug.equals(novoSlug)) {
+            evictCourseCache(novoSlug);
+        }
+
+        return response;
     }
 
     @Transactional
+    @CacheEvict(value = "courses", key = "#id")
     public CourseResponse publish(Long id, User user) {
         Course course = getCourseOrThrow(id);
         ensureCanModify(course, user);
         course.publish();
+        evictCourseCache(course.getSlug());
         return CourseResponse.from(course);
     }
 
     @Transactional
+    @CacheEvict(value = "courses", key = "#id")
     public CourseResponse archive(Long id, User user) {
         Course course = getCourseOrThrow(id);
         ensureCanModify(course, user);
         course.archive();
+        evictCourseCache(course.getSlug());
         return CourseResponse.from(course);
     }
 
     @Transactional
+    @CacheEvict(value = "courses", key = "#id")
     public CourseResponse addCategory(Long id, Long idCategory, User user) {
         Course course = getCourseOrThrow(id);
         ensureCanModify(course, user);
         course.addCategory(idCategory);
+        evictCourseCache(course.getSlug());
         return CourseResponse.from(course);
     }
 
     @Transactional
+    @CacheEvict(value = "courses", key = "#id")
     public CourseResponse removeCategory(Long id, Long idCategory, User user) {
         Course course = getCourseOrThrow(id);
         ensureCanModify(course, user);
         course.removeCategory(idCategory);
+        evictCourseCache(course.getSlug());
         return CourseResponse.from(course);
     }
 
     @Transactional
+    @CacheEvict(value = "courses", key = "#id")
     public void delete(Long id, User user) {
         Course course = getCourseOrThrow(id);
         ensureCanModify(course, user);
+        evictCourseCache(course.getSlug());
         repository.delete(course);
     }
 
@@ -145,10 +173,12 @@ public class CourseService {
     }
 
     @Transactional
-    public CourseResponse changeModuleOrder(Long Id, Long moduleId, int newOrder, User user) {
-        Course course = getCourseOrThrow(Id);
+    @CacheEvict(value = "courses", key = "#id")
+    public CourseResponse changeModuleOrder(Long id, Long moduleId, int newOrder, User user) {
+        Course course = getCourseOrThrow(id);
         ensureCanModify(course, user);
         course.changeModuleOrder(moduleId, newOrder);
+        evictCourseCache(course.getSlug());
         return CourseResponse.from(course);
     }
 
@@ -166,6 +196,14 @@ public class CourseService {
                     log.warn("Course category with ID '{}' not found!", id);
                     return new CourseNotFoundException(id);
                 });
+    }
+
+    private void evictCourseCache(String slug) {
+        Cache cache = cacheManager.getCache("courses");
+
+        if (cache != null) {
+            cache.evict(slug);
+        }
     }
 
     private void ensureCanModify(Course course, User user) {

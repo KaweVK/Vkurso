@@ -1,6 +1,7 @@
 package com.kawevk.vkurso.auth;
 
 import com.kawevk.vkurso.auth.dtos.LoginRequest;
+import com.kawevk.vkurso.shared.redis.RateLimitService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -24,13 +25,30 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository =
             new HttpSessionSecurityContextRepository();
+    private final RateLimitService rateLimitService;
 
-    public AuthController(AuthenticationManager authenticationManager) {
+    public AuthController(AuthenticationManager authenticationManager, RateLimitService rateLimitService) {
         this.authenticationManager = authenticationManager;
+        this.rateLimitService = rateLimitService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    public ResponseEntity<Void> login(
+            @RequestBody @Valid LoginRequest request,
+            HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse
+    ) {
+        String ip = httpRequest.getRemoteAddr();
+
+        boolean allowed = rateLimitService.isAllowed(
+                "rate_limit:login:" + ip,
+                5,
+                java.time.Duration.ofMinutes(1)
+        );
+
+        if (!allowed) {
+            return ResponseEntity.status(429).build();
+        }
 
         log.debug("Login request: {}", request);
 

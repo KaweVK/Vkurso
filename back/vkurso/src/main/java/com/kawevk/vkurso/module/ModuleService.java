@@ -33,6 +33,7 @@ public class ModuleService {
         return repository.findAll(pageable).map(ModuleResponse::from);
     }
 
+    @Cacheable(value = "modules", key = "#id")
     @Transactional(readOnly = true)
     public ModuleResponse findById(Long id) {
         return ModuleResponse.from(getModuleOrThrow(id));
@@ -61,6 +62,7 @@ public class ModuleService {
     }
 
     @Transactional
+    @CacheEvict(value = "modules", key = "#id")
     public ModuleResponse update(Long id, UpdateModuleRequest request, User user) {
         Module module = getModuleOrThrow(id);
 
@@ -74,6 +76,7 @@ public class ModuleService {
     }
 
     @Transactional
+    @CacheEvict(value = "modules", key = "#id")
     public void delete(Long id, User user) {
         Module module = getModuleOrThrow(id);
 
@@ -85,6 +88,7 @@ public class ModuleService {
     }
 
     @Transactional
+    @CacheEvict(value = "modules", key = "#id")
     public ModuleResponse changeLessonOrder(Long id, Long lessonId, Long newOrder, User user) {
         Module module = getModuleOrThrow(id);
         ensureCanModify(module.getCourse(), user);

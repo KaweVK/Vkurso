@@ -1,4 +1,48 @@
 services:
+  backend:
+    container_name: vkursos-api
+    build:
+      context: ./back/vkurso
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-vkursos}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD:-vkursos}
+      STORAGE_MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+      STORAGE_MINIO_PUBLIC_ENDPOINT: ${MINIO_PUBLIC_ENDPOINT:-http://localhost:9000}
+      STORAGE_MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      STORAGE_MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      STORAGE_MINIO_BUCKET: ${MINIO_BUCKET:-vkurso-videos}
+      LOKI_URL: http://loki:3100/loki/api/v1/push
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    networks:
+      - vkursos-net
+
+  frontend:
+    container_name: vkursos-frontend
+    ports:
+      - "5173:80"
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
+    depends_on:
+      backend:
+        condition: service_started
+    networks:
+      - vkursos-net
 
   postgres:
     image: postgres:16-alpine
@@ -72,11 +116,23 @@ services:
     networks:
       - vkursos-net
 
+  minio-init:
+    image: minio/mc:latest
+    container_name: vkursos-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - mc alias set local http://minio:9000 "${MINIO_ROOT_USER:-minioadmin}" "${MINIO_ROOT_PASSWORD:-minioadmin}" && mc mb --ignore-existing "local/${MINIO_BUCKET:-vkurso-videos}"
+    networks:
+      - vkursos-net
+
   prometheus:
     image: prom/prometheus:latest
     container_name: vkursos-prometheus
     volumes:
-      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - ./back/vkurso/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
       - prometheus_data:/prometheus
     ports:
       - "9090:9090"

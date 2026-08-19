@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -82,10 +84,15 @@ public record CourseResponse(
                 course.getDescription(),
                 course.getPrice(),
                 course.getLevel(),
-                course.getCategoryIds(),
+                new HashSet<>(course.getCategoryIds()),
                 course.getStatus(),
                 course.getInstructorId(),
-                course.getModules().stream().map(ModuleResponse::from).toList(),
+                new ArrayList<>(
+                        course.getModules()
+                                .stream()
+                                .map(ModuleResponse::from)
+                                .toList()
+                ),
                 course.getCreatedAt(),
                 course.getUpdatedAt()
         );
