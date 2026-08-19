@@ -4,6 +4,7 @@ import com.kawevk.vkurso.user.dtos.CreateUserRequest;
 import com.kawevk.vkurso.user.dtos.UpdateUserRequest;
 import com.kawevk.vkurso.user.dtos.UserResponse;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -26,22 +28,27 @@ public class UserController {
 
     @GetMapping
     public Page<UserResponse> list(Pageable pageable) {
+        log.debug("Listing users with pagination: page {}, size {}", pageable.getPageNumber(), pageable.getPageSize());
         return service.list(pageable);
     }
 
     @GetMapping("/{id}")
     public UserResponse get(@PathVariable Long id) {
+        log.debug("Getting user with id: {}", id);
         return service.get(id);
     }
 
     @GetMapping("/me")
     public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
+        log.debug("Getting actual user with id: {}", user.getId());
         return service.get(user.getId());
     }
 
     @PostMapping
     public ResponseEntity<UserResponse> create(@RequestBody @Valid CreateUserRequest request, UriComponentsBuilder uriBuilder) {
+        log.debug("Creating user: {}", request);
         UserResponse created = service.create(request);
+        log.debug("Created user: {}", created.id());
         URI location = uriBuilder.path("/api/users/{id}")
                 .buildAndExpand(created.id())
                 .toUri();
@@ -50,12 +57,14 @@ public class UserController {
 
     @PutMapping("/{id}")
     public UserResponse update(@PathVariable Long id, @RequestBody @Valid UpdateUserRequest request, @AuthenticationPrincipal User user) {
+        log.debug("Updating user with id: {}", id);
         return service.update(id, request, user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        log.debug("Deleting user with id: {}", id);
         service.delete(id, user);
     }
 }
