@@ -16,6 +16,8 @@ import com.kawevk.vkurso.module.exceptions.ModuleNotFoundException;
 import com.kawevk.vkurso.shared.storage.VideoStorageService;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,7 @@ public class LessonService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "lessons", key = "#id")
     public LessonResponse findById(Long id) {
         return LessonResponse.from(getLessonOrThrow(id));
     }
@@ -66,6 +69,7 @@ public class LessonService {
     }
 
     @Transactional
+    @CacheEvict(value = "lessons", key = "#id")
     public LessonResponse update(Long id, UpdateLessonRequest request, User user) {
         Lesson lesson = getLessonOrThrow(id);
 
@@ -79,6 +83,7 @@ public class LessonService {
     }
 
     @Transactional
+    @CacheEvict(value = "lessons", key = "#id")
     public void delete(Long id, User user) {
         Lesson lesson = getLessonOrThrow(id);
 
@@ -93,6 +98,7 @@ public class LessonService {
     }
 
     @Transactional
+    @CacheEvict(value = "lessons", key = "#lessonId")
     public LessonResponse attachVideo(Long lessonId, MultipartFile file, User user) {
         Lesson lesson = getLessonOrThrow(lessonId);
         Long courseId = lesson.getModule().getCourse().getId();
