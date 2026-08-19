@@ -16,12 +16,14 @@ import com.kawevk.vkurso.module.exceptions.ModuleNotFoundException;
 import com.kawevk.vkurso.shared.storage.VideoStorageService;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 public class LessonService {
 
@@ -50,7 +52,10 @@ public class LessonService {
     @Transactional
     public LessonResponse create(Long moduleId, CreateLessonRequest request, User user) {
         Module module = moduleRepository.findById(moduleId)
-                .orElseThrow(() -> new ModuleNotFoundException(moduleId));
+                .orElseThrow(() -> {
+                    log.warn("Module not found! {}", moduleId);
+                    return new ModuleNotFoundException(moduleId);
+                });
 
         ensureCanModify(module.getCourse(), user);
 
@@ -114,6 +119,7 @@ public class LessonService {
         Lesson lesson = getLessonOrThrow(lessonId);
 
         if (lesson.getVideoKey() == null) {
+            log.warn("Lesson {} does not have a video attached", lessonId);
             throw new LessonWithoutVideoException();
         }
 
@@ -122,6 +128,7 @@ public class LessonService {
         boolean isAdmin = user.getRole() == Role.ADMIN;
         boolean liberado = isOwner || isAdmin || lesson.isFreePreview() || enrollmentService.isEnrolled(user.getId(), courseId);
         if (!liberado) {
+            log.warn("User {} attempted to access video for lesson {} without permission", user.getId(), lessonId);
             throw new VideoAccessDeniedException(lessonId);
         }
 
@@ -130,13 +137,17 @@ public class LessonService {
 
     private Lesson getLessonOrThrow(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new LessonNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Lesson not found! {}", id);
+                    return new LessonNotFoundException(id);
+                });
     }
 
     private void ensureCanModify(Course course, User user) {
         boolean isAdmin = user.getRole() == Role.ADMIN;
         boolean isOwner = course.getInstructorId().equals(user.getId());
         if (!isAdmin && !isOwner) {
+            log.warn("User {} attempted to modify course {} without permission", user.getId(), course.getId());
             throw new CourseRequestNotAllowed();
         }
     }
