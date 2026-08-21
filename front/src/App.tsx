@@ -6,12 +6,15 @@ import Lesson from './pages/lesson';
 import CourseForm from './pages/course-form';
 import ModuleForm from './pages/module-form';
 import LessonForm from './pages/lesson-form';
+import Catalog from './pages/catalog';
 
 export function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path='/catalog' element={<Catalog />} />
+        <Route path='/about' element={<Catalog />} />
         <Route path="/login" element={<Login />} />
         <Route path="/course/:slug" element={<Course />} />
         <Route path="/course/:slug/module/:moduleId/lesson/:lessonId" element={<Lesson />} />
