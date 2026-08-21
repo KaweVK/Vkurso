@@ -2,6 +2,7 @@ import '../../index.css'
 import { Link } from 'react-router-dom'
 import Logo from '../../assets/logo.png'
 import { useAuth } from "../../hooks/useAuth";
+import { UserIcon } from '@heroicons/react/24/outline';
 
 export default function Navbar() {
     const { isAuthenticated, role } = useAuth();
@@ -22,14 +23,14 @@ export default function Navbar() {
                 )}
                 {isAuthenticated ? (
                     <Link to='/me'>
-                        <button className='bg-blue-400 dark:bg-white rounded-full m-[9px] p-2'>
-                            Perfil
+                        <button className='flex bg-blue-400 dark:bg-white rounded-full m-[9px] p-2'>
+                            Perfil <UserIcon className="mt-1 text-black font-semibold h-5 w-8"/>
                         </button>
                     </Link>
                 ) : (
                     <Link to='/login'>
-                        <button className='bg-blue-400 dark:bg-white rounded-full m-[9px] p-2'>
-                            Login
+                        <button className='flex bg-blue-400 dark:bg-white rounded-2xl m-[9px] p-2'>
+                            Login <UserIcon className="mt-1 text-black font-semibold h-5 w-8"/>
                         </button>
                     </Link>
                 )}

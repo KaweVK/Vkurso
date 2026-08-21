@@ -10,7 +10,7 @@ export default function Loading() {
                 cx="12"
                 cy="12"
                 r="10"
-                color='white'
+                color='blue'
                 stroke="currentColor"
                 strokeWidth="3"
                 strokeLinecap="round"
