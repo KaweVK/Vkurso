@@ -11,6 +11,10 @@ import com.kawevk.vkurso.courseCategory.CourseCategoryRepository;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -62,6 +66,14 @@ public class CourseService {
             log.warn("Course with slug '{}' not found!", slug);
             return new CourseNotFoundException(slug);
         }));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CourseResponse> search(String search, Long categoryId, Pageable pageable) {
+        String normalizedSearch = search == null ? null : search.trim();
+        Page<Course> courses = repository.search(normalizedSearch, categoryId, pageable);
+
+        return courses.map(CourseResponse::from);
     }
 
     @Transactional

@@ -36,21 +36,21 @@ public class CourseController {
         this.service = service;
     }
 
-    @Operation(
-            summary = "Listar cursos",
-            description = "Retorna uma lista paginada de cursos disponíveis."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Página de cursos retornada com sucesso (vazia ou não)"
-            ),
-    })
-    @GetMapping
-    public Page<CourseResponse> list(Pageable pageable) {
-        log.info("Listing courses. page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
-        return service.list(pageable);
-    }
+//    @Operation(
+//            summary = "Listar cursos",
+//            description = "Retorna uma lista paginada de cursos disponíveis."
+//    )
+//    @ApiResponses({
+//            @ApiResponse(
+//                    responseCode = "200",
+//                    description = "Página de cursos retornada com sucesso (vazia ou não)"
+//            ),
+//    })
+//    @GetMapping
+//    public Page<CourseResponse> list(Pageable pageable) {
+//        log.info("Listing courses. page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
+//        return service.list(pageable);
+//    }
 
     @Operation(
             summary = "Obter curso por ID",
@@ -92,6 +92,17 @@ public class CourseController {
             @Parameter(description = "Slug do curso", example = "titulo-do-curso") @PathVariable String slug) {
         log.debug("Getting course by slug: {}", slug);
         return service.getBySlug(slug);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<CourseResponse>> getCourses(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Long categoryId,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                service.search(search, categoryId, pageable)
+        );
     }
 
     @Operation(
