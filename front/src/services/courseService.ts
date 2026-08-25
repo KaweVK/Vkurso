@@ -17,6 +17,16 @@ const courseService = {
         return res.data.content
     },
 
+    async search(search = '', categoryId?: number): Promise<Course[]> {
+        const res = await api.get('/courses', {
+            params: {
+                search: search || undefined,
+                categoryId
+            }
+        })
+        return res.data.content
+    },
+
     async create(data: { title: string; description: string; level: Course['level']; price: number }): Promise<Course> {
         const res = await api.post('/courses', data)
         return res.data
