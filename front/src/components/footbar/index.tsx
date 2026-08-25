@@ -17,7 +17,7 @@ export default function Footbar() {
                 <p className='p-2 text-white'>|</p>
                 <Link to='/catalog' className='p-2 text-white hover:bg-sky-500 rounded-xl'>Política de privacidade</Link>
                 <p className='p-2 text-white'>|</p>
-                <Link to='/catalog' className='p-2 text-white hover:bg-sky-500 rounded-xl'>Suporte</Link>
+                <Link to='/about' className='p-2 text-white hover:bg-sky-500 rounded-xl'>Sobre</Link>
             </div>
         </div>
 
