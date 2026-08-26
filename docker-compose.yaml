@@ -19,6 +19,8 @@ services:
       STORAGE_MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
       STORAGE_MINIO_BUCKET: ${MINIO_BUCKET:-vkurso-videos}
       LOKI_URL: http://loki:3100/loki/api/v1/push
+      APP_ADMIN_EMAIL: ${APP_ADMIN_EMAIL}
+      APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
     depends_on:
       postgres:
         condition: service_healthy
