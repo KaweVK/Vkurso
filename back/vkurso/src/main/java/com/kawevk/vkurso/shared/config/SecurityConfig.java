@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/courses/*/enrollments").authenticated()
 
                         // leitura de todo o agregado (curso, módulos, aulas): qualquer autenticado
-                        .requestMatchers(HttpMethod.GET, "/api/courses/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/courses/**").permitAll()
 
                         // escrita no agregado: só INSTRUCTOR ou ADMIN
                         .requestMatchers(HttpMethod.POST, "/api/courses/**").hasAnyRole("INSTRUCTOR", "ADMIN")
