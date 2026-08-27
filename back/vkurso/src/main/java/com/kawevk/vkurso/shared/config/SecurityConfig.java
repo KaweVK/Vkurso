@@ -1,5 +1,6 @@
 package com.kawevk.vkurso.shared.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,9 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
+    @Value("${URL_FRONTEND}")
+    private String URL_FRONTEND;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -32,10 +36,10 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/actuator/**").authenticated()
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-                        .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/actuator/health").authenticated()
 
                         // >>> INSCRIÇÃO: qualquer autenticado (aluno) pode se inscrever/cancelar
                         //     precisa vir ANTES das regras amplas de /api/courses/** abaixo
@@ -75,7 +79,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*"));   // restrinja ao domínio do front em prod
+        config.setAllowedOriginPatterns(List.of(URL_FRONTEND));   // restrinja ao domínio do front em prod
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);                // necessário para o browser enviar o cookie

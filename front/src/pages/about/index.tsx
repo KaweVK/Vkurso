@@ -3,10 +3,11 @@ import Navbar from '../../components/navbar'
 import Footbar from '../../components/footbar'
 import Me from '../../assets/foto.png'
 import Sist1 from '../../assets/sist-1.png'
+import Sist2 from '../../assets/sist-2.png'
+import Sist3 from '../../assets/sist-3.png'
 import { Link } from 'react-router-dom';
-import { ArrowLongRightIcon } from "@heroicons/react/24/outline";
 import { useState } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, CodeBracketIcon } from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronRightIcon, CodeBracketIcon, ArrowLongRightIcon } from "@heroicons/react/24/outline";
 
 function About() {
 
@@ -14,8 +15,8 @@ function About() {
 
     const images = [
         Sist1,
-        Me,
-        Me
+        Sist2,
+        Sist3
     ];
 
     const nextImage = () => {
@@ -104,17 +105,17 @@ function About() {
                     <div className='relative overflow-hidden rounded-2xl bg-blue-950 shadow-md'>
                         <img src={images[currentImage]} alt={`Imagem do sistema ${currentImage + 1}`} className='h-[420px] w-full object-cover' />
 
-                        <button onClick={previousImage} className='absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-blue-950 shadow-md transition hover:scale-110'>
+                        <button type='button' onClick={previousImage} className='absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-blue-950 shadow-md transition hover:scale-110'>
                             <ChevronLeftIcon className='h-6 w-6' />
                         </button>
 
-                        <button onClick={nextImage} className='absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-blue-950 shadow-md transition hover:scale-110'>
+                        <button type='button' onClick={nextImage} className='absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-blue-950 shadow-md transition hover:scale-110'>
                             <ChevronRightIcon className='h-6 w-6' />
                         </button>
 
                         <div className='absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2'>
                             {images.map((_, index) => (
-                                <button key={index} onClick={() => setCurrentImage(index)} className={`h-2.5 w-2.5 rounded-full transition ${currentImage === index ? 'bg-white scale-125' : 'bg-white/50'}`} />
+                                <button type="button" key={index} onClick={() => setCurrentImage(index)} className={`h-2.5 w-2.5 rounded-full transition ${currentImage === index ? 'bg-white scale-125' : 'bg-white/50'}`} />
                             ))}
                         </div>
                     </div>

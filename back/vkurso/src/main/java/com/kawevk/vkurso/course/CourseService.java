@@ -27,17 +27,19 @@ public class CourseService {
     private final CourseRepository repository;
     private final CourseCategoryRepository courseCategoryRepository;
     private final CacheManager cacheManager;
+    private final CourseMapper mapper;
 
-    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, CacheManager cacheManager) {
+    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, CacheManager cacheManager, CourseMapper mapper) {
         this.repository = repository;
         this.courseCategoryRepository = courseCategoryRepository;
         this.cacheManager = cacheManager;
+        this.mapper = mapper;
     }
 
     @Transactional(readOnly = true)
     public Page<CourseResponse> list(Pageable pageable) {
         try {
-            return repository.findAll(pageable).map(CourseResponse::from);
+            return repository.findAll(pageable).map(mapper::toResponse);
         } catch (CourseNotFoundException e) {
             log.warn("Course not found!", e);
             throw new CourseNotFoundException();
@@ -47,7 +49,7 @@ public class CourseService {
     @Transactional(readOnly = true)
     public Page<CourseResponse> listByInstructor(Long instructorId, Pageable pageable) {
         try {
-            return repository.findAllByInstructorId(instructorId, pageable).map(CourseResponse::from);
+            return repository.findAllByInstructorId(instructorId, pageable).map(mapper::toResponse);
         } catch (CourseNotFoundException e) {
             log.warn("Course not found!", e);
             throw new CourseNotFoundException();
@@ -56,13 +58,13 @@ public class CourseService {
 
     @Transactional(readOnly = true)
     public CourseResponse get(Long id) {
-        return CourseResponse.from(getCourseOrThrow(id));
+        return mapper.toResponse(getCourseOrThrow(id));
     }
 
     @Cacheable(value = "courses", key = "#slug")
     @Transactional(readOnly = true)
     public CourseResponse getBySlug(String slug) {
-        return CourseResponse.from(repository.findBySlug(slug).orElseThrow(() -> {
+        return mapper.toResponse(repository.findBySlug(slug).orElseThrow(() -> {
             log.warn("Course with slug '{}' not found!", slug);
             return new CourseNotFoundException(slug);
         }));
@@ -73,7 +75,7 @@ public class CourseService {
         String normalizedSearch = search == null ? null : search.trim();
         Page<Course> courses = repository.search(normalizedSearch, categoryId, pageable);
 
-        return courses.map(CourseResponse::from);
+        return courses.map(mapper::toResponse);
     }
 
     @Transactional
@@ -95,7 +97,7 @@ public class CourseService {
             throw new DuplicateSlugException(course.getSlug());
         }
 
-        return CourseResponse.from(repository.save(course));
+        return mapper.toResponse(repository.save(course));
     }
 
     @Transactional
@@ -119,7 +121,7 @@ public class CourseService {
         course.setLevel(request.level());
         course.setPrice(request.price());
 
-        CourseResponse response = CourseResponse.from(course);
+        CourseResponse response = mapper.toResponse(course);
 
         evictCourseCache(oldSlug);
 
@@ -137,7 +139,7 @@ public class CourseService {
         ensureCanModify(course, user);
         course.publish();
         evictCourseCache(course.getSlug());
-        return CourseResponse.from(course);
+        return mapper.toResponse(course);
     }
 
     @Transactional
@@ -147,7 +149,7 @@ public class CourseService {
         ensureCanModify(course, user);
         course.archive();
         evictCourseCache(course.getSlug());
-        return CourseResponse.from(course);
+        return mapper.toResponse(course);
     }
 
     @Transactional
@@ -157,7 +159,7 @@ public class CourseService {
         ensureCanModify(course, user);
         course.addCategory(idCategory);
         evictCourseCache(course.getSlug());
-        return CourseResponse.from(course);
+        return mapper.toResponse(course);
     }
 
     @Transactional
@@ -167,7 +169,7 @@ public class CourseService {
         ensureCanModify(course, user);
         course.removeCategory(idCategory);
         evictCourseCache(course.getSlug());
-        return CourseResponse.from(course);
+        return mapper.toResponse(course);
     }
 
     @Transactional
@@ -191,7 +193,7 @@ public class CourseService {
         ensureCanModify(course, user);
         course.changeModuleOrder(moduleId, newOrder);
         evictCourseCache(course.getSlug());
-        return CourseResponse.from(course);
+        return mapper.toResponse(course);
     }
 
     private Course getCourseOrThrow(Long id) {

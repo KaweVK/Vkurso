@@ -46,7 +46,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponse> create(@RequestBody @Valid CreateUserRequest request, UriComponentsBuilder uriBuilder) {
-        log.debug("Creating user: {}", request);
+        log.debug("Creating user: {}", request.email());
         UserResponse created = service.create(request);
         log.debug("Created user: {}", created.id());
         URI location = uriBuilder.path("/api/users/{id}")

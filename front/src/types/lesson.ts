@@ -3,7 +3,7 @@ export interface Lesson {
     title: string;
     description: string;
     orderIndex: number;
-    videoUrl: string;
+    videoUrl: string | null;
     lessons: Lesson[];
     freePreview: boolean;
     moduleId: number;

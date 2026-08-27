@@ -12,7 +12,7 @@ public record UpdateUserRequest(
         @Email @Size(max = 100)
         String email,
         @NotBlank
-        String passwordHash,
+        String password,
         @NotBlank @Size(max = 20)
         Role role
 ) {

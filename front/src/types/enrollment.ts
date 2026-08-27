@@ -1,8 +1,8 @@
-export type enrollmentStatus = "ACTIVE" | "CANCELLED";
+export type Status = "ACTIVE" | "CANCELLED";
 
 export interface Enrollment {
     id: number;
     studentId: number;
     courseId: number;
-    enrollmentStatus: enrollmentStatus;
+    enrollmentStatus: Status;
 }

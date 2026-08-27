@@ -50,7 +50,7 @@ public class AuthController {
             return ResponseEntity.status(429).build();
         }
 
-        log.debug("Login request: {}", request);
+        log.debug("Login request: {}", request.email());
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));

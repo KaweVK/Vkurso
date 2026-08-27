@@ -77,9 +77,11 @@ function Catalog() {
             } : {
                 <div className='flex w-full flex-wrap justify-center gap-6 px-8 py-8'>
                     {courses.map(course =>
-                        <Link key={course.id} to={`/course/${course.slug}`}>
-                            <CardCurso course={course} />
-                        </Link>
+                        course.status === 'PUBLISHED' && (
+                            <Link key={course.id} to={`/course/${course.slug}`}>
+                                <CardCurso course={course} />
+                            </Link>
+                        )
                     )}
                 </div>
             }

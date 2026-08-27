@@ -36,7 +36,8 @@ public class CourseCategoryService {
     }
 
     @Transactional
-    public CourseCategoryResponse create(CreateCourseCategoryRequest courseCategory) {
+    public CourseCategoryResponse create(CreateCourseCategoryRequest courseCategory, User user) {
+        ensureCanModify(user);
         CourseCategory courseCategoryEntity = new CourseCategory(
                 courseCategory.name()
         );
@@ -72,8 +73,7 @@ public class CourseCategoryService {
 
     private void ensureCanModify(User user) {
         boolean isAdmin = user.getRole() == Role.ADMIN;
-        boolean isInstructor = user.getRole() == Role.INSTRUCTOR;
-        if (!isAdmin && !isInstructor) {
+        if (!isAdmin) {
             log.warn("User with id {} and role {} is not allowed to modify course categories", user.getId(), user.getRole());
             throw new CourseCategoryRequestNotAllowed();
         }

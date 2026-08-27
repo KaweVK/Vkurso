@@ -16,17 +16,4 @@ public record ModuleResponse(
         List<LessonResponse> lessons,
         Instant createdAt,
         Instant updatedAt
-) {
-    public static ModuleResponse from(Module module) {
-        return new ModuleResponse(
-                module.getId(),
-                module.getTitle(),
-                module.getDescription(),
-                module.getOrderIndex(),
-                module.getCourse().getId(),
-                module.getLessons().stream().map(LessonResponse::from).toList(),
-                module.getCreatedAt(),
-                module.getUpdatedAt()
-        );
-    }
-}
+) {}

@@ -33,23 +33,25 @@ public class LessonService {
     private final VideoStorageService storage;
     private final ModuleRepository moduleRepository;
     private final EnrollmentService enrollmentService;
+    private final LessonMapper mapper;
 
-    public LessonService(LessonRepository repository, VideoStorageService storage, ModuleRepository moduleRepository, EnrollmentService enrollmentService) {
+    public LessonService(LessonRepository repository, VideoStorageService storage, ModuleRepository moduleRepository, EnrollmentService enrollmentService, LessonMapper mapper) {
         this.repository = repository;
         this.storage = storage;
         this.moduleRepository = moduleRepository;
         this.enrollmentService = enrollmentService;
+        this.mapper = mapper;
     }
 
     @Transactional(readOnly = true)
     public Page<LessonResponse> list(Pageable pageable) {
-        return repository.findAll(pageable).map(LessonResponse::from);
+        return repository.findAll(pageable).map(mapper::toResponseWhitoutUrl);
     }
 
     @Transactional(readOnly = true)
     @Cacheable(value = "lessons", key = "#id")
     public LessonResponse findById(Long id) {
-        return LessonResponse.from(getLessonOrThrow(id));
+        return mapper.toResponseWhitoutUrl(getLessonOrThrow(id));
     }
 
     @Transactional
@@ -70,7 +72,7 @@ public class LessonService {
 
         module.addLesson(lesson);
 
-        return LessonResponse.from(repository.save(lesson));
+        return mapper.toResponseWhitoutUrl(repository.save(lesson));
     }
 
     @Transactional
@@ -84,7 +86,7 @@ public class LessonService {
         lesson.setDescription(request.description());
         lesson.setOrderIndex(request.orderIndex());
 
-        return LessonResponse.from(lesson);
+        return mapper.toResponseWhitoutUrl(lesson);
     }
 
     @Transactional
@@ -117,7 +119,7 @@ public class LessonService {
         String key = storage.upload(courseId, lessonId, file);
         lesson.setVideoKey(key);
         // duration: extrair do arquivo aqui (ex. ffprobe / lib de metadata)
-        return LessonResponse.from(lesson, storage);
+        return mapper.toResponseWhitUrl(lesson, storage);
     }
 
     @Transactional(readOnly = true)

@@ -40,9 +40,9 @@ public class CourseCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CourseCategoryResponse> create(@RequestBody @Valid CreateCourseCategoryRequest request, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<CourseCategoryResponse> create(@RequestBody @Valid CreateCourseCategoryRequest request, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
         log.debug("Creating user: {}", request);
-        CourseCategoryResponse created = service.create(request);
+        CourseCategoryResponse created = service.create(request, user);
         log.debug("Created user: {}", created);
         URI location = uriBuilder.path("/api/course-category/{id}")
                 .buildAndExpand(created.id())

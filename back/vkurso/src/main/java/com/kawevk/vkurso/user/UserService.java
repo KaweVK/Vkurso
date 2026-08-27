@@ -1,6 +1,5 @@
 package com.kawevk.vkurso.user;
 
-import com.kawevk.vkurso.course.Course;
 import com.kawevk.vkurso.course.CourseService;
 import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.user.dtos.CreateUserRequest;
@@ -32,12 +31,16 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserResponse> list(Pageable pageable) {
+    public Page<UserResponse> list(Pageable pageable, User userLoged) {
+        if (userLoged.getRole() != Role.ADMIN) {
+            throw new CourseRequestNotAllowed();
+        }
         return repository.findAll(pageable).map(UserResponse::from);
     }
 
     @Transactional(readOnly = true)
-    public UserResponse get(Long userId) {
+    public UserResponse get(Long userId, User userLoged) {
+        ensureCanModify(getUserOrThrow(userId), userLoged);
         return UserResponse.from(getUserOrThrow(userId));
     }
 
@@ -47,7 +50,7 @@ public class UserService implements UserDetailsService {
                 request.fullName(),
                 request.email(),
                 passwordEncoder.encode(request.password()),
-                request.role()
+                Role.USER
         );
         return UserResponse.from(repository.save(user));
     }
@@ -59,8 +62,10 @@ public class UserService implements UserDetailsService {
 
         user.setFullName(request.fullName());
         user.setEmail(request.email());
-        user.setPasswordHash(passwordEncoder.encode(request.passwordHash()));
-        user.setRole(request.role());
+        user.setPasswordHash(passwordEncoder.encode(request.password()));
+        if (userLoged.getRole() == Role.ADMIN) {
+            user.setRole(request.role());
+        }
 
         return UserResponse.from(repository.save(user));
     }

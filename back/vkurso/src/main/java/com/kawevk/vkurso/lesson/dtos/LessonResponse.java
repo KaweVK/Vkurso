@@ -17,37 +17,4 @@ public record LessonResponse(
         Long moduleId,
         Instant createdAt,
         Instant updatedAt
-) {
-    public static LessonResponse from(Lesson lesson) {
-        return new LessonResponse(
-                lesson.getId(),
-                lesson.getTitle(),
-                lesson.getDescription(),
-                lesson.getOrderIndex(),
-                lesson.getVideoKey(),
-                lesson.getDurationSeconds(),
-                lesson.isFreePreview(),
-                lesson.getModule().getId(),
-                lesson.getCreatedAt(),
-                lesson.getUpdatedAt()
-        );
-    }
-
-    public static LessonResponse from(Lesson lesson, VideoStorageService storage) {
-        String videoUrl = lesson.getVideoKey() == null
-                ? null
-                : storage.presignedGetUrl(lesson.getVideoKey());
-        return new LessonResponse(
-                lesson.getId(),
-                lesson.getTitle(),
-                lesson.getDescription(),
-                lesson.getOrderIndex(),
-                videoUrl,
-                lesson.getDurationSeconds(),
-                lesson.isFreePreview(),
-                lesson.getModule().getId(),
-                lesson.getCreatedAt(),
-                lesson.getUpdatedAt()
-        );
-    }
-}
+) {}

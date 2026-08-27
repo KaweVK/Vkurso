@@ -24,21 +24,23 @@ public class ModuleService {
 
     private final ModuleRepository repository;
     private final CourseRepository courseRepository;
+    private final ModuleMapper mapper;
 
-    public ModuleService(ModuleRepository repository, CourseRepository courseRepository) {
+    public ModuleService(ModuleRepository repository, CourseRepository courseRepository, ModuleMapper mapper) {
         this.repository = repository;
         this.courseRepository = courseRepository;
+        this.mapper = mapper;
     }
 
     @Transactional(readOnly = true)
     public Page<ModuleResponse> list(Pageable pageable) {
-        return repository.findAll(pageable).map(ModuleResponse::from);
+        return repository.findAll(pageable).map(mapper::toResponse);
     }
 
     @Cacheable(value = "modules", key = "#id")
     @Transactional(readOnly = true)
     public ModuleResponse findById(Long id) {
-        return ModuleResponse.from(getModuleOrThrow(id));
+        return mapper.toResponse(getModuleOrThrow(id));
     }
 
     @Transactional
@@ -60,7 +62,7 @@ public class ModuleService {
         course.addModule(module);
         module.setCourse(course);
 
-        return ModuleResponse.from(repository.save(module));
+        return mapper.toResponse(repository.save(module));
     }
 
     @Transactional
@@ -74,7 +76,7 @@ public class ModuleService {
         module.setDescription(request.description());
         module.setOrderIndex(request.orderIndex());
 
-        return ModuleResponse.from(module);
+        return mapper.toResponse(module);
     }
 
     @Transactional
@@ -95,7 +97,7 @@ public class ModuleService {
         Module module = getModuleOrThrow(id);
         ensureCanModify(module.getCourse(), user);
         module.changeLessonOrder(lessonId, newOrder);
-        return ModuleResponse.from(module);
+        return mapper.toResponse(module);
     }
 
     private Module getModuleOrThrow(Long id) {

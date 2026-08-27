@@ -57,11 +57,11 @@ function Home() {
             <div className='flex px-[7%] mt-20 justify-between items-center'>
                 <p className='font-bold text-5xl text-black'>Cursos em destaque</p>
                 <Link
-                        to={'/catalog'}
-                        className='flex justify-center items-center w-[150px] h-10 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105'
-                    >
-                        <p className='text-blue-700 font-bold '>Ver todos</p> <ArrowLongRightIcon className="mt-1 text-blue-700 font-bold h-5 w-8" />
-                    </Link>
+                    to={'/catalog'}
+                    className='flex justify-center items-center w-[150px] h-10 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105'
+                >
+                    <p className='text-blue-700 font-bold '>Ver todos</p> <ArrowLongRightIcon className="mt-1 text-blue-700 font-bold h-5 w-8" />
+                </Link>
             </div>
             {loading &&
                 <div className='flex w-full items-center justify-center py-20'>
@@ -70,13 +70,15 @@ function Home() {
             } : {
                 <div className='flex w-full flex-wrap justify-center gap-6 px-8 py-8'>
                     {courses.map(course =>
-                        <Link key={course.id} to={`/course/${course.slug}`}>
-                            <CardCurso course={course} />
-                        </Link>
+                        course.status === 'PUBLISHED' && (
+                            <Link key={course.id} to={`/course/${course.slug}`}>
+                                <CardCurso course={course} />
+                            </Link>
+                        )
                     )}
                 </div>
             }
-            <Footbar/>
+            <Footbar />
         </body>
     )
 }
