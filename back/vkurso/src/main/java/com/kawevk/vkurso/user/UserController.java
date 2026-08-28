@@ -27,21 +27,21 @@ public class UserController {
     }
 
     @GetMapping
-    public Page<UserResponse> list(Pageable pageable) {
+    public Page<UserResponse> list(Pageable pageable, @AuthenticationPrincipal User user) {
         log.debug("Listing users with pagination: page {}, size {}", pageable.getPageNumber(), pageable.getPageSize());
-        return service.list(pageable);
+        return service.list(pageable, user);
     }
 
     @GetMapping("/{id}")
-    public UserResponse get(@PathVariable Long id) {
+    public UserResponse get(@PathVariable Long id, @AuthenticationPrincipal User user) {
         log.debug("Getting user with id: {}", id);
-        return service.get(id);
+        return service.get(id, user);
     }
 
     @GetMapping("/me")
     public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
         log.debug("Getting actual user with id: {}", user.getId());
-        return service.get(user.getId());
+        return service.get(user.getId(), user);
     }
 
     @PostMapping
