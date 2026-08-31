@@ -6,6 +6,7 @@ import com.kawevk.vkurso.course.exceptions.DuplicateSlugException;
 import com.kawevk.vkurso.enrollment.exceptions.AlreadyEnrolledException;
 import com.kawevk.vkurso.enrollment.exceptions.CourseNotPublishedException;
 import com.kawevk.vkurso.enrollment.exceptions.NotEnrolledException;
+import com.kawevk.vkurso.learningProgress.exceptions.ProgressNotFoundException;
 import com.kawevk.vkurso.lesson.exceptions.LessonNotFoundException;
 import com.kawevk.vkurso.lesson.exceptions.LessonWithoutVideoException;
 import com.kawevk.vkurso.lesson.exceptions.VideoAccessDeniedException;
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
             CourseNotFoundException.class, ModuleNotFoundException.class,
             LessonNotFoundException.class, LessonWithoutVideoException.class,
             UserNotFoundException.class, UserNotCreatedWithEmailException.class,
-            NotEnrolledException.class
+            NotEnrolledException.class, ProgressNotFoundException.class
     })
     public ProblemDetail handleNotFound(RuntimeException ex) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
