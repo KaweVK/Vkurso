@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
 public interface LessonMapper {
 
     @Mapping(source = "module.id", target = "moduleId")
-    @Mapping(target = "video", ignore = true)
+    @Mapping(target = "videoUrl", ignore = true)
     LessonResponse toResponseWhitoutUrl (Lesson lesson);
 
     @Mapping(source = "module.id", target = "moduleId")
