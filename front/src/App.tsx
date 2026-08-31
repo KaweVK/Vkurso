@@ -18,7 +18,7 @@ export function AppRoutes() {
         <Route path='/catalog' element={<Catalog />} />
         <Route path='/about' element={<About />} />
         <Route path="/login" element={<Login />} />
-        <Route path='/me' element={<MyJourney/>} />
+        <Route path='/journey' element={<MyJourney/>} />
         <Route path="/course/:slug" element={<Course />} />
         <Route path="/course/:slug/module/:moduleId/lesson/:lessonId" element={<Lesson />} />
         <Route path="/instructor/courses/new" element={<CourseForm />} />
