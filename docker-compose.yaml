@@ -21,6 +21,7 @@ services:
       LOKI_URL: http://loki:3100/loki/api/v1/push
       APP_ADMIN_EMAIL: ${APP_ADMIN_EMAIL}
       APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
+      URL_FRONTEND: ${URL_FRONTEND}
     depends_on:
       postgres:
         condition: service_healthy
