@@ -15,7 +15,7 @@ export default function Navbar() {
                 <div className='flex w-5/6 justify-center space-x-4 '>
                     <Link to='/' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>Início</Link>
                     <Link to='/catalog' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>Catálogo</Link>
-                    <Link to='/me' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>Meu aprendizado</Link>
+                    <Link to='/journey' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>Meu aprendizado</Link>
                     <Link to='/' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>Painel do instrutor</Link>
                 </div>
                 {role === 'INSTRUCTOR' && (
