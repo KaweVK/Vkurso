@@ -1,4 +1,4 @@
-package com.kawevk.vkurso.learninProgress;
+package com.kawevk.vkurso.learningProgress;
 
 import com.kawevk.vkurso.shared.persistence.Auditable;
 import jakarta.persistence.*;

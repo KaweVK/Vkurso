@@ -1,7 +1,6 @@
-package com.kawevk.vkurso.learninProgress.dtos;
+package com.kawevk.vkurso.learningProgress.dtos;
 
 public record CreateLearningProgressRequest(
-        Long studentId,
         Long courseId,
         Long moduleId,
         Long lessonId

@@ -1,6 +1,6 @@
-package com.kawevk.vkurso.learninProgress.dtos;
+package com.kawevk.vkurso.learningProgress.dtos;
 
-public record UpdateLearningProgressRequest(
+public record LearningProgressResponse(
         Long studentId,
         Long courseId,
         Long moduleId,

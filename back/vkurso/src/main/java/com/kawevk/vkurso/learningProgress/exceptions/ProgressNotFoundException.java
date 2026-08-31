@@ -1,4 +1,4 @@
-package com.kawevk.vkurso.learninProgress.exceptions;
+package com.kawevk.vkurso.learningProgress.exceptions;
 
 public class ProgressNotFoundException extends RuntimeException {
     public ProgressNotFoundException(Long id) {

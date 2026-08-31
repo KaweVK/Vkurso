@@ -1,6 +1,6 @@
-package com.kawevk.vkurso.learninProgress;
+package com.kawevk.vkurso.learningProgress;
 
-import com.kawevk.vkurso.learninProgress.dtos.LearningProgressResponse;
+import com.kawevk.vkurso.learningProgress.dtos.LearningProgressResponse;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
