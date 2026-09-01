@@ -19,9 +19,9 @@ public class LearningProgress extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "student_id")
+    @Column(name = "student_id", nullable = false)
     private Long studentId;
-    @Column(name = "course_id")
+    @Column(name = "course_id", nullable = false)
     private Long courseId;
     @Column(name = "module_id")
     private Long moduleId;
@@ -35,6 +35,11 @@ public class LearningProgress extends Auditable {
         this.courseId = courseId;
         this.moduleId = moduleId;
         this.lessonId = lessonId;
+    }
+
+    public LearningProgress(Long studentId, Long courseId) {
+        this.studentId = studentId;
+        this.courseId = courseId;
     }
 
     @Override

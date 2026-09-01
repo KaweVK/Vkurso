@@ -7,6 +7,9 @@ import com.kawevk.vkurso.enrollment.dtos.EnrollmentResponse;
 import com.kawevk.vkurso.enrollment.exceptions.AlreadyEnrolledException;
 import com.kawevk.vkurso.enrollment.exceptions.CourseNotPublishedException;
 import com.kawevk.vkurso.enrollment.exceptions.NotEnrolledException;
+import com.kawevk.vkurso.learningProgress.LearningProgress;
+import com.kawevk.vkurso.learningProgress.LearningProgressRepository;
+import com.kawevk.vkurso.learningProgress.exceptions.AlreadyExistsProgressException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,10 +22,12 @@ public class EnrollmentService {
 
     private final EnrollmentRepository repository;
     private final CourseRepository courseRepository;
+    private final LearningProgressRepository progressRepository;
 
-    public EnrollmentService(EnrollmentRepository repository, CourseRepository courseRepository) {
+    public EnrollmentService(EnrollmentRepository repository, CourseRepository courseRepository, LearningProgressRepository progressRepository) {
         this.repository = repository;
         this.courseRepository = courseRepository;
+        this.progressRepository = progressRepository;
     }
 
     @Transactional
@@ -52,6 +57,12 @@ public class EnrollmentService {
                     return existing;
                 })
                 .orElseGet(() -> new Enrollment(studentId, courseId));
+
+        LearningProgress progress = progressRepository.existsByStudentIdAndCourseId(studentId, course.getId()) ? null
+                : new LearningProgress(studentId, courseId);
+        if (progress != null) {
+            progressRepository.save(progress);
+        }
 
         return EnrollmentResponse.from(repository.save(enrollment));
     }
