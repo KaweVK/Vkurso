@@ -27,6 +27,11 @@ const courseService = {
         return res.data.content
     },
 
+    async featured(): Promise<Course[]> {
+        const res = await api.get('courses/featured')
+        return res.data
+    },
+
     async create(data: { title: string; description: string; level: Course['level']; price: number }): Promise<Course> {
         const res = await api.post('/courses', data)
         return res.data

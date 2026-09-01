@@ -8,6 +8,7 @@ import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.course.exceptions.DuplicateSlugException;
 import com.kawevk.vkurso.courseCategory.CourseCategory;
 import com.kawevk.vkurso.courseCategory.CourseCategoryRepository;
+import com.kawevk.vkurso.enrollment.EnrollmentRepository;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +17,16 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,12 +34,14 @@ public class CourseService {
 
     private final CourseRepository repository;
     private final CourseCategoryRepository courseCategoryRepository;
+    private final EnrollmentRepository enrollmentRepository;
     private final CacheManager cacheManager;
     private final CourseMapper mapper;
 
-    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, CacheManager cacheManager, CourseMapper mapper) {
+    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, EnrollmentRepository enrollmentRepository, CacheManager cacheManager, CourseMapper mapper) {
         this.repository = repository;
         this.courseCategoryRepository = courseCategoryRepository;
+        this.enrollmentRepository = enrollmentRepository;
         this.cacheManager = cacheManager;
         this.mapper = mapper;
     }
@@ -76,6 +86,28 @@ public class CourseService {
         Page<Course> courses = repository.search(normalizedSearch, categoryId, pageable);
 
         return courses.map(mapper::toResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CourseResponse> getFeaturedCourses() {
+        List<Long> courseIds =
+                enrollmentRepository.findTop5MostEnrolledCourseIds(
+                        PageRequest.of(0, 5)
+                );
+
+        Map<Long, Course> courses = repository
+                .findAllById(courseIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        Course::getId,
+                        Function.identity()
+                ));
+
+        return courseIds.stream()
+                .map(courses::get)
+                .filter(Objects::nonNull)
+                .map(mapper::toResponse)
+                .toList();
     }
 
     @Transactional

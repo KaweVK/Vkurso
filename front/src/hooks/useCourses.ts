@@ -47,4 +47,26 @@ export function useCourse(slug?: string) {
     return { course, loading };
 }
 
+export function useFeaturedCourses() {
+    const [course, setCourse] = useState<Course[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function load() {
+            try {
+                const data = await courseService.featured();
+                setCourse(data);
+            } catch (err){
+                console.log(err)
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        load();
+    }, []);
+
+    return { course, loading };
+}
+
 export default useCourses;

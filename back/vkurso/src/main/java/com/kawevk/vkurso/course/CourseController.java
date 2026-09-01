@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -102,6 +103,14 @@ public class CourseController {
     ) {
         return ResponseEntity.ok(
                 service.search(search, categoryId, pageable)
+        );
+    }
+
+    @GetMapping("/featured")
+    public ResponseEntity<List<CourseResponse>> getFeaturedCourses() {
+
+        return ResponseEntity.ok(
+                service.getFeaturedCourses()
         );
     }
 

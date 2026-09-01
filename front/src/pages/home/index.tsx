@@ -3,12 +3,12 @@ import Navbar from '../../components/navbar'
 import Footbar from '../../components/footbar'
 import CardCurso from '../../components/card-curso';
 import { Link } from 'react-router-dom';
-import useCourses from '../../hooks/useCourses';
+import { useFeaturedCourses } from '../../hooks/useCourses';
 import Loading from '../../components/loading';
 import { AcademicCapIcon, ArrowLongRightIcon, CodeBracketIcon, ComputerDesktopIcon, RocketLaunchIcon } from "@heroicons/react/24/outline";
 
 function Home() {
-    const { courses, loading } = useCourses();
+    const { course, loading } = useFeaturedCourses();
 
     return (
         <body className='bg-indigo-100/30'>
@@ -69,10 +69,10 @@ function Home() {
                 </div>
             } : {
                 <div className='flex w-full flex-wrap justify-center gap-6 px-8 py-8'>
-                    {courses.map(course =>
-                        course.status === 'PUBLISHED' && (
-                            <Link key={course.id} to={`/course/${course.slug}`}>
-                                <CardCurso course={course} />
+                    {course?.map(c =>
+                        c.status === 'PUBLISHED' && (
+                            <Link key={c.id} to={`/course/${c.slug}`}>
+                                <CardCurso course={c} />
                             </Link>
                         )
                     )}
