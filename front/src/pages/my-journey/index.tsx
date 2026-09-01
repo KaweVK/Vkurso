@@ -112,9 +112,7 @@ function MyJourney() {
                                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 py-8'>
                                     {inProgressCourses.slice(0, 6).map(course =>
                                     (
-                                        <Link key={course.courseId} to={`/course/${course.slug}`}>
-                                            <CardProgress course={course} />
-                                        </Link>
+                                        <CardProgress key={course.courseId} course={course} />
                                     )
                                     )}
                                 </div>
@@ -146,9 +144,7 @@ function MyJourney() {
                             <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 py-8'>
                                 {completedCourses.slice(0, 6).map(course =>
                                 (
-                                    <Link key={course.courseId} to={`/course/${course.slug}`}>
-                                        <CardProgress course={course} />
-                                    </Link>
+                                    <CardProgress key={course.courseId} course={course} />
                                 )
                                 )}
                             </div>
