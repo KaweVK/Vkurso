@@ -71,11 +71,13 @@ export default function CardProgress({ course }: Readonly<Props>) {
                 <div className='flex justify-center items-center'>
                     <BookOpenIcon className='text-gray-600 size-[20px] m-2' />
                     <p className='text-sm text-gray-700'>
-                        {course.totalLessons} Aulas
+                        {course.totalLessons} {course.totalLessons == 1 ? 'Aula' : "Aulas"}
                     </p>
                 </div>
                 <Link key={course.courseId} to={`/course/${course.slug}`}>
-                    <button type='button' className='text-blue-900 bg-blue-700/20 h-[30px] w-[80px] rounded-md transition hover:-translate-y-1 hover:bg-blue-500 hover:text-white'>
+                    <button type='button' className={`h-[30px] w-[80px] rounded-md transition hover:-translate-y-1  hover:text-white ${course.status === "IN_PROGRESS"
+                        ? 'text-blue-900 bg-blue-700/20 hover:bg-blue-500'
+                        : 'text-green-900 bg-green-700/20 hover:bg-green-500'}`}>
                         Ver Curso
                     </button>
                 </Link>

@@ -15,7 +15,7 @@ const INTERMEDIATE_COLOR =
 const ADVANCED_COLOR =
     "rounded-xl border border-red-700 px-2 py-1 text-xs font-semibold text-red-700 bg-red-200/50";
 
-export default function CardCurso({ course }: Props) {
+export default function CardCurso({ course }: Readonly<Props>) {
 
     const colorLevel = (level:CourseLevel) => {
         if (level == "BEGINNER") {
