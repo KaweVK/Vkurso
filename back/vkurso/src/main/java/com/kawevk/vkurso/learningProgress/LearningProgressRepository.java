@@ -16,13 +16,22 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
     Page<LearningProgressResponse> findAllByStudentId(Long id, Pageable pageable);
 
     @Query("""
-        SELECT lp.courseId, COUNT(lp.id)
-        FROM LearningProgress lp
-        WHERE lp.studentId = :studentId
-        GROUP BY lp.courseId
+        SELECT lp.courseId, COUNT(lp.lessonId)
+            FROM LearningProgress lp
+            JOIN Enrollment e
+                ON e.courseId = lp.courseId
+                AND e.studentId = lp.studentId
+            WHERE lp.studentId = :studentId
+                AND e.status = "ACTIVE"
+            GROUP BY lp.courseId
     """)
     Page<Object[]> countCompletedLessonsByStudent(
             @Param("studentId") Long studentId,
             Pageable pageable
+    );
+
+    boolean existsByStudentIdAndCourseId(
+            Long studentId,
+            Long courseId
     );
 }

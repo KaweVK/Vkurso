@@ -45,6 +45,7 @@ public class LearningProgressService {
         return mapper.toResponse(getProgressOrElseThrow(lessonId));
     }
 
+    @Transactional(readOnly = true)
     public Page<CourseProgressResponse> getStudentCourses(@AuthenticationPrincipal User user, Pageable pageable) {
         Long studentId = user.getId();
         Page<Object[]> progressData = repository.countCompletedLessonsByStudent(studentId, pageable);
@@ -74,7 +75,8 @@ public class LearningProgressService {
                     totalLessons,
                     percentage,
                     status
-            );});
+            );
+        });
     }
 
     @Transactional
