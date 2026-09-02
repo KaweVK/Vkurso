@@ -58,7 +58,7 @@ function MyJourney() {
     }, []);
 
     return (
-        <main>
+        <main className='bg-indigo-100/30'>
             <Navbar />
             <div className="flex px-[3%] min-h-screen items-start">
                 <div className='flex flex-col w-[300px] mt-20 h-[620px] rounded-xl shadow-md bg-blue-400/10 p-8'>
