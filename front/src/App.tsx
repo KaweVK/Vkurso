@@ -9,6 +9,7 @@ import LessonForm from './pages/lesson-form';
 import Catalog from './pages/catalog';
 import About from './pages/about';
 import MyJourney from './pages/my-journey'
+import InstructorPainel from './pages/instructor-painel';
 
 export function AppRoutes() {
   return (
@@ -19,6 +20,7 @@ export function AppRoutes() {
         <Route path='/about' element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path='/journey' element={<MyJourney/>} />
+        <Route path='/painel' element={<InstructorPainel />} />
         <Route path="/course/:slug" element={<Course />} />
         <Route path="/course/:slug/module/:moduleId/lesson/:lessonId" element={<Lesson />} />
         <Route path="/instructor/courses/new" element={<CourseForm />} />
