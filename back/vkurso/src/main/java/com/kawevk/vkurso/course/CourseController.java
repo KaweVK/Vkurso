@@ -37,22 +37,6 @@ public class CourseController {
         this.service = service;
     }
 
-//    @Operation(
-//            summary = "Listar cursos",
-//            description = "Retorna uma lista paginada de cursos disponíveis."
-//    )
-//    @ApiResponses({
-//            @ApiResponse(
-//                    responseCode = "200",
-//                    description = "Página de cursos retornada com sucesso (vazia ou não)"
-//            ),
-//    })
-//    @GetMapping
-//    public Page<CourseResponse> list(Pageable pageable) {
-//        log.info("Listing courses. page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
-//        return service.list(pageable);
-//    }
-
     @Operation(
             summary = "Obter curso por ID",
             description = "Retorna os detalhes de um curso específico com base em seu ID."
@@ -130,9 +114,11 @@ public class CourseController {
     })
     @GetMapping("/by-instructor")
     public Page<CourseResponse> listByInstructor(
-            @Parameter(description = "ID do instrutor", example = "1") @RequestParam Long instructorId, Pageable pageable) {
-        log.debug("Listing courses by instructor. instructorId={}, page={}, size={}", instructorId, pageable.getPageNumber(), pageable.getPageSize());
-        return service.listByInstructor(instructorId, pageable);
+            @AuthenticationPrincipal User user,
+            @RequestParam CourseStatus status,
+            Pageable pageable) {
+        log.debug("Listing courses by instructor. instructorId={}, page={}, size={}", user.getId(), pageable.getPageNumber(), pageable.getPageSize());
+        return service.findByInstructor(user.getId(), status, pageable);
     }
 
     @Operation(

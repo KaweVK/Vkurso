@@ -57,13 +57,23 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CourseResponse> listByInstructor(Long instructorId, Pageable pageable) {
-        try {
-            return repository.findAllByInstructorId(instructorId, pageable).map(mapper::toResponse);
-        } catch (CourseNotFoundException e) {
-            log.warn("Course not found!", e);
-            throw new CourseNotFoundException();
+    public Page<CourseResponse> findByInstructor(Long instructorId, CourseStatus status, Pageable pageable) {
+        Page<CourseResponse> courses;
+
+        if (status != null) {
+            courses = repository.findByInstructorIdAndStatus(
+                    instructorId,
+                    status,
+                    pageable
+            ).map(mapper::toResponse);
+        } else {
+            courses = repository.findByInstructorId(
+                    instructorId,
+                    pageable
+            ).map(mapper::toResponse);
         }
+
+        return courses;
     }
 
     @Transactional(readOnly = true)
