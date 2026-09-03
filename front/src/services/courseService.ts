@@ -1,5 +1,5 @@
 import api from './api'
-import type { Course } from '../types/course'
+import type { Course, CourseStatus } from '../types/course'
 
 const courseService = {
     async findById(id: number): Promise<Course> {
@@ -10,6 +10,15 @@ const courseService = {
     async findBySlug(slug?: string): Promise<Course> {
         const res = await api.get(`/courses/${slug}`)
         return res.data
+    },
+
+    async findByInstructor(status?: CourseStatus): Promise<Course[]> {
+        const res = await api.get(`/courses/by-instructor`, {
+            params: {
+                status
+            }
+        });
+        return res.data.content
     },
 
     async findAll(): Promise<Course[]> {

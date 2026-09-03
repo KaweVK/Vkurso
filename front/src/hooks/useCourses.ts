@@ -11,7 +11,7 @@ export function useCourses(search = '', categoryId?: number) {
             try {
                 const data = await courseService.search(search, categoryId);
                 setCourses(data);
-            } catch (err){
+            } catch (err) {
                 console.log(err)
                 setCourses([]);
             } finally {
@@ -34,7 +34,7 @@ export function useCourse(slug?: string) {
             try {
                 const data = await courseService.findBySlug(slug);
                 setCourse(data);
-            } catch (err){
+            } catch (err) {
                 console.log(err)
             } finally {
                 setLoading(false);
@@ -56,7 +56,7 @@ export function useFeaturedCourses() {
             try {
                 const data = await courseService.featured();
                 setCourse(data);
-            } catch (err){
+            } catch (err) {
                 console.log(err)
             } finally {
                 setLoading(false);
@@ -67,6 +67,41 @@ export function useFeaturedCourses() {
     }, []);
 
     return { course, loading };
+}
+
+export function useCoursesByInstructor() {
+    const [publishedCourses, setPublishedCourses] = useState<Course[]>([]);
+    const [draftCourses, setDraftCourses] = useState<Course[]>([]);
+    const [archivedCourses, setArchivedCourses] = useState<Course[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function load() {
+            try {
+                const [published, drafts, archived] = await Promise.all([
+                    courseService.findByInstructor("PUBLISHED"),
+                    courseService.findByInstructor("DRAFT"),
+                    courseService.findByInstructor("ARCHIVED")
+                ]);
+
+                setPublishedCourses(published);
+                setDraftCourses(drafts);
+                setArchivedCourses(archived);
+            } catch (error) {
+                console.error("Erro ao carregar cursos do instrutor:", error);
+
+                setPublishedCourses([]);
+                setDraftCourses([]);
+                setArchivedCourses([]);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        load();
+    }, []);
+
+    return { publishedCourses, draftCourses, archivedCourses, loading };
 }
 
 export default useCourses;
