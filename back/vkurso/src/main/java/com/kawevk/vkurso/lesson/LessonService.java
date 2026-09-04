@@ -13,6 +13,7 @@ import com.kawevk.vkurso.lesson.exceptions.VideoAccessDeniedException;
 import com.kawevk.vkurso.module.Module;
 import com.kawevk.vkurso.module.ModuleRepository;
 import com.kawevk.vkurso.module.exceptions.ModuleNotFoundException;
+import com.kawevk.vkurso.shared.storage.VideoMetadataService;
 import com.kawevk.vkurso.shared.storage.VideoStorageService;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
@@ -25,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Duration;
+
 @Slf4j
 @Service
 public class LessonService {
@@ -33,13 +36,15 @@ public class LessonService {
     private final VideoStorageService storage;
     private final ModuleRepository moduleRepository;
     private final EnrollmentService enrollmentService;
+    private final VideoMetadataService metadataService;
     private final LessonMapper mapper;
 
-    public LessonService(LessonRepository repository, VideoStorageService storage, ModuleRepository moduleRepository, EnrollmentService enrollmentService, LessonMapper mapper) {
+    public LessonService(LessonRepository repository, VideoStorageService storage, ModuleRepository moduleRepository, EnrollmentService enrollmentService, VideoMetadataService metadataService, LessonMapper mapper) {
         this.repository = repository;
         this.storage = storage;
         this.moduleRepository = moduleRepository;
         this.enrollmentService = enrollmentService;
+        this.metadataService = metadataService;
         this.mapper = mapper;
     }
 
@@ -55,6 +60,7 @@ public class LessonService {
     }
 
     @Transactional
+    @CacheEvict(value = {"modules", "courses"}, allEntries = true)
     public LessonResponse create(Long moduleId, CreateLessonRequest request, User user) {
         Module module = moduleRepository.findById(moduleId)
                 .orElseThrow(() -> {
@@ -76,7 +82,7 @@ public class LessonService {
     }
 
     @Transactional
-    @CacheEvict(value = "lessons", key = "#id")
+    @CacheEvict(value = {"lessons", "modules", "courses"}, allEntries = true)
     public LessonResponse update(Long id, UpdateLessonRequest request, User user) {
         Lesson lesson = getLessonOrThrow(id);
 
@@ -90,7 +96,7 @@ public class LessonService {
     }
 
     @Transactional
-    @CacheEvict(value = "lessons", key = "#id")
+    @CacheEvict(value = {"lessons", "modules", "courses"}, allEntries = true)
     public void delete(Long id, User user) {
         Lesson lesson = getLessonOrThrow(id);
 
@@ -105,7 +111,7 @@ public class LessonService {
     }
 
     @Transactional
-    @CacheEvict(value = "lessons", key = "#lessonId")
+    @CacheEvict(value = {"lessons", "modules", "courses"}, allEntries = true)
     public LessonResponse attachVideo(Long lessonId, MultipartFile file, User user) {
         Lesson lesson = getLessonOrThrow(lessonId);
         Long courseId = lesson.getModule().getCourse().getId();
@@ -116,9 +122,12 @@ public class LessonService {
             storage.delete(lesson.getVideoKey());
         }
 
+        Duration duration = Duration.ofSeconds(metadataService.getDuration(file));
+
         String key = storage.upload(courseId, lessonId, file);
         lesson.setVideoKey(key);
-        // duration: extrair do arquivo aqui (ex. ffprobe / lib de metadata)
+        lesson.setDurationSeconds(duration);
+
         return mapper.toResponseWhitUrl(lesson, storage);
     }
 
