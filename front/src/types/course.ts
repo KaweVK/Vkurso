@@ -1,4 +1,6 @@
 import type { Module } from './module'
+import type { Category } from './category'
+import type { User } from './user'
 
 export type CourseLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 
@@ -11,8 +13,8 @@ export interface Course {
   description: string;
   price: number;
   level: CourseLevel;
-  categoryIds: number[];
+  categories: Category[];
   status: CourseStatus;
-  instructorId: number;
+  instructor: User;
   modules: Module[];
 }

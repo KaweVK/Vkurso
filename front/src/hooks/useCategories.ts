@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import CategoryService from "../services/categoryService";
-import type { Categoria } from "../types/category";
+import type { Category } from "../types/category";
 
 export function useCategories(id?: number) {
-    const [categories, setCategories] = useState<Categoria[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
