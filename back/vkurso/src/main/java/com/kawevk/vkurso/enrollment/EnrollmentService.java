@@ -9,7 +9,6 @@ import com.kawevk.vkurso.enrollment.exceptions.CourseNotPublishedException;
 import com.kawevk.vkurso.enrollment.exceptions.NotEnrolledException;
 import com.kawevk.vkurso.learningProgress.LearningProgress;
 import com.kawevk.vkurso.learningProgress.LearningProgressRepository;
-import com.kawevk.vkurso.learningProgress.exceptions.AlreadyExistsProgressException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

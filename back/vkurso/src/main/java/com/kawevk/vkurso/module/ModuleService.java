@@ -44,6 +44,7 @@ public class ModuleService {
     }
 
     @Transactional
+    @CacheEvict(value = "courses", allEntries = true)
     public ModuleResponse create(Long courseId, CreateModuleRequest request, User user) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> {
@@ -66,7 +67,7 @@ public class ModuleService {
     }
 
     @Transactional
-    @CacheEvict(value = "modules", key = "#id")
+    @CacheEvict(value = {"modules", "courses"}, allEntries = true)
     public ModuleResponse update(Long id, UpdateModuleRequest request, User user) {
         Module module = getModuleOrThrow(id);
 
@@ -80,7 +81,7 @@ public class ModuleService {
     }
 
     @Transactional
-    @CacheEvict(value = "modules", key = "#id")
+    @CacheEvict(value = {"modules", "courses"}, allEntries = true)
     public void delete(Long id, User user) {
         Module module = getModuleOrThrow(id);
 
@@ -92,7 +93,7 @@ public class ModuleService {
     }
 
     @Transactional
-    @CacheEvict(value = "modules", key = "#id")
+    @CacheEvict(value = {"modules", "courses"}, allEntries = true)
     public ModuleResponse changeLessonOrder(Long id, Long lessonId, Long newOrder, User user) {
         Module module = getModuleOrThrow(id);
         ensureCanModify(module.getCourse(), user);

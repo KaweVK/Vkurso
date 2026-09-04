@@ -45,7 +45,7 @@ public class CourseCategoryService {
     }
 
     @Transactional
-    @CacheEvict(value = "courseCategories", key = "#id")
+    @CacheEvict(value = {"courseCategories", "courses"}, allEntries = true)
     public CourseCategoryResponse update(UpdateCourseCategoryRequest courseCategory, Long id, User user) {
         CourseCategory courseCategoryEntity = getCourseCategoryOrThrow(id);
 
@@ -57,7 +57,7 @@ public class CourseCategoryService {
     }
 
     @Transactional
-    @CacheEvict(value = "courseCategories", key = "#id")
+    @CacheEvict(value = {"courseCategories", "courses"}, allEntries = true)
     public void delete(Long id, User user) {
         ensureCanModify(user);
         repository.deleteById(id);
