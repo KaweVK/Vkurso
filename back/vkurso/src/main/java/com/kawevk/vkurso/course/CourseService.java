@@ -11,6 +11,8 @@ import com.kawevk.vkurso.courseCategory.CourseCategoryRepository;
 import com.kawevk.vkurso.enrollment.EnrollmentRepository;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
+import com.kawevk.vkurso.user.UserRepository;
+import com.kawevk.vkurso.user.exceptions.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -35,13 +37,15 @@ public class CourseService {
     private final CourseRepository repository;
     private final CourseCategoryRepository courseCategoryRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final UserRepository userRepository;
     private final CacheManager cacheManager;
     private final CourseMapper mapper;
 
-    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, EnrollmentRepository enrollmentRepository, CacheManager cacheManager, CourseMapper mapper) {
+    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, EnrollmentRepository enrollmentRepository, UserRepository userRepository, CacheManager cacheManager, CourseMapper mapper) {
         this.repository = repository;
         this.courseCategoryRepository = courseCategoryRepository;
         this.enrollmentRepository = enrollmentRepository;
+        this.userRepository = userRepository;
         this.cacheManager = cacheManager;
         this.mapper = mapper;
     }
@@ -49,7 +53,7 @@ public class CourseService {
     @Transactional(readOnly = true)
     public Page<CourseResponse> list(Pageable pageable) {
         try {
-            return repository.findAll(pageable).map(mapper::toResponse);
+            return repository.findAll(pageable).map(this::toResponse);
         } catch (CourseNotFoundException e) {
             log.warn("Course not found!", e);
             throw new CourseNotFoundException();
@@ -65,12 +69,12 @@ public class CourseService {
                     instructorId,
                     status,
                     pageable
-            ).map(mapper::toResponse);
+            ).map(this::toResponse);
         } else {
             courses = repository.findByInstructorId(
                     instructorId,
                     pageable
-            ).map(mapper::toResponse);
+            ).map(this::toResponse);
         }
 
         return courses;
@@ -78,16 +82,17 @@ public class CourseService {
 
     @Transactional(readOnly = true)
     public CourseResponse get(Long id) {
-        return mapper.toResponse(getCourseOrThrow(id));
+        return toResponse(getCourseOrThrow(id));
     }
 
     @Cacheable(value = "courses", key = "#slug")
     @Transactional(readOnly = true)
     public CourseResponse getBySlug(String slug) {
-        return mapper.toResponse(repository.findBySlug(slug).orElseThrow(() -> {
+        Course course = repository.findBySlug(slug).orElseThrow(() -> {
             log.warn("Course with slug '{}' not found!", slug);
             return new CourseNotFoundException(slug);
-        }));
+        });
+        return toResponse(course);
     }
 
     @Transactional(readOnly = true)
@@ -95,7 +100,7 @@ public class CourseService {
         String normalizedSearch = search == null ? null : search.trim();
         Page<Course> courses = repository.search(normalizedSearch, categoryId, pageable);
 
-        return courses.map(mapper::toResponse);
+        return courses.map(this::toResponse);
     }
 
     @Transactional(readOnly = true)
@@ -116,7 +121,7 @@ public class CourseService {
         return courseIds.stream()
                 .map(courses::get)
                 .filter(Objects::nonNull)
-                .map(mapper::toResponse)
+                .map(this::toResponse)
                 .toList();
     }
 
@@ -139,7 +144,7 @@ public class CourseService {
             throw new DuplicateSlugException(course.getSlug());
         }
 
-        return mapper.toResponse(repository.save(course));
+        return toResponse(repository.save(course));
     }
 
     @Transactional
@@ -163,7 +168,7 @@ public class CourseService {
         course.setLevel(request.level());
         course.setPrice(request.price());
 
-        CourseResponse response = mapper.toResponse(course);
+        CourseResponse response = toResponse(course);
 
         evictCourseCache(oldSlug);
 
@@ -181,7 +186,7 @@ public class CourseService {
         ensureCanModify(course, user);
         course.publish();
         evictCourseCache(course.getSlug());
-        return mapper.toResponse(course);
+        return toResponse(course);
     }
 
     @Transactional
@@ -191,7 +196,7 @@ public class CourseService {
         ensureCanModify(course, user);
         course.archive();
         evictCourseCache(course.getSlug());
-        return mapper.toResponse(course);
+        return toResponse(course);
     }
 
     @Transactional
@@ -201,7 +206,7 @@ public class CourseService {
         ensureCanModify(course, user);
         course.addCategory(idCategory);
         evictCourseCache(course.getSlug());
-        return mapper.toResponse(course);
+        return toResponse(course);
     }
 
     @Transactional
@@ -211,7 +216,7 @@ public class CourseService {
         ensureCanModify(course, user);
         course.removeCategory(idCategory);
         evictCourseCache(course.getSlug());
-        return mapper.toResponse(course);
+        return toResponse(course);
     }
 
     @Transactional
@@ -235,21 +240,24 @@ public class CourseService {
         ensureCanModify(course, user);
         course.changeModuleOrder(moduleId, newOrder);
         evictCourseCache(course.getSlug());
-        return mapper.toResponse(course);
+        return toResponse(course);
+    }
+
+    private CourseResponse toResponse(Course course) {
+
+        User instructor = userRepository.findById(course.getInstructorId())
+                .orElseThrow(() -> new UserNotFoundException(course.getInstructorId()));
+
+        List<CourseCategory> categories =
+                courseCategoryRepository.findAllById(course.getCategoryIds());
+
+        return mapper.toResponse(course, instructor, categories);
     }
 
     private Course getCourseOrThrow(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Course with ID '{}' not found!", id);
-                    return new CourseNotFoundException(id);
-                });
-    }
-
-    private CourseCategory getCourseCategoryOrThrow(Long id) {
-        return courseCategoryRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.warn("Course category with ID '{}' not found!", id);
                     return new CourseNotFoundException(id);
                 });
     }

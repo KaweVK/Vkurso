@@ -1,18 +1,15 @@
 package com.kawevk.vkurso.course.dtos;
 
-import com.kawevk.vkurso.course.Course;
 import com.kawevk.vkurso.course.CourseLevel;
 import com.kawevk.vkurso.course.CourseStatus;
+import com.kawevk.vkurso.courseCategory.dtos.CourseCategoryResponse;
 import com.kawevk.vkurso.module.dtos.ModuleResponse;
 import com.kawevk.vkurso.user.dtos.UserResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public record CourseResponse(
         @Schema(
@@ -49,17 +46,17 @@ public record CourseResponse(
                 description = "IDs das categorias do curso",
                 example = "[1, 2, 3]"
         )
-        Set<Long> categoryIds,
+        List<CourseCategoryResponse> categories,
         @Schema(
                 description = "Status do curso",
                 example = "ACTIVE"
         )
         CourseStatus status,
         @Schema(
-                description = "ID do instrutor do curso",
+                description = "Instrutor do curso",
                 example = "1"
         )
-        Long instructorId,
+        UserResponse instructor,
         @Schema(
                 description = "Módulos do curso",
                 example = "[{...}, {...}]"
