@@ -122,9 +122,10 @@ public class LessonService {
             storage.delete(lesson.getVideoKey());
         }
 
+        String key = storage.upload(courseId, lessonId, file);
+
         Duration duration = Duration.ofSeconds(metadataService.getDuration(file));
 
-        String key = storage.upload(courseId, lessonId, file);
         lesson.setVideoKey(key);
         lesson.setDurationSeconds(duration);
 
