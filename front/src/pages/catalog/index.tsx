@@ -8,11 +8,11 @@ import Footbar from '../../components/footbar';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import categoryService from '../../services/categoryService';
-import type { Categoria } from '../../types/category';
+import type { Category } from '../../types/category';
 
 function Catalog() {
     const [search, setSearch] = useState('');
-    const [categories, setCategories] = useState<Categoria[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const { courses, loading } = useCourses(search, selectedCategory ? Number(selectedCategory) : undefined);
 
