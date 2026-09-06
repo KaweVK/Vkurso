@@ -63,6 +63,16 @@ public record CourseResponse(
         )
         List<ModuleResponse> modules,
         @Schema(
+                description = "Total de lessons",
+                example = "1"
+        )
+        Long totalLessons,
+        @Schema(
+                description = "Total de pessoas com matrícula ativa no curso",
+                example = "1"
+        )
+        Long totalEnrollments,
+        @Schema(
                 description = "Data de criação do curso",
                 example = "2023-01-01T00:00:00Z"
         )

@@ -9,6 +9,7 @@ import com.kawevk.vkurso.course.exceptions.DuplicateSlugException;
 import com.kawevk.vkurso.courseCategory.CourseCategory;
 import com.kawevk.vkurso.courseCategory.CourseCategoryRepository;
 import com.kawevk.vkurso.enrollment.EnrollmentRepository;
+import com.kawevk.vkurso.lesson.LessonRepository;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
 import com.kawevk.vkurso.user.UserRepository;
@@ -36,13 +37,15 @@ public class CourseService {
     private final CourseCategoryRepository courseCategoryRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
+    private final LessonRepository lessonRepository;
     private final CourseMapper mapper;
 
-    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, EnrollmentRepository enrollmentRepository, UserRepository userRepository, CourseMapper mapper) {
+    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, EnrollmentRepository enrollmentRepository, UserRepository userRepository, LessonRepository lessonRepository, CourseMapper mapper) {
         this.repository = repository;
         this.courseCategoryRepository = courseCategoryRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.userRepository = userRepository;
+        this.lessonRepository = lessonRepository;
         this.mapper = mapper;
     }
 
@@ -236,7 +239,10 @@ public class CourseService {
         List<CourseCategory> categories =
                 courseCategoryRepository.findAllById(course.getCategoryIds());
 
-        return mapper.toResponse(course, instructor, categories);
+        Long totalLessons = lessonRepository.countByCourseId(course.getId());
+        Long totalEnrollments = enrollmentRepository.countByCourseId(course.getId());
+
+        return mapper.toResponse(course, instructor, categories, totalLessons, totalEnrollments);
     }
 
     private Course getCourseOrThrow(Long id) {

@@ -19,5 +19,7 @@ public interface CourseMapper {
     @Mapping(target = "updatedAt", source = "course.updatedAt")
     @Mapping(target = "instructor", source = "instructor")
     @Mapping(target = "categories", source = "categories")
-    CourseResponse toResponse(Course course, User instructor, List<CourseCategory> categories);
+    @Mapping(target = "totalLessons", source = "totalLessons")
+    @Mapping(target = "totalEnrollments", source = "totalEnrollments")
+    CourseResponse toResponse(Course course, User instructor, List<CourseCategory> categories, Long totalLessons, Long totalEnrollments);
 }

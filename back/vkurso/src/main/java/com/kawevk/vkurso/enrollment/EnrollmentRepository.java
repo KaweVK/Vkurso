@@ -3,6 +3,7 @@ package com.kawevk.vkurso.enrollment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +21,12 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     ORDER BY COUNT(e.id) DESC
     """)
     List<Long> findTop5MostEnrolledCourseIds(Pageable pageable);
+
+    @Query("""
+    SELECT COUNT(e.id)
+        FROM Enrollment e
+            WHERE e.status = "ACTIVE"
+                AND e.courseId = :courseId
+    """)
+    Long countByCourseId(@Param("courseId") Long courseId);
 }
