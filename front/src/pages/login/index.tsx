@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../../services/api'
 import '../../index.css'
 import Logo from '../../assets/logo.png'
 import Loading from '../../components/loading'
+import { useAuth } from '../../hooks/useAuth'
 
 function Login() {
     const navigate = useNavigate()
@@ -11,13 +11,14 @@ function Login() {
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
+    const { login } = useAuth()
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
         setError('')
         setLoading(true)
         try {
-            await api.post('/auth/login', { email, password })
+            await login(email, password)
             navigate('/')
         } catch {
             setError('Email ou senha inválidos.')

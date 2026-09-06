@@ -1,31 +1,14 @@
-import { useEffect, useState } from 'react'
-import api from '../services/api'
+import { useContext } from 'react'
+import { AuthContext } from '../context/AuthContext'
 
-export type UserRole = 'ADMIN' | 'USER' | 'INSTRUCTOR';
+export function useAuth() {
+    const context = useContext(AuthContext)
 
-type CurrentUser = {
-    id: number;
-    role: UserRole;
-};
+    if (context === null) {
+        throw new Error(
+            'useAuth deve ser utilizado dentro de um AuthProvider',
+        )
+    }
 
-export const useAuth = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
-    const [role, setRole] = useState<UserRole | null>(null)
-    const [userId, setUserId] = useState<number | null>(null)
-
-    useEffect(() => {
-        api.get<CurrentUser>('/users/me')
-            .then(({ data }) => {
-                setIsAuthenticated(true);
-                setUserId(data.id);
-                setRole(data.role);
-            })
-            .catch(() => {
-                setIsAuthenticated(false);
-                setUserId(null);
-                setRole(null);
-            })
-    }, [])
-
-    return { isAuthenticated, role, userId }
-};
+    return context
+}
