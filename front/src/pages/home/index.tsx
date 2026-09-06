@@ -11,7 +11,7 @@ function Home() {
     const { course, loading } = useFeaturedCourses();
 
     return (
-        <body className='bg-indigo-100/30'>
+        <main className='bg-indigo-100/30'>
             <Navbar />
             <div className='flex flex-col bg-blue-950 h-[520px] px-[10%] justify-center rounded-b-[30px]'>
                 <p className='font-bold text-6xl text-white'>Aprenda no seu ritmo.</p>
@@ -79,7 +79,7 @@ function Home() {
                 </div>
             }
             <Footbar />
-        </body>
+        </main>
     )
 }
 

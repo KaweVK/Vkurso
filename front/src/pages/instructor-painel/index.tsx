@@ -92,7 +92,7 @@ function InstructorPainel() {
                     {/* Seção de Cursos Publicados */}
                     <section id="publisheds" className="flex flex-col ml-20 mt-20">
                         <div className='flex justify-between items-center'>
-                            <p className='font-bold text-3xl text-black'>Publicados</p>
+                            <p className='font-bold text-3xl text-black'>Meus Cursos</p>
                         </div>
                         {loading ?
                             (
@@ -105,7 +105,7 @@ function InstructorPainel() {
                                         <p className="text-gray-500">Nenhum curso encontrado.</p>
                                     </div>
                                 ) : (
-                                    <div className='flex w-full flex-wrap justify-center gap-6 py-8'>
+                                    <div className='flex w-full flex-wrap justify-start gap-6 py-8'>
                                         {published.map(course =>
                                             <Link key={course.id} to={`/course/${course.slug}`}>
                                                 <CardCurso course={course} />
@@ -133,7 +133,7 @@ function InstructorPainel() {
                                         <p className="text-gray-500">Nenhum rascunho encontrado.</p>
                                     </div>
                                 ) : (
-                                    <div className='flex w-full flex-wrap justify-center gap-6 py-8'>
+                                    <div className='flex w-full flex-wrap justify-start gap-6 py-8'>
                                         {drafts.map(course =>
                                             <Link key={course.id} to={`/course/${course.slug}`}>
                                                 <CardCurso course={course} />
@@ -158,10 +158,10 @@ function InstructorPainel() {
                             ) : archiveds.length == 0 ?
                                 (
                                     <div className="flex w-full items-center justify-center py-10">
-                                        <p className="text-gray-500">Nenhum rascunho encontrado.</p>
+                                        <p className="text-gray-500">Nenhum curso arquivado encontrado.</p>
                                     </div>
                                 ) : (
-                                    <div className='flex w-full flex-wrap justify-center gap-6 py-8'>
+                                    <div className='flex w-full flex-wrap justify-start gap-6 py-8'>
                                         {archiveds.map(course =>
                                             <Link key={course.id} to={`/course/${course.slug}`}>
                                                 <CardCurso course={course} />

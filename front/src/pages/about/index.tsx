@@ -30,7 +30,7 @@ function About() {
     };
 
     return (
-        <body className='bg-indigo-100/30'>
+        <main className='bg-indigo-100/30'>
             <Navbar />
             <div className="flex h-screen items-center justify-between rounded-b-[30px] bg-blue-950 px-[10%]">
 
@@ -146,7 +146,7 @@ function About() {
 
             </div>
             <Footbar />
-        </body>
+        </main>
     )
 }
 

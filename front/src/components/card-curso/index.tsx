@@ -1,6 +1,7 @@
 import '../../index.css'
 import type { Course, CourseLevel } from "../../types"
 import Image from '../../assets/image.png'
+import courseLevelFormarter from '../../utils/courseLevelFormater';
 
 type Props = {
   course: Course;
@@ -49,15 +50,16 @@ export default function CardCurso({ course }: Readonly<Props>) {
             <h2 className="line-clamp-2 text-lg font-bold text-blue-950">
                 {course.title}
             </h2>
+            <p className="line-clamp-3 text-sm leading-5 text-gray-600">by {course.instructor.fullName.split(" ").at(0)} {course.instructor.fullName.split(" ").pop()}</p>
 
-            <p className="mt-1 line-clamp-3 text-sm leading-5 text-gray-600">
+            <p className="mt-2 line-clamp-3 text-sm leading-5 text-gray-600">
                 {course.description}
             </p>
 
             <div className="mt-auto flex items-end justify-between">
 
                 <p className={colorLevel(course.level)}>
-                    {course.level}
+                    {courseLevelFormarter(course.level)}
                 </p>
 
                 <p className="text-lg font-semibold text-blue-900">
