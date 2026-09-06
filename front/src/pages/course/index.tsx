@@ -2,7 +2,7 @@ import '../../index.css';
 import Navbar from '../../components/navbar';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ChartBarIcon, ChevronDownIcon, PlayIcon, StarIcon } from '@heroicons/react/20/solid';
-import { ArrowRightIcon, ChevronRightIcon, ClockIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, ChevronRightIcon, ClockIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useCourse } from '../../hooks/useCourses';
 import Loading from '../../components/loading';
 import { useNavigate, useParams, Link } from 'react-router-dom';
@@ -30,11 +30,11 @@ function Course() {
     const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
     const [deleteError, setDeleteError] = useState('');
     const { course, loading: loadingCourse } = useCourse(slug);
-    const { isAuthenticated, userId } = useAuth();
+    const { user } = useAuth();
     const { enrolled, loading: loadingEnroll, enroll, cancel } = useEnrollment(course?.id);
     const [openModule, setOpenModule] = useState<number | null>(null);
 
-    const isCourseOwner = Boolean(course && userId === course.instructor.id);
+    const isCourseOwner = Boolean(course && user?.id === course.instructor.id);
     const displayedStatus = courseStatus ?? course?.status;
 
     async function handlePublish() {
@@ -128,11 +128,9 @@ function Course() {
     )
 
     let courseDuration = 0;
-    let totalLessons = 0
 
     course?.modules.forEach(module => {
         module.lessons.forEach(lesson => {
-            totalLessons += 1
             courseDuration += lesson.durationSeconds ?? 0;
         });
     });
@@ -228,10 +226,10 @@ function Course() {
                                                     {module.lessons.map((lesson) => (
                                                         <div key={lesson.id}>
                                                             <div className="flex items-center justify-between border-b border-gray-200 bg-white transition hover:bg-indigo-50">
-                                                                {isAuthenticated && (isCourseOwner || enrolled || lesson.freePreview) ? (
+                                                                {user && (isCourseOwner || enrolled || lesson.freePreview) ? (
                                                                     <Link to={`/course/${slug}/module/${module.id}/lesson/${lesson.id}`} className="min-w-0 flex-1 px-5 py-3 text-sm font-medium text-gray-700">{lesson.title}</Link>
                                                                 ) : <div className="block flex-1 cursor-not-allowed p-3">{lesson.title}</div>}
-                                                                <p className='flex px-2 h-7 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-300/50 text-sm font-semibold'>
+                                                                <p className='flex px-2 min-h-7 min-w-10 shrink-0 items-center justify-center rounded-full bg-indigo-300/50 text-sm font-semibold'>
                                                                     {lesson.durationSeconds != null
                                                                         ? timeFormater(lesson.durationSeconds)
                                                                         : "Sem duração"}
@@ -252,8 +250,8 @@ function Course() {
                     {/* Bloco de infos. - lateral direita */}
                     <div className="flex flex-col ml-4 w-2/5 rounded-xl bg-white px-10 py-5">
                         {/* Categorias */}
-                        <div className='flex mb-2'>
-                            <ul className="mt-[15px] text-lg text-black">
+                        <div className='flex mb-2 items-center'>
+                            <ul className="text-lg text-black">
                                 {!loadingCourse &&
                                     course?.categories.map((category) =>
                                         <li
@@ -264,6 +262,11 @@ function Course() {
                                         </li>
                                     )}
                             </ul>
+                            {isCourseOwner && course && (
+                                <Link to='/' className='rounded p-2 text-indigo-700 hover:bg-indigo-50 ml-5'>
+                                    <PlusIcon className="h-5 w-5 font-bold"/>
+                                </Link>
+                            )}
                         </div>
                         <div className="flex items-start justify-between">
                             <h1 className="text-4xl font-bold text-black">
@@ -324,7 +327,8 @@ function Course() {
                                 <p>(231 avaliações)</p>
                             </div>
                             <p className='px-5'>|</p>
-                            <p>1.236 alunos</p>
+                            <p>{course?.totalEnrollments ?? 0} {(course?.totalEnrollments ?? 0) > 1 ? 'Alunos' : 'Aluno'}</p>
+
                         </div>
 
                         <div className="line-clamp-4 leading-7 mt-[15px] text-xl text-gray-700">
@@ -352,20 +356,20 @@ function Course() {
                         <div className='flex justify-between py-10'>
                             <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
                                 <PlayIcon className='size-9 text-indigo-700' />
-                                <p className='font-bold'>{totalLessons}</p>
+                                <p className='font-bold'>{course?.totalLessons}</p>
                                 <p className='text-gray-500'>
-                                    {totalLessons > 1 ? 'Aulas' : 'Aula'}
+                                    {(course?.totalLessons ?? 0) > 1 ? 'Aulas' : 'Aula'}
                                 </p>
                             </div>
                             <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
-                                <ClockIcon className='size-9 text-indigo-700' />
+                                <ClockIcon className='size-9 text-indigo-700'/>
                                 <p className='font-bold'>{courseDuration}</p>
                                 <p className='text-gray-500'>Horas</p>
                             </div>
                             <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
                                 <ChartBarIcon
                                     className={`size-9 
-                                    ${course?.level === "BEGINNER" ? `text-green-500` : course?.level === "INTERMEDIATE" ? `text-orange-500`: `text-red-500`}`} />
+                                    ${course?.level === "BEGINNER" ? `text-green-500` : course?.level === "INTERMEDIATE" ? `text-yellow-400`: `text-red-500`}`} />
                                 <p className='font-bold'>{courseLevelFormarter(course?.level)}</p>
                                 <p className='text-gray-500'>Nível</p>
                             </div>
