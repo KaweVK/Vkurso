@@ -17,4 +17,6 @@ export interface Course {
   status: CourseStatus;
   instructor: User;
   modules: Module[];
+  totalLessons: number;
+  totalEnrollments: number;
 }
