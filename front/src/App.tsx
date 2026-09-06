@@ -10,6 +10,7 @@ import Catalog from './pages/catalog';
 import About from './pages/about';
 import MyJourney from './pages/my-journey'
 import InstructorPainel from './pages/instructor-painel';
+import RequireAuth from './components/require-auth'
 
 export function AppRoutes() {
   return (
@@ -19,16 +20,19 @@ export function AppRoutes() {
         <Route path='/catalog' element={<Catalog />} />
         <Route path='/about' element={<About />} />
         <Route path="/login" element={<Login />} />
-        <Route path='/journey' element={<MyJourney/>} />
-        <Route path='/painel' element={<InstructorPainel />} />
         <Route path="/course/:slug" element={<Course />} />
         <Route path="/course/:slug/module/:moduleId/lesson/:lessonId" element={<Lesson />} />
-        <Route path="/instructor/courses/new" element={<CourseForm />} />
-        <Route path="/instructor/courses/:courseId/edit" element={<CourseForm />} />
-        <Route path="/instructor/courses/:courseId/modules/new" element={<ModuleForm />} />
-        <Route path="/instructor/courses/:courseId/modules/:moduleId/edit" element={<ModuleForm />} />
-        <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/new" element={<LessonForm />} />
-        <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/:lessonId/edit" element={<LessonForm />} />
+
+        <Route element={<RequireAuth />}>
+          <Route path='/journey' element={<MyJourney />} />
+          <Route path='/painel' element={<InstructorPainel />} />
+          <Route path="/instructor/courses/new" element={<CourseForm />} />
+          <Route path="/instructor/courses/:courseId/edit" element={<CourseForm />} />
+          <Route path="/instructor/courses/:courseId/modules/new" element={<ModuleForm />} />
+          <Route path="/instructor/courses/:courseId/modules/:moduleId/edit" element={<ModuleForm />} />
+          <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/new" element={<LessonForm />} />
+          <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/:lessonId/edit" element={<LessonForm />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
