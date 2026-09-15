@@ -61,3 +61,4 @@ server:
         http-only: true     # JS não acessa -> protege contra XSS
         secure: true       # MUDAR para true em produção (HTTPS)
         same-site: lax       # bloqueia POST/PUT/DELETE cross-site -> protege contra CSRF
+  port: ${SERVER_PORT:10000}
