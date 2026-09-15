@@ -17,6 +17,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
        OR LOWER(c.title) LIKE LOWER(CONCAT('%', :search, '%'))
        OR LOWER(c.description) LIKE LOWER(CONCAT('%', :search, '%')))
       AND (:categoryId IS NULL OR :categoryId MEMBER OF c.categoryIds)
+      And (c.status = 'PUBLISHED')
     """)
     Page<Course> search(
             @Param("search") String search,

@@ -11,6 +11,7 @@ import About from './pages/about';
 import MyJourney from './pages/my-journey'
 import InstructorPainel from './pages/instructor-painel';
 import RequireAuth from './components/require-auth'
+import Me from './pages/me/indes';
 
 export function AppRoutes() {
   return (
@@ -25,6 +26,7 @@ export function AppRoutes() {
 
         <Route element={<RequireAuth />}>
           <Route path='/journey' element={<MyJourney />} />
+          <Route path='/me' element={<Me />} />
           <Route path='/painel' element={<InstructorPainel />} />
           <Route path="/instructor/courses/new" element={<CourseForm />} />
           <Route path="/instructor/courses/:courseId/edit" element={<CourseForm />} />

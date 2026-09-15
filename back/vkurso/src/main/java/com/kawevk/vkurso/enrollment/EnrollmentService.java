@@ -31,8 +31,8 @@ public class EnrollmentService {
 
     @Transactional
     @CacheEvict(
-            value = "enrollments",
-            key = "#studentId + ':' + #courseId"
+            value = {"enrollments", "courses"},
+            allEntries = true
     )
     public EnrollmentResponse enroll(Long studentId, Long courseId) {
         Course course = courseRepository.findById(courseId)
@@ -68,8 +68,8 @@ public class EnrollmentService {
 
     @Transactional
     @CacheEvict(
-            value = "enrollments",
-            key = "#studentId + ':' + #courseId"
+            value = {"enrollments", "courses"},
+            allEntries = true
     )
     public void cancel(Long studentId, Long courseId) {
         Enrollment enrollment = repository.findByStudentIdAndCourseId(studentId, courseId)

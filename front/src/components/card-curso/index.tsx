@@ -50,7 +50,7 @@ export default function CardCurso({ course }: Readonly<Props>) {
             <h2 className="line-clamp-2 text-lg font-bold text-blue-950">
                 {course.title}
             </h2>
-            <p className="line-clamp-3 text-sm leading-5 text-gray-600">by {course.instructor.fullName.split(" ").at(0)} {course.instructor.fullName.split(" ").pop()}</p>
+            <p className="line-clamp-3 text-sm leading-5 text-gray-600">by {course.instructor.fullName.split(" ")[0]} {course.instructor.fullName.split(" ").pop()}</p>
 
             <p className="mt-2 line-clamp-3 text-sm leading-5 text-gray-600">
                 {course.description}

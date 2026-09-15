@@ -33,6 +33,7 @@ function Course() {
     const { user } = useAuth();
     const { enrolled, loading: loadingEnroll, enroll, cancel } = useEnrollment(course?.id);
     const [openModule, setOpenModule] = useState<number | null>(null);
+    const navigate = useNavigate();
 
     const isCourseOwner = Boolean(course && user?.id === course.instructor.id);
     const displayedStatus = courseStatus ?? course?.status;
@@ -51,8 +52,6 @@ function Course() {
         }
     }
 
-    const navigate = useNavigate();
-
     function requestDeleteModule(moduleId: number) {
         setDeleteError('');
         setDeleteTarget({ type: 'module', id: moduleId });
@@ -61,6 +60,20 @@ function Course() {
     function requestDeleteCourse() {
         setDeleteError('');
         setDeleteTarget({ type: 'course' });
+    }
+
+    async function handleEnroll() {
+        if (!user) {
+            navigate("/login");
+            return;
+        }
+
+        if (enrolled) {
+            setConfirmOpen(true)
+            return
+        }
+
+        await enroll();
     }
 
     async function handleConfirmDelete() {
@@ -264,7 +277,7 @@ function Course() {
                             </ul>
                             {isCourseOwner && course && (
                                 <Link to='/' className='rounded p-2 text-indigo-700 hover:bg-indigo-50 ml-5'>
-                                    <PlusIcon className="h-5 w-5 font-bold"/>
+                                    <PlusIcon className="h-5 w-5 font-bold" />
                                 </Link>
                             )}
                         </div>
@@ -362,14 +375,14 @@ function Course() {
                                 </p>
                             </div>
                             <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
-                                <ClockIcon className='size-9 text-indigo-700'/>
+                                <ClockIcon className='size-9 text-indigo-700' />
                                 <p className='font-bold'>{courseDuration}</p>
                                 <p className='text-gray-500'>Horas</p>
                             </div>
                             <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
                                 <ChartBarIcon
                                     className={`size-9 
-                                    ${course?.level === "BEGINNER" ? `text-green-500` : course?.level === "INTERMEDIATE" ? `text-yellow-400`: `text-red-500`}`} />
+                                    ${course?.level === "BEGINNER" ? `text-green-500` : course?.level === "INTERMEDIATE" ? `text-yellow-400` : `text-red-500`}`} />
                                 <p className='font-bold'>{courseLevelFormarter(course?.level)}</p>
                                 <p className='text-gray-500'>Nível</p>
                             </div>
@@ -381,7 +394,7 @@ function Course() {
                         </div>
 
                         <button
-                            onClick={enrolled ? () => setConfirmOpen(true) : enroll}
+                            onClick={handleEnroll}
                             disabled={loadingEnroll}
                             className={`relative mt-auto flex items-center justify-center rounded p-3 text-2xl text-white disabled:opacity-50 ${enrolled ? 'bg-red-400' : 'bg-blue-400'}`}
                         >

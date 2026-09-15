@@ -27,21 +27,21 @@ public class UserController {
     }
 
     @GetMapping
-    public Page<UserResponse> list(Pageable pageable, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Page<UserResponse>> list(Pageable pageable, @AuthenticationPrincipal User user) {
         log.debug("Listing users with pagination: page {}, size {}", pageable.getPageNumber(), pageable.getPageSize());
-        return service.list(pageable, user);
+        return ResponseEntity.ok().body(service.list(pageable, user));
     }
 
     @GetMapping("/{id}")
-    public UserResponse get(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<UserResponse> get(@PathVariable Long id, @AuthenticationPrincipal User user) {
         log.debug("Getting user with id: {}", id);
-        return service.get(id, user);
+        return ResponseEntity.ok().body(service.get(id, user));
     }
 
     @GetMapping("/me")
-    public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
+    public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal User user) {
         log.debug("Getting actual user with id: {}", user.getId());
-        return service.get(user.getId(), user);
+        return ResponseEntity.ok().body(service.get(user.getId(), user));
     }
 
     @PostMapping
@@ -56,15 +56,17 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserResponse update(@PathVariable Long id, @RequestBody @Valid UpdateUserRequest request, @AuthenticationPrincipal User user) {
+    public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody @Valid UpdateUserRequest request, @AuthenticationPrincipal User user) {
         log.debug("Updating user with id: {}", id);
-        return service.update(id, request, user);
+        UserResponse userResponse = service.update(id, request, user);
+        return ResponseEntity.ok().body(userResponse);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
         log.debug("Deleting user with id: {}", id);
         service.delete(id, user);
+        return ResponseEntity.noContent().build();
     }
 }
