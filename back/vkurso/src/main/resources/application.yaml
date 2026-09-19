@@ -51,7 +51,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus, health, info
+        include: health, info
 
 server:
   servlet:
@@ -60,5 +60,5 @@ server:
         name: VKURSO_SESSION
         http-only: true     # JS não acessa -> protege contra XSS
         secure: true       # MUDAR para true em produção (HTTPS)
-        same-site: none       # bloqueia POST/PUT/DELETE cross-site -> protege contra CSRF
+        same-site: none
   port: ${SERVER_PORT:10000}
