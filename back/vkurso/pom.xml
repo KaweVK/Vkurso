@@ -161,7 +161,12 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.resend</groupId>
+            <artifactId>resend-java</artifactId>
+            <version>4.22.0</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

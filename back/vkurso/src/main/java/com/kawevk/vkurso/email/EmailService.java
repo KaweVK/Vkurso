@@ -1,43 +1,41 @@
 package com.kawevk.vkurso.email;
 
-import jakarta.mail.internet.MimeMessage;
+import com.resend.core.exception.ResendException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.messaging.MessagingException;
+import com.resend.*;
+import com.resend.services.emails.model.CreateEmailOptions;
+import com.resend.services.emails.model.CreateEmailResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+
 @Service
 public class EmailService {
 
-    private final JavaMailSender mailSender;
+    private final Resend resend;
+    @Value("${MAIL_USERNAME}")
+    private String emailFrom;
 
-    public EmailService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
+    public EmailService(@Value("${RESEND_API_KEY}") String apiKey) {
+        this.resend = new Resend(apiKey);
     }
 
     public void sendVerificationCode(String email, String code) {
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-
-            MimeMessageHelper helper =
-                    new MimeMessageHelper(message, StandardCharsets.UTF_8.name());
-
-            helper.setTo(email);
-            helper.setSubject("Verificação de e-mail - Vkursos");
-
             String html = loadTemplate().replace("{{CODE}}", code);
 
-            helper.setText(html, true);
+            CreateEmailOptions params = CreateEmailOptions.builder()
+                    .from(emailFrom)
+                    .to(email)
+                    .subject("Verificação de e-mail - Vkursos")
+                    .html(html)
+                    .build();
 
-            mailSender.send(message);
-
-        } catch (MessagingException e) {
-            throw new RuntimeException("Erro ao enviar e-mail", e);
-        } catch (jakarta.mail.MessagingException | IOException e) {
+            CreateEmailResponse data = resend.emails().send(params);
+        } catch (ResendException | IOException e) {
             throw new RuntimeException(e);
         }
     }
