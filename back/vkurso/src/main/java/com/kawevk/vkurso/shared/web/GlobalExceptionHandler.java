@@ -1,11 +1,16 @@
 package com.kawevk.vkurso.shared.web;
 
+import com.kawevk.vkurso.courseCategory.exceptions.CourseCategoryRequestNotAllowed;
 import com.kawevk.vkurso.course.exceptions.CourseNotFoundException;
 import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.course.exceptions.DuplicateSlugException;
 import com.kawevk.vkurso.enrollment.exceptions.AlreadyEnrolledException;
 import com.kawevk.vkurso.enrollment.exceptions.CourseNotPublishedException;
 import com.kawevk.vkurso.enrollment.exceptions.NotEnrolledException;
+import com.kawevk.vkurso.email.exceptions.EmailAlreadyExistsException;
+import com.kawevk.vkurso.email.exceptions.EmailAlreadyVerifiedException;
+import com.kawevk.vkurso.email.exceptions.EmailNotVerifiedException;
+import com.kawevk.vkurso.email.exceptions.InvalidVerificationCodeException;
 import com.kawevk.vkurso.learningProgress.exceptions.ProgressNotFoundException;
 import com.kawevk.vkurso.lesson.exceptions.LessonNotFoundException;
 import com.kawevk.vkurso.lesson.exceptions.LessonWithoutVideoException;
@@ -14,6 +19,9 @@ import com.kawevk.vkurso.module.exceptions.ModuleNotFoundException;
 import com.kawevk.vkurso.shared.storage.StorageException;
 import com.kawevk.vkurso.user.exceptions.UserNotCreatedWithEmailException;
 import com.kawevk.vkurso.user.exceptions.UserNotFoundException;
+import com.kawevk.vkurso.user.VerificationCodeCantResendException;
+import com.kawevk.vkurso.user.VerificationCodeExceededAttemptsException;
+import com.kawevk.vkurso.user.VerificationCodeExpiredException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.AuthenticationException;
@@ -40,7 +48,12 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
-    @ExceptionHandler({DuplicateSlugException.class, AlreadyEnrolledException.class})
+    @ExceptionHandler({
+            DuplicateSlugException.class,
+            AlreadyEnrolledException.class,
+            EmailAlreadyExistsException.class,
+            EmailAlreadyVerifiedException.class
+    })
     public ProblemDetail handleConflict(RuntimeException ex) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problem.setType(URI.create("https://api.vkurso.com/errors/conflict"));
@@ -58,11 +71,33 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
-    @ExceptionHandler({VideoAccessDeniedException.class, CourseRequestNotAllowed.class})
+    @ExceptionHandler({
+            VideoAccessDeniedException.class,
+            CourseRequestNotAllowed.class,
+            CourseCategoryRequestNotAllowed.class,
+            EmailNotVerifiedException.class
+    })
     public ProblemDetail handleForbidden(RuntimeException ex) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
         problem.setType(URI.create("https://api.vkurso.com/errors/forbidden"));
         problem.setTitle("Requisição não permitida");
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
+    }
+
+    @ExceptionHandler({
+            InvalidVerificationCodeException.class,
+            VerificationCodeExpiredException.class,
+            VerificationCodeExceededAttemptsException.class,
+            VerificationCodeCantResendException.class
+    })
+    public ProblemDetail handleVerificationCode(RuntimeException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNPROCESSABLE_CONTENT,
+                ex.getMessage()
+        );
+        problem.setType(URI.create("https://api.vkurso.com/errors/verification-code"));
+        problem.setTitle("Código de verificação inválido");
         problem.setProperty("timestamp", Instant.now());
         return problem;
     }

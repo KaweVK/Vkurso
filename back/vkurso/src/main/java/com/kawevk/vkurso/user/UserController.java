@@ -1,5 +1,7 @@
 package com.kawevk.vkurso.user;
 
+import com.kawevk.vkurso.email.dtos.ResendVerificationRequest;
+import com.kawevk.vkurso.email.dtos.VerifyEmailRequest;
 import com.kawevk.vkurso.user.dtos.CreateUserRequest;
 import com.kawevk.vkurso.user.dtos.UpdateUserRequest;
 import com.kawevk.vkurso.user.dtos.UserResponse;
@@ -53,6 +55,20 @@ public class UserController {
                 .buildAndExpand(created.id())
                 .toUri();
         return ResponseEntity.created(location).body(created);
+    }
+
+    @PostMapping("/verify-code")
+    public ResponseEntity<Void> verifyEmail(@RequestBody @Valid VerifyEmailRequest request) {
+        log.debug("Verify email: {}", request.email());
+        service.verifyEmail(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Void> resendVerification(@RequestBody ResendVerificationRequest request) {
+        log.debug("Resending email to: {}", request.email());
+        service.resendVerification(request.email());
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")

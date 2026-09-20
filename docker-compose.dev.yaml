@@ -1,0 +1,15 @@
+services:
+  backend:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8080
+      URL_FRONTEND: http://localhost:5173
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      args:
+        VITE_API_URL: http://localhost:8080/api
+    ports:
+      - "5173:80"

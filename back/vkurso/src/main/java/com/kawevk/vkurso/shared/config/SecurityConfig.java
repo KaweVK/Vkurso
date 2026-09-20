@@ -38,18 +38,14 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/actuator/**").authenticated()
                         .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/verify-code", "/api/users/resend-verification").permitAll()
                         .requestMatchers("/actuator/health").authenticated()
 
-                        // >>> INSCRIÇÃO: qualquer autenticado (aluno) pode se inscrever/cancelar
-                        //     precisa vir ANTES das regras amplas de /api/courses/** abaixo
                         .requestMatchers(HttpMethod.POST, "/api/courses/*/enrollments").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/courses/*/enrollments").authenticated()
 
-                        // leitura de todo o agregado (curso, módulos, aulas): qualquer autenticado
                         .requestMatchers(HttpMethod.GET, "/api/courses/**").permitAll()
 
-                        // escrita no agregado: só INSTRUCTOR ou ADMIN
                         .requestMatchers(HttpMethod.POST, "/api/courses/**").hasAnyRole("INSTRUCTOR", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/courses/**").hasAnyRole("INSTRUCTOR", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/courses/**").hasAnyRole("INSTRUCTOR", "ADMIN")

@@ -58,6 +58,10 @@
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-data-redis</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 
 		<!-- Database & Migrations -->
 		<dependency>
@@ -93,6 +97,22 @@
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 			<version>1.6.3</version>
+		</dependency>
+
+		<!-- REST Assured -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>5.5.6</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- JSON Path -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>json-path</artifactId>
+			<version>5.5.6</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>

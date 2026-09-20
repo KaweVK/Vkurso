@@ -18,6 +18,17 @@ spring:
           max-active: 16
           max-idle: 8
           min-idle: 2
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   jpa:
     hibernate:
       ddl-auto: validate
@@ -61,4 +72,4 @@ server:
         http-only: true     # JS não acessa -> protege contra XSS
         secure: true       # MUDAR para true em produção (HTTPS)
         same-site: none
-  port: ${SERVER_PORT:10000}
+  port: ${SERVER_PORT:8080}

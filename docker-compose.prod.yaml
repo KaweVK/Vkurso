@@ -1,0 +1,21 @@
+services:
+  backend:
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 10000
+      POSTGRES_HOST: ${POSTGRES_HOST:?Defina POSTGRES_HOST no arquivo .env.prod}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      REDIS_HOST: ${REDIS_HOST:?Defina REDIS_HOST no arquivo .env.prod}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      URL_FRONTEND: ${URL_FRONTEND:?Defina URL_FRONTEND no arquivo .env.prod}
+      STORAGE_MINIO_PUBLIC_ENDPOINT: ${MINIO_PUBLIC_ENDPOINT:?Defina MINIO_PUBLIC_ENDPOINT no arquivo .env.prod}
+    depends_on: !reset {}
+    ports:
+      - "10000:10000"
+
+  frontend:
+    build:
+      args:
+        VITE_API_URL: ${VITE_API_URL:?Defina VITE_API_URL no arquivo .env.prod}
+    ports:
+      - "80:80"

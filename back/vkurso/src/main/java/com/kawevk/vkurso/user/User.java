@@ -28,6 +28,8 @@ public class User extends Auditable implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role;
+    @Column(name="email_verified", nullable = false)
+    private boolean emailVerified;
 
     protected User() {}
 
@@ -36,6 +38,7 @@ public class User extends Auditable implements UserDetails {
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.emailVerified = false;
     }
 
     @Override
