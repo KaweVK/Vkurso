@@ -72,4 +72,4 @@ server:
         http-only: true     # JS não acessa -> protege contra XSS
         secure: false       # MUDAR para true em produção (HTTPS)
         same-site: lax
-  port: ${SERVER_PORT:10000}
+  port: ${SERVER_PORT:8080}
