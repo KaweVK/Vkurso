@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './pages/login';
+import Register from './pages/register';
 import Home from './pages/home'
 import Course from './pages/course';
 import Lesson from './pages/lesson';
@@ -21,6 +22,7 @@ export function AppRoutes() {
         <Route path='/catalog' element={<Catalog />} />
         <Route path='/about' element={<About />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/course/:slug" element={<Course />} />
         <Route path="/course/:slug/module/:moduleId/lesson/:lessonId" element={<Lesson />} />
 
