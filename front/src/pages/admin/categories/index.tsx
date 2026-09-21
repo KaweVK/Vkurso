@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { Category } from "../../../types";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
@@ -6,6 +6,8 @@ import CategoryService from "../../../services/categoryService";
 
 export default function Categories() {
     const [categories, setCategories] = useState<Category[]>([])
+    const navigate = useNavigate()
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const loadCategories = async () => {
@@ -19,6 +21,15 @@ export default function Categories() {
 
         loadCategories();
     }, [])
+
+    async function requestDeleteCategory(userId: number) {
+        try {
+            await CategoryService.delete(userId)
+            navigate(0)
+        } catch {
+            setError('Não foi possível excluir o usuário!')
+        }
+    }
 
     return (
         <div className="px-10 py-20">
@@ -73,7 +84,7 @@ export default function Categories() {
 
                                         <button
                                             type="button"
-                                            onClick={() => requestDeleteUser(category.id)}
+                                            onClick={() => requestDeleteCategory(category.id)}
                                             className="rounded-md text-red-600 hover:bg-red-50"
                                         >
                                             <TrashIcon className="h-5 w-5" />

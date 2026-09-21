@@ -17,15 +17,19 @@ const CategoryService = {
         return res.data
     },
 
-    async create(data: {name: string}) {
+    async create(data: {name: string}): Promise<Category> {
         const res = await api.post(`/course-category`, data)
         return res.data
     },
 
-    async update(categoryId: number, data: {name: string}) {
+    async update(categoryId: number, data: {name: string}): Promise<Category> {
         const res = await api.put(`/course-category/${categoryId}`, data)
         return res.data
-    }
+    },
+
+    async delete(categoryId: number) {
+        await api.delete(`/course-category/${categoryId}`)
+    },
 };
 
 export default CategoryService;
