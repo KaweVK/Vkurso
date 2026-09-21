@@ -1,5 +1,4 @@
 import '../../index.css';
-import Navbar from '../../components/navbar';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ChartBarIcon, ChevronDownIcon, PlayIcon, StarIcon } from '@heroicons/react/20/solid';
 import { ArrowRightIcon, ChevronRightIcon, ClockIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -13,7 +12,6 @@ import { useState } from 'react';
 import type { CourseStatus } from '../../types/course';
 import courseService from '../../services/courseService';
 import moduleService from '../../services/moduleService';
-import Footbar from '../../components/footbar';
 import timeFormater from '../../utils/timeFormarter'
 import courseLevelFormarter from '../../utils/courseLevelFormater';
 
@@ -99,7 +97,6 @@ function Course() {
     if (loadingCourse) {
         return (
             <>
-                <Navbar />
                 <div className="flex h-screen w-full items-center justify-center gap-8 bg-indigo-100 dark:bg-indigo-950"><Loading /></div>
             </>
         );
@@ -150,7 +147,6 @@ function Course() {
 
     return (
         <main className='bg-indigo-100/30'>
-            <Navbar />
             <div className="px-10 py-8">
 
                 <div className="flex items-stretch">
@@ -376,7 +372,7 @@ function Course() {
                             </div>
                             <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
                                 <ClockIcon className='size-9 text-indigo-700' />
-                                <p className='font-bold'>{courseDuration}</p>
+                                <p className='font-bold'>{Math.floor(courseDuration / 3600)}</p>
                                 <p className='text-gray-500'>Horas</p>
                             </div>
                             <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
@@ -385,11 +381,6 @@ function Course() {
                                     ${course?.level === "BEGINNER" ? `text-green-500` : course?.level === "INTERMEDIATE" ? `text-yellow-400` : `text-red-500`}`} />
                                 <p className='font-bold'>{courseLevelFormarter(course?.level)}</p>
                                 <p className='text-gray-500'>Nível</p>
-                            </div>
-                            <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
-                                <ClockIcon className='size-9 text-indigo-700' />
-                                <p className='font-bold'>x</p>
-                                <p className='text-gray-500'>Horas</p>
                             </div>
                         </div>
 
@@ -408,7 +399,6 @@ function Course() {
                     </div>
                 </div>
             </div>
-            <Footbar />
         </main>
     );
 }

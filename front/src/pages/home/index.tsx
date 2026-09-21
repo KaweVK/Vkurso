@@ -1,6 +1,4 @@
 import '../../index.css'
-import Navbar from '../../components/navbar'
-import Footbar from '../../components/footbar'
 import CardCurso from '../../components/card-curso';
 import { Link } from 'react-router-dom';
 import { useFeaturedCourses } from '../../hooks/useCourses';
@@ -12,7 +10,6 @@ function Home() {
 
     return (
         <main className='bg-indigo-100/30'>
-            <Navbar />
             <div className='flex flex-col bg-blue-950 h-[520px] px-[10%] justify-center rounded-b-[30px]'>
                 <p className='font-bold text-6xl text-white'>Aprenda no seu ritmo.</p>
                 <p className='font-bold text-6xl text-white mt-4'>Conquiste <span className="text-blue-600">novos objetivos.</span></p>
@@ -78,7 +75,6 @@ function Home() {
                     )}
                 </div>
             }
-            <Footbar />
         </main>
     )
 }

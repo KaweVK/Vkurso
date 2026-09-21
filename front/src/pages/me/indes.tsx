@@ -1,7 +1,5 @@
 import { EnvelopeIcon, IdentificationIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../../hooks/useAuth";
-import Navbar from "../../components/navbar";
-import Footbar from "../../components/footbar";
 import Thumb from '../../assets/image.png';
 import roleFormarter from "../../utils/roleFormarter";
 
@@ -10,7 +8,6 @@ function Me() {
 
     return (
         <main>
-            <Navbar />
             <div className="flex items-stretch min-h-screen">
 
                 <div className="flex m-10 gap-10 w-full">
@@ -72,7 +69,6 @@ function Me() {
 
                 </div>
             </div>
-            <Footbar />
         </main>
     )
 }

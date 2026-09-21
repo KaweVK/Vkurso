@@ -1,10 +1,8 @@
 import '../../index.css'
-import Navbar from '../../components/navbar'
 import CardCurso from '../../components/card-curso';
 import { Link } from 'react-router-dom';
 import useCourses from '../../hooks/useCourses';
 import Loading from '../../components/loading';
-import Footbar from '../../components/footbar';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import categoryService from '../../services/categoryService';
@@ -32,7 +30,6 @@ function Catalog() {
 
     return (
         <main>
-            <Navbar />
             <div className='flex flex-col min-h-screen'>
                 <div className='flex flex-col bg-blue-950 h-[320px] px-[10%] justify-center rounded-b-[30px]'>
                     <p className='font-bold text-6xl text-white'>Catálogo de cursos</p>
@@ -87,7 +84,6 @@ function Catalog() {
                     </div>
                 }
             </div>
-            <Footbar />
         </main>
     )
 }

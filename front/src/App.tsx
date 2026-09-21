@@ -13,29 +13,37 @@ import MyJourney from './pages/my-journey'
 import InstructorPainel from './pages/instructor-painel';
 import RequireAuth from './components/require-auth'
 import Me from './pages/me/indes';
+import Layout from './pages/layout';
 
 export function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path='/catalog' element={<Catalog />} />
-        <Route path='/about' element={<About />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/course/:slug" element={<Course />} />
-        <Route path="/course/:slug/module/:moduleId/lesson/:lessonId" element={<Lesson />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+      </Routes>
+
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path='/catalog' element={<Catalog />} />
+          <Route path='/about' element={<About />} />
+          <Route path="/course/:slug" element={<Course />} />
+          <Route path="/course/:slug/module/:moduleId/lesson/:lessonId" element={<Lesson />} />
+        </Route>
 
         <Route element={<RequireAuth />}>
-          <Route path='/journey' element={<MyJourney />} />
-          <Route path='/me' element={<Me />} />
-          <Route path='/painel' element={<InstructorPainel />} />
-          <Route path="/instructor/courses/new" element={<CourseForm />} />
-          <Route path="/instructor/courses/:courseId/edit" element={<CourseForm />} />
-          <Route path="/instructor/courses/:courseId/modules/new" element={<ModuleForm />} />
-          <Route path="/instructor/courses/:courseId/modules/:moduleId/edit" element={<ModuleForm />} />
-          <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/new" element={<LessonForm />} />
-          <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/:lessonId/edit" element={<LessonForm />} />
+          <Route element={<Layout />}>
+            <Route path='/journey' element={<MyJourney />} />
+            <Route path='/me' element={<Me />} />
+            <Route path='/painel' element={<InstructorPainel />} />
+            <Route path="/instructor/courses/new" element={<CourseForm />} />
+            <Route path="/instructor/courses/:courseId/edit" element={<CourseForm />} />
+            <Route path="/instructor/courses/:courseId/modules/new" element={<ModuleForm />} />
+            <Route path="/instructor/courses/:courseId/modules/:moduleId/edit" element={<ModuleForm />} />
+            <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/new" element={<LessonForm />} />
+            <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/:lessonId/edit" element={<LessonForm />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

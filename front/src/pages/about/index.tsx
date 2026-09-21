@@ -1,6 +1,4 @@
 import '../../index.css'
-import Navbar from '../../components/navbar'
-import Footbar from '../../components/footbar'
 import Me from '../../assets/about/foto.png'
 import Sist1 from '../../assets/about/sist-1.png'
 import Sist2 from '../../assets/about/sist-2.png'
@@ -31,7 +29,6 @@ function About() {
 
     return (
         <main className='bg-indigo-100/30'>
-            <Navbar />
             <div className="flex h-screen items-center justify-between rounded-b-[30px] bg-blue-950 px-[10%]">
 
                 <div className="flex max-w-[600px] flex-col">
@@ -149,7 +146,6 @@ function About() {
                 </div>
 
             </div>
-            <Footbar />
         </main>
     )
 }

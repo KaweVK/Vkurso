@@ -1,6 +1,4 @@
 import '../../index.css'
-import Navbar from '../../components/navbar'
-import Footbar from '../../components/footbar';
 import { Link } from 'react-router-dom';
 import { AcademicCapIcon, ArrowLongRightIcon, BookOpenIcon, } from "@heroicons/react/24/outline";
 import { useEffect, useState } from 'react';
@@ -59,7 +57,6 @@ function MyJourney() {
 
     return (
         <main className='bg-indigo-100/30'>
-            <Navbar />
             <div className="flex px-[3%] min-h-screen items-start">
                 <div className='flex flex-col w-[300px] mt-20 h-[620px] rounded-xl shadow-md bg-blue-400/10 p-8'>
                     <div className='flex flex-col'>
@@ -153,7 +150,6 @@ function MyJourney() {
 
                 </div>
             </div>
-            <Footbar />
         </main>
     )
 }

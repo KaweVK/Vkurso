@@ -1,6 +1,4 @@
 import { ArchiveBoxIcon, LockClosedIcon, PlusIcon, PresentationChartLineIcon, RectangleStackIcon } from "@heroicons/react/24/outline";
-import Footbar from "../../components/footbar";
-import Navbar from "../../components/navbar";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCoursesByInstructor } from "../../hooks/useCourses";
@@ -33,7 +31,6 @@ function InstructorPainel() {
 
     return (
         <main className='bg-indigo-100/30'>
-            <Navbar />
 
             {/* Painel do topo */}
             <div className='flex flex-col bg-blue-950 h-[300px] px-[10%] justify-center rounded-b-[30px]'>
@@ -174,7 +171,6 @@ function InstructorPainel() {
                     </section>
                 </div>
             </div>
-            <Footbar />
         </main>
     )
 }
