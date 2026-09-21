@@ -167,7 +167,6 @@ public class UserService implements UserDetailsService {
 
         user.setFullName(request.fullName());
         user.setEmail(request.email());
-        user.setPasswordHash(passwordEncoder.encode(request.password()));
         if (userLoged.getRole() == Role.ADMIN) {
             user.setRole(request.role());
         }
