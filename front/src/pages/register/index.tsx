@@ -142,7 +142,9 @@ function Register() {
                         <button className="rounded bg-blue-600 p-3 font-semibold text-white transition hover:bg-blue-700" type="submit" disabled={loading}>
                             {loading ? <Loading /> : 'Criar conta'}
                         </button>
-                        <Link className="mt-3 text-center text-sm text-blue-600 hover:underline" to="/login">Já possui uma conta? Entrar</Link>
+                        <p className="mt-3 text-center text-sm text-white">
+                            Já possui uma conta? <Link className='text-blue-600 hover:underline' to='/login'>Entrar</Link> 
+                        </p>
                     </form>
                 )}
             </div>

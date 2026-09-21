@@ -98,28 +98,32 @@ function About() {
                         <p className='mt-2 text-gray-500'>Tecnologias e bibliotecas utilizadas na construção do sistema.</p>
 
                         <div className='mt-6 flex flex-wrap gap-3'>
-                            <span className='rounded-xl bg-green-100 px-4 py-2 font-semibold text-green-800'>Spring Boot</span>
-                            <span className='rounded-xl bg-yellow-100 px-4 py-2 font-semibold text-yellow-800'>Java</span>
-                            <span className='rounded-xl bg-blue-100 px-4 py-2 font-semibold text-blue-800'>React</span>
-                            <span className='rounded-xl bg-blue-100 px-4 py-2 font-semibold text-blue-800'>TypeScript</span>
-                            <span className='rounded-xl bg-indigo-100 px-4 py-2 font-semibold text-indigo-800'>PostgreSQL</span>
-                            <span className='rounded-xl bg-cyan-100 px-4 py-2 font-semibold text-cyan-800'>Tailwind CSS</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>Spring Boot</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>Java</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>React</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>TypeScript</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>PostgreSQL</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>Tailwind CSS</span>
                             <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>Docker</span>
-                            <span className='rounded-xl bg-red-100 px-4 py-2 font-semibold text-red-800'>Redis</span>
-                            <span className='rounded-xl bg-yellow-100 px-4 py-2 font-semibold text-yellow-800'>MinIo</span>
-                            <span className='rounded-xl bg-purple-100 px-4 py-2 font-semibold text-purple-800'>JWT</span>
-                            <span className='rounded-xl bg-sky-100 px-4 py-2 font-semibold text-sky-800'>JUnit</span>
-                            <span className='rounded-xl bg-sky-100 px-4 py-2 font-semibold text-sky-800'>MapStruct</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>Redis</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>MinIo</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>JWT</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>JUnit</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>MapStruct</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>Git & GitHub</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>Rest Assured</span>
+                            <span className='rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800'>Render</span>
                         </div>
 
                         <div className='mt-8 border-t border-gray-200 pt-6'>
                             <p className='text-lg font-bold text-blue-950'>Principais conceitos</p>
-                            <div className='mt-4 space-y-2 text-gray-600'>
-                                <p>• Arquitetura de software: Cliente-Servidor</p>
-                                <p>• Autenticação e autorização</p>
-                                <p>• APIs REST</p>
-                                <p>• Cache e persistência</p>
-                                <p>• Testes e observabilidade</p>
+                            <div className='mt-4 ml-2 space-y-2 text-gray-600'>
+                                <p>Arquitetura Cliente-Servidor</p>
+                                <p>Autenticação e autorização</p>
+                                <p>APIs REST</p>
+                                <p>Cache com Redis</p>
+                                <p>Banco de dados PostgreSQL no NeonDB</p>
+                                <p>Deploy no Render</p>
                             </div>
                         </div>
                     </div>

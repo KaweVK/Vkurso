@@ -19,16 +19,23 @@ export default function Navbar() {
 
     return (
         <div className="flex bg-white dark:bg-blue-900 w-full h-[50px] justify-center font-mono">
-            <div className='flex justify-center'>
-                <img src={Logo} alt="logo" className='bg-blue-400 rounded-xl h-[90%] self-center' />
-                <p className='self-center p-2 dark:text-blue-200'>Vkursos</p>
+            <div className='flex justify-between w-full px-5'>
+                <div className='flex'>
+                    <img src={Logo} alt="logo" className=' h-[90%] self-center' />
+                    <p className='self-center p-2 dark:text-blue-200'>Vkursos</p>
+                </div>
                 <div className='flex w-5/6 justify-center space-x-4 '>
-                    <Link to='/' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>Início</Link>
-                    <Link to='/catalog' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>Catálogo</Link>
-                    <Link to='/journey' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>Meu aprendizado</Link>
+                    <Link to='/' className='self-center p-2 dark:text-blue-200 hover:underline'>Início</Link>
+                    <Link to='/catalog' className='self-center p-2 dark:text-blue-200 hover:underline'>Catálogo</Link>
+                    <Link to='/journey' className='self-center p-2 dark:text-blue-200 hover:underline'>Meu aprendizado</Link>
                     {user?.role === 'INSTRUCTOR' && (
-                        <Link to='/painel' className='self-center p-2 dark:text-blue-200 hover:bg-sky-500 rounded-xl'>
+                        <Link to='/painel' className='self-center p-2 dark:text-blue-200 hover:underline'>
                             Painel do instrutor
+                        </Link>
+                    )}
+                    {user?.role === 'ADMIN' && (
+                        <Link to='/painel' className='self-center p-2 dark:text-blue-200 hover:underline'>
+                            Painel do administrador
                         </Link>
                     )}
                 </div>

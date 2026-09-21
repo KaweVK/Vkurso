@@ -33,7 +33,7 @@ function Login() {
             ) {
                 setVerificationMode(true)
                 setVerificationMessage(
-                    'Seu email ainda não foi verificado. Verifique sua caixa de entrada.'
+                    'Seu email ainda não foi verificado. Verifique sua caixa de entrada e spam.'
                 )
             } else {
                 setError('Email ou senha inválidos.')
@@ -118,21 +118,23 @@ function Login() {
                         >
                             {loading ? <Loading /> : 'Verificar código'}
                         </button>
-                        <button
-                            type="button"
-                            className="mt-3 text-sm text-blue-600 hover:underline"
-                            onClick={() => setVerificationMode(false)}
-                        >
-                            Voltar para o login
-                        </button>
-                        <button
-                            type="button"
-                            className="mt-3 text-sm text-blue-600 hover:underline"
-                            onClick={handleResendCode}
-                            disabled={loading}
-                        >
-                            Reenviar código
-                        </button>
+                        <div className='flex justify-between'>
+                            <button
+                                type="button"
+                                className="mt-3 text-sm text-white hover:underline"
+                                onClick={() => setVerificationMode(false)}
+                            >
+                                Voltar para o login
+                            </button>
+                            <button
+                                type="button"
+                                className="mt-3 text-sm text-white hover:underline"
+                                onClick={handleResendCode}
+                                disabled={loading}
+                            >
+                                Reenviar código
+                            </button>
+                        </div>
                     </form>
                 ) : (
                     <form className="flex w-full flex-col" onSubmit={handleSubmit}>
@@ -159,9 +161,9 @@ function Login() {
                         >
                             {loading ? <Loading /> : 'Entrar'}
                         </button>
-                        <Link className="mt-3 text-center text-sm text-blue-600 hover:underline" to="/register">
-                            Ainda não possui uma conta? Cadastre-se
-                        </Link>
+                        <p className="mt-3 text-center text-sm text-white" >
+                            Ainda não possui uma conta? <Link className='text-blue-600 hover:underline' to="/register">Cadastre-se</Link>
+                        </p>
 
                     </form>
                 )}
