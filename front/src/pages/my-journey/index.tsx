@@ -9,27 +9,6 @@ import CardProgress from '../../components/card-progress';
 function MyJourney() {
     const [inProgressCourses, setInProgressCourses] = useState<CourseProgress[]>([]);
     const [completedCourses, setCompletedCourses] = useState<CourseProgress[]>([]);
-    const [activeSection, setActiveSection] = useState(
-        window.location.hash.replace("#", "") || ""
-    );
-
-    useEffect(() => {
-        const handleHashChange = () => {
-            const hash = window.location.hash.replace("#", "");
-
-            if (hash) {
-                setActiveSection(hash);
-            } else {
-                setActiveSection("")
-            }
-        };
-
-        window.addEventListener("hashchange", handleHashChange);
-
-        return () => {
-            window.removeEventListener("hashchange", handleHashChange);
-        };
-    }, []);
 
     useEffect(() => {
         const loadProgress = async () => {
@@ -58,31 +37,6 @@ function MyJourney() {
     return (
         <main className='bg-indigo-100/30'>
             <div className="flex px-[3%] min-h-screen items-start">
-                <div className='flex flex-col w-[300px] mt-20 h-[620px] rounded-xl shadow-md bg-blue-400/10 p-8'>
-                    <div className='flex flex-col'>
-                        <p className='text-2xl font-semibold'>
-                            Meu aprendizado
-                        </p>
-                        <p className='text-md mt-4 max-w-[220px]'>
-                            Acompanhe os seus cursos, continue de onde parou e veja as suas conquistas.
-                        </p>
-                    </div>
-                    <div className='flex flex-col mt-20'>
-                        <a href="#EmAndamento" className={`flex mb-5 p-2 rounded-md items-center ${activeSection === "EmAndamento" ? 'text-blue-900 bg-blue-700/20' : 'text-gray-500'}`}>
-                            <BookOpenIcon className={`font-semibold h-10 w-10 `} />
-                            <p className={`m-2 text-gray-700`}>
-                                Em andamento
-                            </p>
-                        </a>
-                        <a href="#Concluidos" className={`flex mb-5 p-2 rounded-md items-center ${activeSection === "Concluidos" ? 'text-blue-900 bg-blue-700/20' : 'text-gray-500'}`}>
-                            <AcademicCapIcon className='font-semibold h-10 w-10' />
-                            <p className='m-2 text-gray-700'>
-                                Concluídos
-                            </p>
-                        </a>
-                    </div>
-                </div>
-
                 <div className='flex flex-col ml-20 p-4 min-h-[620px] rounded-xl mt-20'>
                     <section id='EmAndamento'>
                         <div className='flex justify-between'>
@@ -121,7 +75,7 @@ function MyJourney() {
                         <div className='flex justify-between'>
                             <div>
                                 <div className='flex'>
-                                    <BookOpenIcon className='text-blue-700 font-semibold h-10 w-10' />
+                                    <AcademicCapIcon className='text-blue-700 font-semibold h-10 w-10' />
                                     <p className='text-2xl font-semibold ml-4'>
                                         Concluídos
                                     </p>
