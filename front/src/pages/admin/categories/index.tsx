@@ -49,7 +49,8 @@ export default function Categories() {
                 </Link>
             </div>
 
-            <div className="mt-6 overflow-hidden rounded-lg border bg-white">
+            <div className="flex flex col mt-6 overflow-hidden rounded-lg border bg-white">
+                {error && <p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
                 <table className="w-full">
                     <thead className="border-b bg-blue-100">
                         <tr>
