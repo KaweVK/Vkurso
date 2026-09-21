@@ -34,7 +34,7 @@ export default function Navbar() {
                         </Link>
                     )}
                     {user?.role === 'ADMIN' && (
-                        <Link to='/painel' className='self-center p-2 dark:text-blue-200 hover:underline'>
+                        <Link to='/admin' className='self-center p-2 dark:text-blue-200 hover:underline'>
                             Painel do administrador
                         </Link>
                     )}

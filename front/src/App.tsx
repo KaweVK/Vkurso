@@ -13,7 +13,12 @@ import MyJourney from './pages/my-journey'
 import InstructorPainel from './pages/instructor-painel';
 import RequireAuth from './components/require-auth'
 import Me from './pages/me/indes';
-import Layout from './components/layout';
+import Layout from './components/layouts/default';
+import Dashboard from './pages/admin/dashboard';
+import Users from './pages/admin/users';
+import Categories from './pages/admin/categories';
+import Courses from './pages/admin/courses';
+import AdminLayout from './components/layouts/admin';
 
 export function AppRoutes() {
   return (
@@ -30,7 +35,7 @@ export function AppRoutes() {
           <Route path='/about' element={<About />} />
           <Route path="/course/:slug" element={<Course />} />
           <Route path="/course/:slug/module/:moduleId/lesson/:lessonId" element={<Lesson />} />
-          
+
           <Route element={<RequireAuth />}>
             <Route path='/journey' element={<MyJourney />} />
             <Route path='/me' element={<Me />} />
@@ -41,6 +46,13 @@ export function AppRoutes() {
             <Route path="/instructor/courses/:courseId/modules/:moduleId/edit" element={<ModuleForm />} />
             <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/new" element={<LessonForm />} />
             <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/:lessonId/edit" element={<LessonForm />} />
+
+            <Route path='/admin' element={<AdminLayout/>}>
+              <Route index element={<Dashboard/>}/>
+              <Route path='users' element={<Users/>}/>
+              <Route path='courses' element={<Courses/>}/>
+              <Route path='categories' element={<Categories/>}/>
+            </Route>
           </Route>
         </Route>
 

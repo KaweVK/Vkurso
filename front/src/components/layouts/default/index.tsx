@@ -1,13 +1,13 @@
 import { Outlet } from 'react-router-dom';
-import Footbar from '../footbar';
-import Navbar from '../navbar';
+import Footbar from '../../footbar';
+import Navbar from '../../navbar';
 
 function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
 
-      <main className="flex-1">
+      <main className="flex-1 ">
         <Outlet/>
       </main>
 
