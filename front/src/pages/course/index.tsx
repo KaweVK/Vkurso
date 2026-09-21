@@ -33,7 +33,7 @@ function Course() {
     const [openModule, setOpenModule] = useState<number | null>(null);
     const navigate = useNavigate();
 
-    const isCourseOwner = Boolean(course && user?.id === course.instructor.id);
+    const isCourseOwnerOrADMIN = (Boolean(course && user?.id === course.instructor.id)) || Boolean(user?.role === 'ADMIN');
     const displayedStatus = courseStatus ?? course?.status;
 
     async function handlePublish() {
@@ -155,7 +155,7 @@ function Course() {
 
                         {/* Menu de aulas e módulos */}
                         <div>
-                            {isCourseOwner &&
+                            {isCourseOwnerOrADMIN &&
                                 <Link
                                     to={`/instructor/courses/${course?.id}/modules/new`}
                                     className="mb-3 block rounded-xl bg-indigo-600 p-4 text-center text-sm font-semibold text-white transition hover:bg-indigo-700 w-60"
@@ -190,7 +190,7 @@ function Course() {
                                             </div>
 
                                             {/* Ações */}
-                                            {isCourseOwner && (
+                                            {isCourseOwnerOrADMIN && (
                                                 <div
                                                     className="flex shrink-0 items-center gap-1"
                                                     onClick={(event) => event.stopPropagation()}
@@ -222,12 +222,12 @@ function Course() {
                                         {openModule === module.id && (
                                             <div className="border-t border-gray-200 bg-gray-50">
                                                 <div className="bg-gray-100">
-                                                    {module.lessons.length === 0 && isCourseOwner && (
+                                                    {module.lessons.length === 0 && isCourseOwnerOrADMIN && (
                                                         <div className="p-5 text-sm text-gray-500">
                                                             Este módulo ainda não possui aulas.
                                                         </div>
                                                     )}
-                                                    {isCourseOwner && (
+                                                    {isCourseOwnerOrADMIN && (
                                                         <div className="flex gap-3 border-b border-indigo-100 p-3 text-sm">
                                                             <Link to={`/instructor/courses/${course.id}/modules/${module.id}/lessons/new`} className="text-indigo-700 hover:underline">Nova aula</Link>
                                                         </div>
@@ -235,7 +235,7 @@ function Course() {
                                                     {module.lessons.map((lesson) => (
                                                         <div key={lesson.id}>
                                                             <div className="flex items-center justify-between border-b border-gray-200 bg-white transition hover:bg-indigo-50">
-                                                                {user && (isCourseOwner || enrolled || lesson.freePreview) ? (
+                                                                {user && (isCourseOwnerOrADMIN || enrolled || lesson.freePreview) ? (
                                                                     <Link to={`/course/${slug}/module/${module.id}/lesson/${lesson.id}`} className="min-w-0 flex-1 px-5 py-3 text-sm font-medium text-gray-700">{lesson.title}</Link>
                                                                 ) : <div className="block flex-1 cursor-not-allowed p-3">{lesson.title}</div>}
                                                                 <p className='flex px-2 min-h-7 min-w-10 shrink-0 items-center justify-center rounded-full bg-indigo-300/50 text-sm font-semibold'>
@@ -243,7 +243,7 @@ function Course() {
                                                                         ? timeFormater(lesson.durationSeconds)
                                                                         : "Sem duração"}
                                                                 </p>
-                                                                {isCourseOwner && <Link to={`/instructor/courses/${course.id}/modules/${module.id}/lessons/${lesson.id}/edit`} aria-label="Editar aula" title="Editar aula" className="mr-2 rounded-md p-2 text-indigo-600 hover:bg-indigo-100"><PencilIcon className="h-4 w-4" /></Link>}
+                                                                {isCourseOwnerOrADMIN && <Link to={`/instructor/courses/${course.id}/modules/${module.id}/lessons/${lesson.id}/edit`} aria-label="Editar aula" title="Editar aula" className="mr-2 rounded-md p-2 text-indigo-600 hover:bg-indigo-100"><PencilIcon className="h-4 w-4" /></Link>}
                                                             </div>
                                                         </div>
                                                     ))}
@@ -271,7 +271,7 @@ function Course() {
                                         </li>
                                     )}
                             </ul>
-                            {isCourseOwner && course && (
+                            {isCourseOwnerOrADMIN && course && (
                                 <Link to='/' className='rounded p-2 text-indigo-700 hover:bg-indigo-50 ml-5'>
                                     <PlusIcon className="h-5 w-5 font-bold" />
                                 </Link>
@@ -283,7 +283,7 @@ function Course() {
                             </h1>
 
                             <div className="flex items-center">
-                                {isCourseOwner && displayedStatus === 'DRAFT' &&
+                                {isCourseOwnerOrADMIN && displayedStatus === 'DRAFT' &&
                                     <button
                                         type="button"
                                         onClick={handlePublish}
@@ -293,7 +293,7 @@ function Course() {
                                         {publishing ? 'Publicando...' : 'Publicar'}
                                     </button>
                                 }
-                                {isCourseOwner && course &&
+                                {isCourseOwnerOrADMIN && course &&
                                     <Link
                                         to={`/instructor/courses/${course.id}/edit`}
                                         aria-label="Editar curso"
@@ -303,7 +303,7 @@ function Course() {
                                         <PencilIcon className="h-5 w-5" />
                                     </Link>
                                 }
-                                {isCourseOwner &&
+                                {isCourseOwnerOrADMIN &&
                                     <button
                                         type="button"
                                         onClick={requestDeleteCourse}

@@ -19,6 +19,8 @@ import Users from './pages/admin/users';
 import Categories from './pages/admin/categories';
 import Courses from './pages/admin/courses';
 import AdminLayout from './components/layouts/admin';
+import UserForm from './pages/user-form';
+import CategoryForm from './pages/category-form';
 
 export function AppRoutes() {
   return (
@@ -26,9 +28,7 @@ export function AppRoutes() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-      </Routes>
 
-      <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path='/catalog' element={<Catalog />} />
@@ -47,11 +47,14 @@ export function AppRoutes() {
             <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/new" element={<LessonForm />} />
             <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/:lessonId/edit" element={<LessonForm />} />
 
-            <Route path='/admin' element={<AdminLayout/>}>
-              <Route index element={<Dashboard/>}/>
-              <Route path='users' element={<Users/>}/>
-              <Route path='courses' element={<Courses/>}/>
-              <Route path='categories' element={<Categories/>}/>
+            <Route path='/admin' element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path='users' element={<Users />} />
+              <Route path="users/:userId/edit" element={<UserForm />} />
+              <Route path='courses' element={<Courses />} />
+              <Route path='categories' element={<Categories />} />
+              <Route path="categories/create" element={<CategoryForm />} />
+              <Route path="categories/:categoryId/edit" element={<CategoryForm />} />
             </Route>
           </Route>
         </Route>

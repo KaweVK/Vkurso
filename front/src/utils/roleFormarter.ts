@@ -1,14 +1,14 @@
 import type { Role } from "../types/user";
 
-function courseLevelFormarter(role: Role | undefined) {
+function roleFormarter(role: Role | undefined) {
     if (role === "USER") {
         return "Aluno"
     } else if (role === "INSTRUCTOR") {
         return "Instrutor"
     } else {
-        return "ADMIN"
+        return "Administrador"
     }
 
 }
 
-export default courseLevelFormarter;
+export default roleFormarter;

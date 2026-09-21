@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { User } from "../../../types";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import UserService from "../../../services/userService";
+import roleFormarter from "../../../utils/roleFormarter";
 
 export default function Users() {
     const [users, setUsers] = useState<User[]>([])
+    const navigate = useNavigate()
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const loadUsers = async () => {
@@ -19,6 +22,15 @@ export default function Users() {
 
         loadUsers();
     }, [])
+
+    async function requestDeleteUser(userId: number) {
+        try {
+            await UserService.delete(userId)
+            navigate(0)
+        } catch {
+            setError('Não foi possível excluir o usuário!')
+        }
+    }
 
     return (
         <div className="px-10 py-20">
@@ -72,7 +84,7 @@ export default function Users() {
 
                                 <td className="px-6 py-4">
                                     <span className="rounded-full bg-gray-100 px-3 py-1 text-sm">
-                                        {user.role}
+                                        {roleFormarter(user.role)}
                                     </span>
                                 </td>
 

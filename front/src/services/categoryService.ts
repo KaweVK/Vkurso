@@ -10,6 +10,21 @@ const CategoryService = {
     async findAll(): Promise<Category[]> {
         const res = await api.get(`/course-category`)
         return res.data.content
+    },
+
+    async get(categoryId?: number): Promise<Category> {
+        const res = await api.get(`/course-category/${categoryId}`)
+        return res.data
+    },
+
+    async create(data: {name: string}) {
+        const res = await api.post(`/course-category`, data)
+        return res.data
+    },
+
+    async update(categoryId: number, data: {name: string}) {
+        const res = await api.put(`/course-category/${categoryId}`, data)
+        return res.data
     }
 };
 

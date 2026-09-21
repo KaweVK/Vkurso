@@ -8,7 +8,7 @@ export default function Categories() {
     const [categories, setCategories] = useState<Category[]>([])
 
     useEffect(() => {
-        const loadUsers = async () => {
+        const loadCategories = async () => {
             try {
                 const data = await CategoryService.findAll();
                 setCategories(data)
@@ -17,7 +17,7 @@ export default function Categories() {
             }
         }
 
-        loadUsers();
+        loadCategories();
     }, [])
 
     return (
@@ -33,9 +33,9 @@ export default function Categories() {
                     </p>
                 </div>
 
-                <button className="rounded-lg bg-blue-500 px-4 py-2 text-white">
+                <Link className="rounded-lg bg-blue-500 px-4 py-2 text-white" to={`/admin/categories/create`}>
                     Nova categoria
-                </button>
+                </Link>
             </div>
 
             <div className="mt-6 overflow-hidden rounded-lg border bg-white">
@@ -53,19 +53,19 @@ export default function Categories() {
                     </thead>
 
                     <tbody>
-                        {categories.map((user) => (
+                        {categories.map((category) => (
                             <tr
-                                key={user.id}
+                                key={category.id}
                                 className="border-b last:border-b-0"
                             >
                                 <td className="px-6 py-4">
-                                    {user.name}
+                                    {category.name}
                                 </td>
 
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex justify-end gap-2">
                                         <Link
-                                            to={`/admin/users/${user.id}/edit`}
+                                            to={`/admin/categories/${category.id}/edit`}
                                             className="rounded-md text-indigo-600 hover:bg-indigo-50"
                                         >
                                             <PencilIcon className="h-5 w-5" />
@@ -73,7 +73,7 @@ export default function Categories() {
 
                                         <button
                                             type="button"
-                                            onClick={() => requestDeleteUser(user.id)}
+                                            onClick={() => requestDeleteUser(category.id)}
                                             className="rounded-md text-red-600 hover:bg-red-50"
                                         >
                                             <TrashIcon className="h-5 w-5" />

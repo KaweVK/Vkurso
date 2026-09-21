@@ -16,7 +16,7 @@ type FormShellProps = {
 
 export function FormShell({ title, description, children, onSubmit, loading, error, submitLabel, onCancel }: FormShellProps) {
     return (
-        <main className="min-h-screen bg-indigo-100 px-6 py-10 dark:bg-indigo-950">
+        <main className="min-h-screen px-6 py-20">
             <form onSubmit={onSubmit} className="mx-auto max-w-2xl rounded-2xl bg-white p-8 shadow-lg">
                 <h1 className="text-3xl font-bold text-indigo-950">{title}</h1>
                 <p className="mt-2 text-gray-500">{description}</p>
