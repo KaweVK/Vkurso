@@ -13,14 +13,14 @@ import MyJourney from './pages/my-journey'
 import InstructorPainel from './pages/instructor-painel';
 import RequireAuth from './components/require-auth'
 import Me from './pages/me/indes';
-import Layout from './pages/layout';
+import Layout from './components/layout';
 
 export function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
 
       <Routes>
@@ -30,10 +30,8 @@ export function AppRoutes() {
           <Route path='/about' element={<About />} />
           <Route path="/course/:slug" element={<Course />} />
           <Route path="/course/:slug/module/:moduleId/lesson/:lessonId" element={<Lesson />} />
-        </Route>
-
-        <Route element={<RequireAuth />}>
-          <Route element={<Layout />}>
+          
+          <Route element={<RequireAuth />}>
             <Route path='/journey' element={<MyJourney />} />
             <Route path='/me' element={<Me />} />
             <Route path='/painel' element={<InstructorPainel />} />
@@ -45,6 +43,7 @@ export function AppRoutes() {
             <Route path="/instructor/courses/:courseId/modules/:moduleId/lessons/:lessonId/edit" element={<LessonForm />} />
           </Route>
         </Route>
+
       </Routes>
     </BrowserRouter>
   );
