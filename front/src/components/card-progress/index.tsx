@@ -1,6 +1,6 @@
 import '../../index.css'
 import type { CourseProgress } from "../../types"
-import Image from '../../assets/image.png'
+import Image from '../../assets/image.webp'
 import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { BookOpenIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';

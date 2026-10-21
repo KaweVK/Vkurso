@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../../index.css'
-import Logo from '../../assets/logo.png'
+import Logo from '../../assets/logo.webp'
 import Loading from '../../components/loading'
 import { useAuth } from '../../hooks/useAuth'
 import axios from 'axios'

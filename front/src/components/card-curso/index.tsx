@@ -1,6 +1,6 @@
 import '../../index.css'
 import type { Course, CourseLevel } from "../../types"
-import Image from '../../assets/image.png'
+import Image from '../../assets/image.webp'
 import courseLevelFormarter from '../../utils/courseLevelFormater';
 
 type Props = {

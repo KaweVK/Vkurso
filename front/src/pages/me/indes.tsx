@@ -1,6 +1,6 @@
 import { EnvelopeIcon, IdentificationIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../../hooks/useAuth";
-import Thumb from '../../assets/image.png';
+import Thumb from '../../assets/image.webp';
 import roleFormarter from "../../utils/roleFormarter";
 
 function Me() {

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import '../../index.css'
-import Logo from '../../assets/logo.png'
+import Logo from '../../assets/logo.webp'
 import Loading from '../../components/loading'
 import authService from '../../services/authService'
 

@@ -1,11 +1,11 @@
 import '../../index.css'
-import Me from '../../assets/about/foto.png'
-import Sist1 from '../../assets/about/sist-1.png'
-import Sist2 from '../../assets/about/sist-2.png'
-import Sist3 from '../../assets/about/sist-3.png'
-import Insta from '../../assets/socials/insta-white.png'
-import Linkedin from '../../assets/socials/linkedin-white.png'
-import Github from '../../assets/socials/github-white.png'
+import Me from '../../assets/about/foto.webp'
+import Sist1 from '../../assets/about/sist-1.webp'
+import Sist2 from '../../assets/about/sist-2.webp'
+import Sist3 from '../../assets/about/sist-3.webp'
+import Insta from '../../assets/socials/insta-white.webp'
+import Linkedin from '../../assets/socials/linkedin-white.webp'
+import Github from '../../assets/socials/github-white.webp'
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, CodeBracketIcon, ArrowLongRightIcon } from "@heroicons/react/24/outline";

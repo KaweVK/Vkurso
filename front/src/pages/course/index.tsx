@@ -5,7 +5,7 @@ import { ArrowRightIcon, ChevronRightIcon, ClockIcon, PencilIcon, PlusIcon, Tras
 import { useCourse } from '../../hooks/useCourses';
 import Loading from '../../components/loading';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import Thumb from '../../assets/image.png';
+import Thumb from '../../assets/image.webp';
 import { useEnrollment } from '../../hooks/useEnrollment';
 import { useAuth } from '../../hooks/useAuth';
 import { useState } from 'react';

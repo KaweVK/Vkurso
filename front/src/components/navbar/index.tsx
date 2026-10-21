@@ -1,6 +1,6 @@
 import '../../index.css'
 import { Link, useNavigate } from 'react-router-dom'
-import Logo from '../../assets/logo.png'
+import Logo from '../../assets/logo.webp'
 import { useAuth } from "../../hooks/useAuth";
 import { ArrowRightEndOnRectangleIcon, ChevronDownIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
