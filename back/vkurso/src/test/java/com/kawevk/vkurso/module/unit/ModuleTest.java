@@ -15,20 +15,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ModuleTest {
-    private User instructor;
-
-    @BeforeEach
-    void setUp() {
-        instructor = new User(
-                "Teste",
-                "teste@gmail.com",
-                "senha",
-                Role.INSTRUCTOR
-        );
-
-        instructor.setId(1L);
-    }
-
     @Nested
     @DisplayName("Add e Remove lesson")
     class lesson {
