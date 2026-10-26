@@ -1,5 +1,8 @@
 package com.kawevk.vkurso.course;
 
+import com.kawevk.vkurso.course.exceptions.CourseWithoutLessonsException;
+import com.kawevk.vkurso.course.exceptions.CourseWithoutModulesException;
+import com.kawevk.vkurso.course.exceptions.ModuleOfOtherCourseException;
 import com.kawevk.vkurso.module.Module;
 import com.kawevk.vkurso.shared.persistence.Auditable;
 import jakarta.persistence.*;
@@ -100,11 +103,11 @@ public class Course extends Auditable {
 
     public void publish() {
         if (modules.isEmpty()) {
-            throw new IllegalStateException("Um curso não pode ser publicado sem módulos.");
+            throw new CourseWithoutModulesException("Um curso não pode ser publicado sem módulos.");
         }
         boolean existeModuloSemAula = modules.stream().anyMatch(m -> m.getLessons().isEmpty());
         if (existeModuloSemAula) {
-            throw new IllegalStateException("Um curso não pode ser publicado com módulos sem aulas.");
+            throw new CourseWithoutLessonsException("Um curso não pode ser publicado com módulos sem aulas.");
         }
         this.status = CourseStatus.PUBLISHED;
     }
@@ -117,7 +120,7 @@ public class Course extends Auditable {
         Module target = modules.stream()
                 .filter(m -> m.getId() != null && m.getId().equals(moduleId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
+                .orElseThrow(() -> new ModuleOfOtherCourseException(
                         "Módulo não pertence a este curso: " + moduleId));
 
         modules.remove(target);

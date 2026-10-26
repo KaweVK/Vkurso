@@ -1,4 +1,4 @@
-package com.kawevk.vkurso.user;
+package com.kawevk.vkurso.user.exceptions;
 
 public class VerificationCodeExceededAttemptsException extends RuntimeException {
     public VerificationCodeExceededAttemptsException() {

@@ -12,8 +12,7 @@ import com.kawevk.vkurso.email.exceptions.InvalidVerificationCodeException;
 import com.kawevk.vkurso.user.dtos.CreateUserRequest;
 import com.kawevk.vkurso.user.dtos.UpdateUserRequest;
 import com.kawevk.vkurso.user.dtos.UserResponse;
-import com.kawevk.vkurso.user.exceptions.UserNotCreatedWithEmailException;
-import com.kawevk.vkurso.user.exceptions.UserNotFoundException;
+import com.kawevk.vkurso.user.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
@@ -23,8 +22,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.SecureRandom;
 
 @Slf4j
 @Service

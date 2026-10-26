@@ -2,6 +2,7 @@ package com.kawevk.vkurso.module;
 
 import com.kawevk.vkurso.course.Course;
 import com.kawevk.vkurso.lesson.Lesson;
+import com.kawevk.vkurso.module.exceptions.LessonOfOtherModuleException;
 import com.kawevk.vkurso.shared.persistence.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -60,7 +61,7 @@ public class Module extends Auditable {
         Lesson target = lessons.stream()
                 .filter(l -> l.getId() != null && l.getId().equals(lessonId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
+                .orElseThrow(() -> new LessonOfOtherModuleException(
                         "Lição não pertence a este curso: " + lessonId));
 
         lessons.remove(target);
