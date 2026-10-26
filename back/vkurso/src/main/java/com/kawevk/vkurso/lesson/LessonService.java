@@ -1,7 +1,5 @@
 package com.kawevk.vkurso.lesson;
 
-import com.kawevk.vkurso.course.Course;
-import com.kawevk.vkurso.course.exceptions.CourseRequestNotAllowed;
 import com.kawevk.vkurso.enrollment.EnrollmentService;
 import com.kawevk.vkurso.lesson.dtos.CreateLessonRequest;
 import com.kawevk.vkurso.lesson.dtos.LessonResponse;
@@ -13,6 +11,7 @@ import com.kawevk.vkurso.lesson.exceptions.VideoAccessDeniedException;
 import com.kawevk.vkurso.module.Module;
 import com.kawevk.vkurso.module.ModuleRepository;
 import com.kawevk.vkurso.module.exceptions.ModuleNotFoundException;
+import com.kawevk.vkurso.shared.persistence.Modifiable;
 import com.kawevk.vkurso.shared.storage.VideoMetadataService;
 import com.kawevk.vkurso.shared.storage.VideoStorageService;
 import com.kawevk.vkurso.user.Role;
@@ -30,7 +29,7 @@ import java.time.Duration;
 
 @Slf4j
 @Service
-public class LessonService {
+public class LessonService extends Modifiable {
 
     private final LessonRepository repository;
     private final VideoStorageService storage;
@@ -161,12 +160,4 @@ public class LessonService {
                 });
     }
 
-    private void ensureCanModify(Course course, User user) {
-        boolean isAdmin = user.getRole() == Role.ADMIN;
-        boolean isOwner = course.getInstructorId().equals(user.getId());
-        if (!isAdmin && !isOwner) {
-            log.warn("User {} attempted to modify course {} without permission", user.getId(), course.getId());
-            throw new CourseRequestNotAllowed();
-        }
-    }
 }

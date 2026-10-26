@@ -10,6 +10,7 @@ import com.kawevk.vkurso.courseCategory.CourseCategory;
 import com.kawevk.vkurso.courseCategory.CourseCategoryRepository;
 import com.kawevk.vkurso.enrollment.EnrollmentRepository;
 import com.kawevk.vkurso.lesson.LessonRepository;
+import com.kawevk.vkurso.shared.persistence.Modifiable;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
 import com.kawevk.vkurso.user.UserRepository;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class CourseService {
+public class CourseService extends Modifiable {
 
     private final CourseRepository repository;
     private final CourseCategoryRepository courseCategoryRepository;
@@ -127,6 +128,7 @@ public class CourseService {
     @Transactional
     public CourseResponse create(CreateCourseRequest request, User user) {
         if (user.getRole() != Role.INSTRUCTOR) {
+            log.warn("Course can't bre created because user is a User");
             throw new CourseRequestNotAllowed();
         }
 
@@ -251,14 +253,5 @@ public class CourseService {
                     log.warn("Course with ID '{}' not found!", id);
                     return new CourseNotFoundException(id);
                 });
-    }
-
-    private void ensureCanModify(Course course, User user) {
-        boolean isAdmin = user.getRole() == Role.ADMIN;
-        boolean isOwner = course.getInstructorId().equals(user.getId());
-        if (!isAdmin && !isOwner) {
-            log.warn("User with ID '{}' is not the owner of course with ID '{}' or admin", user.getId(), course.getId());
-            throw new CourseRequestNotAllowed();
-        }
     }
 }
