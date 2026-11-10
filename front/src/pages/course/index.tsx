@@ -1,7 +1,7 @@
 import '../../index.css';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ChartBarIcon, ChevronDownIcon, PlayIcon, StarIcon } from '@heroicons/react/20/solid';
-import { ArrowRightIcon, ArrowUpTrayIcon, ChevronRightIcon, ClockIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, ChevronRightIcon, ClockIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useCourse } from '../../hooks/useCourses';
 import Loading from '../../components/loading';
 import { useNavigate, useParams, Link } from 'react-router-dom';
