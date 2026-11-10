@@ -121,7 +121,7 @@ public class LessonService extends Modifiable {
             storage.delete(lesson.getVideoKey());
         }
 
-        String key = storage.upload(courseId, lessonId, file);
+        String key = storage.uploadVideo(courseId, lessonId, file);
 
         Duration duration = Duration.ofSeconds(metadataService.getDuration(file));
 

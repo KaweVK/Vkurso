@@ -14,9 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -335,5 +337,19 @@ public class CourseController {
             @AuthenticationPrincipal User user) {
         log.debug("Changing module order. courseId={}, moduleId={}, newOrder={}", id, moduleId, newOrder);
         return service.changeModuleOrder(id, moduleId, newOrder, user);
+    }
+
+    @Operation(
+            summary = "Upload de Thumbnail",
+            description = "Faz o upload da Thumbnail do Curso"
+    )
+    @PostMapping(value = "/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CourseResponse uploadThumbnail(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal User user
+    ) {
+        log.debug("Uploading thumbnail for course ID: {} by user ID: {}", id, user.getId());
+        return service.attachThumbnail(id, file, user);
     }
 }

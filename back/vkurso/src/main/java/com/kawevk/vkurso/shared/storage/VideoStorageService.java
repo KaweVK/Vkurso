@@ -27,8 +27,8 @@ public class VideoStorageService {
      * Faz upload e retorna a OBJECT KEY (não a URL).
      * Persistir a key na Lesson — nunca a URL completa.
      */
-    public String upload(Long courseId, Long lessonId, MultipartFile file) {
-        String key = buildKey(courseId, lessonId, file.getOriginalFilename());
+    public String uploadVideo(Long courseId, Long lessonId, MultipartFile file) {
+        String key = buildVideoKey(courseId, lessonId, file.getOriginalFilename());
         try (InputStream in = file.getInputStream()) {
             internalClient.putObject(
                     PutObjectArgs.builder()
@@ -40,7 +40,24 @@ public class VideoStorageService {
             );
             return key;
         } catch (Exception e) {
-            throw new StorageException("Falha ao subir vídeo: " + e.getMessage(), e);
+            throw new StorageException("Falha ao subir arquivo: " + e.getMessage(), e);
+        }
+    }
+
+    public String uploadPhoto(Long courseId, MultipartFile file) {
+        String key = buildPhotoKey(courseId, file.getOriginalFilename());
+        try (InputStream in = file.getInputStream()) {
+            internalClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(props.bucket())
+                            .object(key)
+                            .stream(in, file.getSize(), -1)
+                            .contentType(file.getContentType())
+                            .build()
+            );
+            return getUrl(key);
+        } catch (Exception e) {
+            throw new StorageException("Falha ao fazer upload do arquivo: " + e.getMessage(), e);
         }
     }
 
@@ -58,7 +75,21 @@ public class VideoStorageService {
                             .build()
             );
         } catch (Exception e) {
-            throw new StorageException("Falha ao gerar URL do vídeo: " + e.getMessage(), e);
+            throw new StorageException("Falha ao gerar URL do arquivo: " + e.getMessage(), e);
+        }
+    }
+
+    public String getUrl(String objectKey) {
+        try {
+            return publicClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.GET)
+                            .bucket(props.bucket())
+                            .object(objectKey)
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new StorageException("Falha ao gerar URL do arquivo: " + e.getMessage(), e);
         }
     }
 
@@ -71,15 +102,23 @@ public class VideoStorageService {
                             .build()
             );
         } catch (Exception e) {
-            throw new StorageException("Falha ao remover vídeo: " + e.getMessage(), e);
+            throw new StorageException("Falha ao remover arquivo: " + e.getMessage(), e);
         }
     }
 
-    private String buildKey(Long courseId, Long lessonId, String originalName) {
+    private String buildVideoKey(Long courseId, Long lessonId, String originalName) {
         String ext = "";
         if (originalName != null && originalName.contains(".")) {
             ext = originalName.substring(originalName.lastIndexOf('.'));
         }
         return "courses/%d/lessons/%d/%s%s".formatted(courseId, lessonId, UUID.randomUUID(), ext);
+    }
+
+    private String buildPhotoKey(Long courseId, String originalName) {
+        String ext = "";
+        if (originalName != null && originalName.contains(".")) {
+            ext = originalName.substring(originalName.lastIndexOf('.'));
+        }
+        return "courses/%d/%s%s".formatted(courseId, UUID.randomUUID(), ext);
     }
 }

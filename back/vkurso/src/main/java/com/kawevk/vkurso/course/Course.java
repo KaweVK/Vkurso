@@ -60,6 +60,9 @@ public class Course extends Auditable {
     @OrderBy("orderIndex ASC")
     private List<Module> modules = new ArrayList<>();
 
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
+
     protected Course() {}
 
     public Course(String title, String description, BigDecimal price, CourseLevel level, Long instructorId) {

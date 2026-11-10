@@ -63,6 +63,11 @@ public record CourseResponse(
         )
         List<ModuleResponse> modules,
         @Schema(
+                description = "URL da Thumbnail",
+                example = "thumbnail/asdasd/asdad"
+        )
+        String thumbnailUrl,
+        @Schema(
                 description = "Total de lessons",
                 example = "1"
         )

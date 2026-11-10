@@ -5,6 +5,7 @@ export interface CourseProgress {
     title: string,
     slug: string,
     description: string,
+    thumbnailUrl: string,
     completedLessons: number,
     totalLessons: number,
     progressPercentage: number,

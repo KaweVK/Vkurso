@@ -59,6 +59,15 @@ const courseService = {
     async delete(id: number): Promise<void> {
         await api.delete(`/courses/${id}`)
     },
+
+    async uploadThumbnail(courseId: number, file: File): Promise<void> {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await api.post(`/courses/${courseId}/upload`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        return res.data;
+    }
 };
 
 export default courseService;

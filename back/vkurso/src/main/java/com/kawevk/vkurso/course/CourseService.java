@@ -11,6 +11,7 @@ import com.kawevk.vkurso.courseCategory.CourseCategoryRepository;
 import com.kawevk.vkurso.enrollment.EnrollmentRepository;
 import com.kawevk.vkurso.lesson.LessonRepository;
 import com.kawevk.vkurso.shared.persistence.Modifiable;
+import com.kawevk.vkurso.shared.storage.VideoStorageService;
 import com.kawevk.vkurso.user.Role;
 import com.kawevk.vkurso.user.User;
 import com.kawevk.vkurso.user.UserRepository;
@@ -23,7 +24,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,14 +43,16 @@ public class CourseService extends Modifiable {
     private final UserRepository userRepository;
     private final LessonRepository lessonRepository;
     private final CourseMapper mapper;
+    private final VideoStorageService storage;
 
-    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, EnrollmentRepository enrollmentRepository, UserRepository userRepository, LessonRepository lessonRepository, CourseMapper mapper) {
+    public CourseService(CourseRepository repository, CourseCategoryRepository courseCategoryRepository, EnrollmentRepository enrollmentRepository, UserRepository userRepository, LessonRepository lessonRepository, CourseMapper mapper, VideoStorageService storage) {
         this.repository = repository;
         this.courseCategoryRepository = courseCategoryRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.userRepository = userRepository;
         this.lessonRepository = lessonRepository;
         this.mapper = mapper;
+        this.storage = storage;
     }
 
     @Transactional(readOnly = true)
@@ -128,7 +133,7 @@ public class CourseService extends Modifiable {
     @Transactional
     public CourseResponse create(CreateCourseRequest request, User user) {
         if (user.getRole() != Role.INSTRUCTOR) {
-            log.warn("Course can't bre created because user is a User");
+            log.warn("Course can't be created because user is a User");
             throw new CourseRequestNotAllowed();
         }
 
@@ -149,6 +154,24 @@ public class CourseService extends Modifiable {
     }
 
     @Transactional
+    @CacheEvict(value = {"modules", "courses"}, allEntries = true)
+    public CourseResponse attachThumbnail(Long courseId, MultipartFile file, User user) {
+        Course course = getCourseOrThrow(courseId);
+
+        ensureCanModify(course, user);
+
+        if (course.getThumbnailUrl() != null) {
+            storage.delete(course.getThumbnailUrl());
+        }
+
+        String url = storage.uploadPhoto(courseId, file);
+
+        course.setThumbnailUrl(url);
+
+        return toResponse(course);
+    }
+
+    @Transactional
     @CacheEvict(value = "courses", allEntries = true)
     public CourseResponse update(Long id, UpdateCourseRequest request, User user) {
         Course course = getCourseOrThrow(id);
@@ -158,7 +181,7 @@ public class CourseService extends Modifiable {
         String oldSlug = course.getSlug();
         String novoSlug = course.toSlug(request.title());
 
-        if (!novoSlug.equals(course.getSlug()) && repository.existsBySlug(novoSlug)) {
+        if (!novoSlug.equals(oldSlug) && repository.existsBySlug(novoSlug)) {
             log.warn("Course updated with slug '{}' already exists!", novoSlug);
             throw new DuplicateSlugException(novoSlug);
         }
@@ -169,9 +192,7 @@ public class CourseService extends Modifiable {
         course.setLevel(request.level());
         course.setPrice(request.price());
 
-        CourseResponse response = toResponse(course);
-
-        return response;
+        return toResponse(course);
     }
 
     @Transactional

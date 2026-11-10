@@ -12,6 +12,7 @@ function CourseForm() {
     const [description, setDescription] = useState('');
     const [level, setLevel] = useState<CourseLevel>('BEGINNER');
     const [price, setPrice] = useState('0');
+    const [thumbnail, setThumbnail] = useState<File>()
     const [loading, setLoading] = useState(editing);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -32,14 +33,25 @@ function CourseForm() {
         setSaving(true);
         try {
             const data = { title, description, level, price: Number(price) };
-            const course = editing ? await courseService.update(Number(courseId), data) : await courseService.create(data);
+            const course = editing
+                ? await courseService.update(Number(courseId), data)
+                : await courseService.create(data);
+            if (thumbnail) await courseService.uploadThumbnail(Number(courseId), thumbnail)
             navigate(`/course/${course.slug}`);
         } catch {
             setError('Não foi possível salvar o curso. Confira os dados e tente novamente.');
         } finally { setSaving(false); }
     }
 
-    if (loading) return <FormShell title="Carregando curso" description="" onSubmit={(event) => event.preventDefault()} onCancel={() => navigate(-1)} loading error="" submitLabel="Salvar"><></></FormShell>;
+    if (loading) return (
+        <FormShell title="Carregando curso" description=""
+            onSubmit={(event) => event.preventDefault()}
+            onCancel={() => navigate(-1)}
+            loading
+            error=""
+            submitLabel="Salvar"><></>
+        </FormShell>
+    );
 
     return <FormShell title={editing ? 'Editar curso' : 'Criar curso'} description="Apresente o curso com informações claras para seus alunos." onSubmit={handleSubmit} onCancel={() => navigate(-1)} loading={saving} error={error} submitLabel={editing ? 'Salvar alterações' : 'Criar curso'}>
         <div>
@@ -61,6 +73,10 @@ function CourseForm() {
                 <FieldLabel htmlFor="price">Preço</FieldLabel>
                 <input id="price" required min="0" step="0.01" type="number" className={inputClassName} value={price} onChange={(event) => setPrice(event.target.value)} />
             </div>
+        </div>
+        <div>
+            <FieldLabel htmlFor="thumbnail">Vídeo (opcional)</FieldLabel>
+            <input id="thumbnail" type="file" accept="image/jpeg, image/png, image/webp" className="mt-2 block w-full rounded-lg border border-indigo-200 p-3 text-sm" onChange={(event) => setThumbnail(event.target.files?.[0])} />
         </div>
     </FormShell>;
 }

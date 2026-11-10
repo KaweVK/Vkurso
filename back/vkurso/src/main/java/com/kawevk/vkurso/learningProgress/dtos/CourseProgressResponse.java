@@ -5,6 +5,7 @@ public record CourseProgressResponse(
         String title,
         String slug,
         String description,
+        String thumbnailUrl,
         Long completedLessons,
         Long totalLessons,
         Integer progressPercentage,

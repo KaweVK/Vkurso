@@ -1,6 +1,6 @@
 import '../../index.css'
 import type { CourseProgress } from "../../types"
-import Image from '../../assets/image.webp'
+import Thumbnail from '../../../public/thumb.webp'
 import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { BookOpenIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
@@ -17,7 +17,7 @@ export default function CardProgress({ course }: Readonly<Props>) {
             <div className='flex'>
                 <div className="relative m-4 rounded-xl h-[90px] w-[90px] shrink-0 overflow-hidden">
                     <img
-                        src={Image}
+                        src={(course?.thumbnailUrl ? course?.thumbnailUrl : Thumbnail)}
                         alt="Thumbnail do curso"
                         className="h-full w-full object-cover"
                     />

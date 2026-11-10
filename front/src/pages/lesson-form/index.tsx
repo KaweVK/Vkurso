@@ -37,17 +37,32 @@ function LessonForm() {
                 : await lessonService.create(Number(courseId), Number(moduleId), data);
             if (video) await lessonService.uploadVideo(Number(courseId), Number(moduleId), lesson.id, video);
             navigate(`/course/${course.slug}`);
-        } catch { setError('Não foi possível salvar a aula. Confira os dados e tente novamente.'); }
-        finally { setSaving(false); }
+        } catch {
+            setError('Não foi possível salvar a aula. Confira os dados e tente novamente.');
+        } finally {
+            setSaving(false);
+        }
     }
 
     if (loading) return <FormShell title="Carregando aula" description="" onSubmit={(event) => event.preventDefault()} onCancel={() => navigate(-1)} loading error="" submitLabel="Salvar"><></></FormShell>;
 
     return <FormShell title={editing ? 'Editar aula' : 'Criar aula'} description="Adicione uma aula objetiva e, se quiser, seu vídeo." onSubmit={handleSubmit} onCancel={() => navigate(-1)} loading={saving} error={error} submitLabel={editing ? 'Salvar alterações' : 'Criar aula'}>
-        <div><FieldLabel htmlFor="title">Título</FieldLabel><input id="title" required maxLength={150} className={inputClassName} value={title} onChange={(event) => setTitle(event.target.value)} /></div>
-        <div><FieldLabel htmlFor="description">Descrição</FieldLabel><textarea id="description" rows={5} className={inputClassName} value={description} onChange={(event) => setDescription(event.target.value)} /></div>
-        <div><FieldLabel htmlFor="orderIndex">Ordem</FieldLabel><input id="orderIndex" required min="0" type="number" className={inputClassName} value={orderIndex} onChange={(event) => setOrderIndex(event.target.value)} /></div>
-        <div><FieldLabel htmlFor="video">Vídeo (opcional)</FieldLabel><input id="video" type="file" accept="video/*" className="mt-2 block w-full rounded-lg border border-indigo-200 p-3 text-sm" onChange={(event) => setVideo(event.target.files?.[0])} /></div>
+        <div>
+            <FieldLabel htmlFor="title">Título</FieldLabel>
+            <input id="title" required maxLength={150} className={inputClassName} value={title} onChange={(event) => setTitle(event.target.value)} />
+        </div>
+        <div>
+            <FieldLabel htmlFor="description">Descrição</FieldLabel>
+            <textarea id="description" rows={5} className={inputClassName} value={description} onChange={(event) => setDescription(event.target.value)} />
+        </div>
+        <div>
+            <FieldLabel htmlFor="orderIndex">Ordem</FieldLabel>
+            <input id="orderIndex" required min="0" type="number" className={inputClassName} value={orderIndex} onChange={(event) => setOrderIndex(event.target.value)} />
+        </div>
+        <div>
+            <FieldLabel htmlFor="video">Vídeo (opcional)</FieldLabel>
+            <input id="video" type="file" accept="video/*" className="mt-2 block w-full rounded-lg border border-indigo-200 p-3 text-sm" onChange={(event) => setVideo(event.target.files?.[0])} />
+        </div>
     </FormShell>;
 }
 

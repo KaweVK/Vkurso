@@ -1,6 +1,6 @@
 import '../../index.css'
 import type { Course, CourseLevel } from "../../types"
-import Image from '../../assets/image.webp'
+import Thumbnail from '../../../public/thumb.webp'
 import courseLevelFormarter from '../../utils/courseLevelFormater';
 
 type Props = {
@@ -33,7 +33,7 @@ export default function CardCurso({ course }: Readonly<Props>) {
 
         <div className="relative h-[140px] w-full shrink-0 overflow-hidden">
             <img
-                src={Image}
+                src={(course?.thumbnailUrl ? course?.thumbnailUrl : Thumbnail)}
                 alt="Thumbnail do curso"
                 className="h-full w-full object-cover"
             />

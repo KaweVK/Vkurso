@@ -1,11 +1,11 @@
 import '../../index.css';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ChartBarIcon, ChevronDownIcon, PlayIcon, StarIcon } from '@heroicons/react/20/solid';
-import { ArrowRightIcon, ChevronRightIcon, ClockIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, ArrowUpTrayIcon, ChevronRightIcon, ClockIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useCourse } from '../../hooks/useCourses';
 import Loading from '../../components/loading';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import Thumb from '../../assets/image.webp';
+import Thumb from '../../../public/thumb.webp';
 import { useEnrollment } from '../../hooks/useEnrollment';
 import { useAuth } from '../../hooks/useAuth';
 import { useState } from 'react';
@@ -151,7 +151,9 @@ function Course() {
 
                 <div className="flex items-stretch">
                     <div className="w-3/5">
-                        <img src={Thumb} alt="Thumbnail" className="rounded-3xl mb-[20px]" />
+                        <div className='relative'>
+                            <img src={(course?.thumbnailUrl ? course?.thumbnailUrl : Thumb)} alt="Thumbnail" className="rounded-3xl mb-[20px] object-cover" />
+                        </div>
 
                         {/* Menu de aulas e módulos */}
                         <div>

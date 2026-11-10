@@ -71,6 +71,7 @@ public class LearningProgressService {
                     course.getTitle(),
                     course.getSlug(),
                     course.getDescription(),
+                    course.getThumbnailUrl(),
                     completedLessons,
                     totalLessons,
                     percentage,
