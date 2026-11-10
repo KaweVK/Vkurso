@@ -5,14 +5,17 @@ import com.kawevk.vkurso.email.dtos.VerifyEmailRequest;
 import com.kawevk.vkurso.user.dtos.CreateUserRequest;
 import com.kawevk.vkurso.user.dtos.UpdateUserRequest;
 import com.kawevk.vkurso.user.dtos.UserResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -84,5 +87,19 @@ public class UserController {
         log.debug("Deleting user with id: {}", id);
         service.delete(id, user);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "Upload de Foto de Perfil",
+            description = "Faz o upload da foto de perfil do usuário"
+    )
+    @PostMapping(value = "/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public UserResponse uploadThumbnail(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal User user
+    ) {
+        log.debug("Uploading photo for user ID: {} by user ID: {}", id, user.getId());
+        return service.attachPhoto(id, file, user);
     }
 }

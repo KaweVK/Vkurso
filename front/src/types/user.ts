@@ -4,5 +4,6 @@ export interface User {
     id: number, 
     fullName: string,
     email: string,
-    role: Role
+    role: Role,
+    photoUrl: string
 }

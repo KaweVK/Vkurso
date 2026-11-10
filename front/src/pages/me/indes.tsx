@@ -1,10 +1,12 @@
-import { EnvelopeIcon, IdentificationIcon, UserIcon } from "@heroicons/react/24/outline";
+import { EnvelopeIcon, IdentificationIcon, PencilIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../../hooks/useAuth";
-import Thumb from '../../assets/image.webp';
+import UserPhoto from '../../../public/user.webp';
 import roleFormarter from "../../utils/roleFormarter";
+import { Link } from "react-router-dom";
 
 function Me() {
     const { user } = useAuth();
+    const isUserOwnerOrADMIN = (user?.id) || Boolean(user?.role === 'ADMIN');
 
     return (
         <main>
@@ -14,7 +16,7 @@ function Me() {
                     {/* Paienl azul */}
                     <div className="flex rounded-lg bg-blue-900 w-1/2 text-white items-center p-2">
                         <div>
-                            <img src={Thumb} alt={`Foto de ${user?.fullName.split(" ").at(0)}`} className='rounded-full size-36 m-8 border border-white border-4' />
+                            <img src={user?.photoUrl ? user?.photoUrl : UserPhoto} alt={`Foto de ${user?.fullName.split(" ").at(0)}`} className='rounded-full size-36 m-8 border border-white border-4' />
                         </div>
 
                         <div className="flex flex-col gap-1">
@@ -34,6 +36,19 @@ function Me() {
                                 <UserIcon className="size-10 p-1 rounded-md bg-blue-500/30 text-blue-600" />
                                 <p className="ml-4 text-lg font-semibold">Informações pessoais</p>
                             </div>
+                            {isUserOwnerOrADMIN && (
+                                <div
+                                    className="flex shrink-0 items-center gap-1"
+                                    onClick={(event) => event.stopPropagation()}
+                                >
+                                    <Link
+                                        to={`/me/edit`}
+                                        state={{ userId: Number (user?.id)}}                                        
+                                        className="rounded-md p-2 text-indigo-600 hover:bg-indigo-50"
+                                    >
+                                        <PencilIcon className="h-5 w-5" />
+                                    </Link>
+                                </div>)}
                         </div>
 
                         <div className="flex justify-between border-red border-b px-3 py-2">

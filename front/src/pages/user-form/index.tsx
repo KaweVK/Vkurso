@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FieldLabel, FormShell, inputClassName } from "../../components/form";
 import { useEffect, useState } from "react";
 import UserService from "../../services/userService";
@@ -7,21 +7,25 @@ import type { Role } from "../../types";
 function UserForm() {
     const { userId } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const [loading, setLoading] = useState<boolean>(true)
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [role, setRole] = useState<Role>('USER');
+    const [photo, setPhoto] = useState<File>()
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
+    const id = userId ?? location.state?.userId;
+
     useEffect(() => {
-        UserService.findById(Number(userId)).then((user) => {
+        UserService.findById(Number(id)).then((user) => {
             setFullName(user.fullName);
             setEmail(user.email);
             setRole(user.role);
-        }).catch(() => setError('Não foi possível carregar o curso'))
+        }).catch(() => setError('Não foi possível carregar o usuário'))
             .finally(() => setLoading(false));
-    }, [userId])
+    }, [id])
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -29,8 +33,9 @@ function UserForm() {
         setSaving(true);
         try {
             const data = { fullName, email, role };
-            await UserService.update(Number(userId), data);
-            navigate(`/admin/users`);
+            await UserService.update(Number(id), data);
+            if (photo) await UserService.uploadPhoto(Number(id), photo)
+            void navigate(userId ? '/admin/users' : '/me');
         } catch {
             setError('Não foi possível salvar o curso. Confira os dados e tente novamente.');
         } finally { setSaving(false); }
@@ -56,11 +61,11 @@ function UserForm() {
             onSubmit={handleSubmit}
             onCancel={() => navigate(-1)}
             loading={saving}
-            error={error}   
+            error={error}
             submitLabel={'Salvar alterações'}
         >
             <div>
-                <FieldLabel htmlFor="title">Título</FieldLabel>
+                <FieldLabel htmlFor="title">Nome Completo</FieldLabel>
                 <input
                     id="fullname"
                     required
@@ -94,6 +99,16 @@ function UserForm() {
                         <option value="ADMIN">Administrador</option>
                     </select>
                 </div>
+            </div>
+            <div>
+                <FieldLabel htmlFor="photo">Foto de Perfil (opcional)</FieldLabel>
+                <input
+                    id="Photo"
+                    type="file"
+                    accept="image/jpeg, image/png, image/webp"
+                    className="mt-2 block w-full rounded-lg border border-indigo-200 p-3 text-sm"
+                    onChange={(event) => setPhoto(event.target.files?.[0])}
+                />
             </div>
         </FormShell>
     );

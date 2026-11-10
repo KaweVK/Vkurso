@@ -30,6 +30,8 @@ public class User extends Auditable implements UserDetails {
     private Role role;
     @Column(name="email_verified", nullable = false)
     private boolean emailVerified;
+    @Column(name = "photo_url")
+    private String photoUrl;
 
     protected User() {}
 

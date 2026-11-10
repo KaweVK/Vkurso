@@ -9,6 +9,7 @@ import com.kawevk.vkurso.email.exceptions.EmailAlreadyExistsException;
 import com.kawevk.vkurso.email.exceptions.EmailAlreadyVerifiedException;
 import com.kawevk.vkurso.email.exceptions.EmailNotVerifiedException;
 import com.kawevk.vkurso.email.exceptions.InvalidVerificationCodeException;
+import com.kawevk.vkurso.shared.storage.VideoStorageService;
 import com.kawevk.vkurso.user.dtos.CreateUserRequest;
 import com.kawevk.vkurso.user.dtos.UpdateUserRequest;
 import com.kawevk.vkurso.user.dtos.UserResponse;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -32,13 +34,15 @@ public class UserService implements UserDetailsService {
     private final EmailService emailService;
     private final EmailVerificationService emailVerificationService;
     private final PasswordEncoder passwordEncoder;
+    private final VideoStorageService storage;
 
-    public UserService(UserRepository repository, CourseService courseService, EmailService emailService, EmailVerificationService emailVerificationService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository repository, CourseService courseService, EmailService emailService, EmailVerificationService emailVerificationService, PasswordEncoder passwordEncoder, VideoStorageService storage) {
         this.repository = repository;
         this.courseService = courseService;
         this.emailService = emailService;
         this.emailVerificationService = emailVerificationService;
         this.passwordEncoder = passwordEncoder;
+        this.storage = storage;
     }
 
     @Transactional(readOnly = true)
@@ -169,6 +173,24 @@ public class UserService implements UserDetailsService {
         }
 
         return UserResponse.from(repository.save(user));
+    }
+
+    @Transactional
+    @CacheEvict(value = {"courses"}, allEntries = true)
+    public UserResponse attachPhoto(Long userId, MultipartFile file, User loggedUser) {
+        User user = getUserOrThrow(userId);
+
+        ensureCanModify(user, loggedUser);
+
+        if (user.getPhotoUrl() != null) {
+            storage.delete(loggedUser.getPhotoUrl());
+        }
+
+        String url = storage.uploadPhoto(user.getId(), file);
+
+        user.setPhotoUrl(url);
+
+        return UserResponse.from(user);
     }
 
     @Transactional

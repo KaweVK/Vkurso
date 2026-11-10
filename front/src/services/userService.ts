@@ -19,6 +19,15 @@ const UserService = {
 
     async delete(id: number): Promise<void> {
         await api.delete(`/users/${id}`)
+    },
+
+    async uploadPhoto(userId: number, file: File): Promise<void> {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await api.post(`/users/${userId}/upload`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        return res.data;
     }
 
 }
