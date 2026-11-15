@@ -22,8 +22,7 @@ function Me() {
                         <div className="flex flex-col gap-1">
                             <p className="text-3xl font-semibold">{user?.fullName}</p>
                             <p>{user?.email}</p>
-                            <p>Aprendendo hoje, construindo o amanhã!</p>
-                            <div className="flex rounded-full bg-sky-600 max-w-20 justify-center py-2 mt-2">
+                            <div className="flex rounded-full bg-sky-600 justify-center py-2 mt-2">
                                 <p>{roleFormarter(user?.role)}</p>
                             </div>
                         </div>

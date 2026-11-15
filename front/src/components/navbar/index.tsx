@@ -18,11 +18,11 @@ export default function Navbar() {
     }
 
     return (
-        <div className="flex bg-white dark:bg-blue-900 w-full h-[50px] justify-center font-mono">
+        <div className="flex bg-white dark:bg-blue-900 w-full h-[55px] justify-center font-mono">
             <div className='flex justify-between w-full px-5'>
                 <div className='flex'>
-                    <img src={Logo} alt="logo" className=' h-[90%] self-center' />
-                    <p className='self-center p-2 dark:text-blue-200'>Vkursos</p>
+                    <img src={Logo} alt="logo" className='h-[90%] self-center block' />
+                    <p className='self-center p-2 text-blue-200 hidden sm:block'>Vkursos</p>
                 </div>
                 <div className='flex w-5/6 justify-center space-x-4 '>
                     <Link to='/' className='self-center p-2 dark:text-blue-200 hover:underline'>Início</Link>
@@ -74,11 +74,12 @@ export default function Navbar() {
                         )}
                     </div>
                 ) : (
-                    <Link to='/login'>
-                        <button className='flex items-center bg-blue-400 dark:bg-white rounded-2xl m-[9px] p-2'>
+                    <div>
+                        <Link to='/login' className='flex items-center bg-white rounded-2xl m-2 p-2'>
                             Login <ArrowRightEndOnRectangleIcon className="ml-2 text-black h-5 w-5" />
-                        </button>
                     </Link>
+                    </div>
+            
                 )}
             </div>
         </div>
