@@ -35,4 +35,11 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
             @Param("instructorId") Long instructorId,
             @Param("status") CourseStatus status,
             Pageable pageable);
+
+    @Query("""
+    SELECT COUNT(c)
+    FROM Course c
+    WHERE c.status = com.kawevk.vkurso.course.CourseStatus.PUBLISHED
+    """)
+    Long countPublishedCourses();
 }

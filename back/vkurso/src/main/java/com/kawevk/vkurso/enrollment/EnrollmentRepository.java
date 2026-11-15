@@ -15,10 +15,10 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     @Query("""
     SELECT e.courseId
-    FROM Enrollment e
-    WHERE e.status = "ACTIVE"
-    GROUP BY e.courseId
-    ORDER BY COUNT(e.id) DESC
+        FROM Enrollment e
+            WHERE e.status = "ACTIVE"
+                GROUP BY e.courseId
+                    ORDER BY COUNT(e.id) DESC
     """)
     List<Long> findTop5MostEnrolledCourseIds(Pageable pageable);
 
@@ -29,4 +29,11 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
                 AND e.courseId = :courseId
     """)
     Long countByCourseId(@Param("courseId") Long courseId);
+
+    @Query("""
+    SELECT COUNT(e)
+        FROM Enrollment e
+            WHERE e.status = "ACTIVE"
+    """)
+    Long totalActiveEnrollments();
 }

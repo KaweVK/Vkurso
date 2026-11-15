@@ -1,4 +1,23 @@
+import { useEffect, useState } from "react";
+import metricsService from "../../../services/metricsService";
+import type { Metrics } from "../../../types/metrics";
+
 export default function Dashboard() {
+  const [metrics, setMetrics] = useState<Metrics>()
+
+  useEffect(() => {
+    const loadMetrics = async () => {
+      try {
+        const data = await metricsService.getMetrics();
+        setMetrics(data)
+      } catch (error) {
+        console.error('Erro ao carregar progresso:', error);
+      }
+    }
+
+    loadMetrics();
+  }, [])
+
   return (
     <div className="py-20">
       <div className="px-10">
@@ -17,27 +36,27 @@ export default function Dashboard() {
             </p>
 
             <p className="mt-2 text-3xl font-bold">
-              125
+              {metrics?.totalUsers}
             </p>
           </div>
 
           <div className="rounded-lg border bg-white p-5">
             <p className="text-sm text-gray-500">
-              Cursos
+              Cursos publicados
             </p>
 
             <p className="mt-2 text-3xl font-bold">
-              32
+              {metrics?.totalPublishedCourses}
             </p>
           </div>
 
           <div className="rounded-lg border bg-white p-5">
             <p className="text-sm text-gray-500">
-              Matrículas
+              Matrículas ativas
             </p>
 
             <p className="mt-2 text-3xl font-bold">
-              487
+              {metrics?.totalEnrollments}
             </p>
           </div>
         </div>
