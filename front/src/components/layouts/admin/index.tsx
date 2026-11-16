@@ -30,10 +30,10 @@ function AdminLayout() {
     return (
         <div>
             <div className='flex flex-col bg-blue-950 h-[320px] px-[10%] justify-center rounded-b-[30px]'>
-                <p className='font-bold text-6xl text-white'>Catálogo de cursos</p>
-                <p className='text-3xl text-white mt-4'>Escolha o curso ideal para o seu momento.</p>
+                <p className='font-bold text-5xl lg:text-6xl text-white'>Administração</p>
+                <p className='text-2xl lg:text-3xl text-white mt-4'>Administre todo o sistema Vkurso.</p>
             </div>
-            <div className="min-h-screen flex px-10">
+            <div className="flex flex-col lg:flex-row min-h-screen px-10">
                 <Sidebar
                     title='Painel Admin'
                     description='Administre aqui os principais recursos do Vkurso'

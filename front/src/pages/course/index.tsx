@@ -149,8 +149,8 @@ function Course() {
         <main className='bg-indigo-100/30'>
             <div className="px-10 py-8">
 
-                <div className="flex items-stretch">
-                    <div className="w-3/5">
+                <div className="flex flex-col lg:flex-row lg:items-stretch">
+                    <div className="lg:w-3/5">
                         <div className='relative'>
                             <img src={(course?.thumbnailUrl ? course?.thumbnailUrl : Thumb)} alt="Thumbnail" className="rounded-3xl mb-[20px] object-cover" />
                         </div>
@@ -195,11 +195,11 @@ function Course() {
                                             {isCourseOwnerOrADMIN && (
                                                 <div
                                                     className="flex shrink-0 items-center gap-1"
-                                                    onClick={(event) => event.stopPropagation()}
                                                 >
                                                     <Link
                                                         to={`/instructor/courses/${course.id}/modules/${module.id}/edit`}
                                                         className="rounded-md p-2 text-indigo-600 hover:bg-indigo-50"
+                                                        onClick={(event) => event.stopPropagation()}
                                                     >
                                                         <PencilIcon className="h-5 w-5" />
                                                     </Link>
@@ -216,8 +216,7 @@ function Course() {
 
                                             {/* Chevron */}
                                             <ChevronDownIcon
-                                                className={`mt-1 h-5 w-5 shrink-0 text-indigo-600 transition-transform ${openModule === module.id ? 'rotate-180' : ''
-                                                    }`}
+                                                className={`mt-1 h-5 w-5 shrink-0 text-indigo-600 transition-transform ${openModule === module.id ? 'rotate-180' : ''}`}
                                             />
                                         </button>
 
@@ -240,7 +239,7 @@ function Course() {
                                                                 {user && (isCourseOwnerOrADMIN || enrolled || lesson.freePreview) ? (
                                                                     <Link to={`/course/${slug}/module/${module.id}/lesson/${lesson.id}`} className="min-w-0 flex-1 px-5 py-3 text-sm font-medium text-gray-700">{lesson.title}</Link>
                                                                 ) : <div className="block flex-1 cursor-not-allowed p-3">{lesson.title}</div>}
-                                                                <p className='flex px-2 min-h-7 min-w-10 shrink-0 items-center justify-center rounded-full bg-indigo-300/50 text-sm font-semibold'>
+                                                                <p className='flex px-2 min-h-7 min-w-10 shrink-0 items-center justify-center rounded-full bg-indigo-300/50 m-2 text-sm font-semibold'>
                                                                     {lesson.durationSeconds != null
                                                                         ? timeFormater(lesson.durationSeconds)
                                                                         : "Sem duração"}
@@ -258,8 +257,8 @@ function Course() {
                         </div>
                     </div>
 
-                    {/* Bloco de infos. - lateral direita */}
-                    <div className="flex flex-col ml-4 w-2/5 rounded-xl bg-white px-10 py-5">
+                    {/* Bloco de infos */}
+                    <div className="flex flex-col mt-2 lg:mt-0 lg:ml-4 lg:w-2/5 rounded-xl bg-white px-10 py-5">
                         {/* Categorias */}
                         <div className='flex mb-2 items-center'>
                             <ul className="text-lg text-black">
@@ -279,12 +278,12 @@ function Course() {
                                 </Link>
                             )}
                         </div>
-                        <div className="flex items-start justify-between">
-                            <h1 className="text-4xl font-bold text-black">
+                        <div className="flex flex-col md:flex-row items-start justify-between">
+                            <h1 className="text-3xl md:text-4xl font-bold text-black">
                                 {course?.title}
                             </h1>
 
-                            <div className="flex items-center">
+                            <div className="flex items-center mt-3 md:mt-0">
                                 {isCourseOwnerOrADMIN && displayedStatus === 'DRAFT' &&
                                     <button
                                         type="button"
@@ -334,53 +333,55 @@ function Course() {
                         <div className='mt-4 flex justify-between max-w-[280px] items-center text-gray-700'>
                             <div className='flex items-center'>
                                 <StarIcon className='text-yellow-400 h-5 w-5' />
-                                <p className='px-2'>4,9</p>
-                                <p>(231 avaliações)</p>
+                                <p className='px-2'></p>
+                                <p>(0 avaliações)</p>
                             </div>
                             <p className='px-5'>|</p>
                             <p>{course?.totalEnrollments ?? 0} {(course?.totalEnrollments ?? 0) > 1 ? 'Alunos' : 'Aluno'}</p>
 
                         </div>
 
-                        <div className="line-clamp-4 leading-7 mt-[15px] text-xl text-gray-700">
+                        <div className="line-clamp-4 leading-7 mt-[15px] text-lg md:text-xl text-gray-700">
                             {course?.description}
                         </div>
 
                         {/* Instrutor */}
                         <div className='mt-10'>
-                            <p className='text-2xl font-semibold mb-4'>
+                            <p className='text-xl md:text-2xl font-semibold mb-4'>
                                 Instrutor do curso
                             </p>
 
-                            <div className='bg-indigo-50/40 flex rounded-xl border border-gray-200 shadow-sm p-2 m-2 items-center justify-between'>
+                            <div className='bg-indigo-50/40 flex rounded-xl border border-gray-200 shadow-sm p-2 md:m-2 items-center justify-between'>
                                 <div className='flex items-center'>
                                     <img src={Thumb} alt="Foto do instrutor" className='rounded-full size-16 m-2' />
                                     <div className='flex flex-col'>
                                         <p className='font-semibold text-lg'>{course?.instructor.fullName}</p>
-                                        <p className='text-indigo-700 font-semibold'>{course?.instructor.email}</p>
+                                        <p className='text-indigo-700 font-semibold md:flex hidden'>{course?.instructor.email}</p>
                                     </div>
                                 </div>
                                 <ChevronRightIcon className='w-5 h-5' />
                             </div>
                         </div>
 
-                        <div className='flex justify-between py-10'>
-                            <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
-                                <PlayIcon className='size-9 text-indigo-700' />
+                        <div className='flex justify-between py-10 text-sm md:text-md '>
+                            <div className='flex flex-col bg-indigo-50/40 rounded-xl border border-gray-200 size-16 md:size-32 items-center justify-center'>
+                                <PlayIcon className='size-5 md:size-9 text-indigo-700' />
                                 <p className='font-bold'>{course?.totalLessons}</p>
                                 <p className='text-gray-500'>
                                     {(course?.totalLessons ?? 0) > 1 ? 'Aulas' : 'Aula'}
                                 </p>
                             </div>
-                            <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
-                                <ClockIcon className='size-9 text-indigo-700' />
+                            <div className='flex flex-col bg-indigo-50/40 rounded-xl border border-gray-200 size-16 md:size-32 items-center justify-center'>
+                                <ClockIcon className='size-5 md:size-9 text-indigo-700' />
                                 <p className='font-bold'>{Math.floor(courseDuration / 3600)}</p>
                                 <p className='text-gray-500'>Horas</p>
                             </div>
-                            <div className='flex flex-col m-4 bg-indigo-50/40 rounded-xl border border-gray-200 h-32 w-32 items-center justify-center'>
+                            <div className='flex flex-col bg-indigo-50/40 rounded-xl border border-gray-200 size-16 md:size-32 items-center justify-center'>
                                 <ChartBarIcon
-                                    className={`size-9 
-                                    ${course?.level === "BEGINNER" ? `text-green-500` : course?.level === "INTERMEDIATE" ? `text-yellow-400` : `text-red-500`}`} />
+                                    className={`size-5 md:size-9 
+                                    ${course?.level === "BEGINNER" ? `text-green-500`
+                                            : course?.level === "INTERMEDIATE" ? `text-yellow-400`
+                                                : `text-red-500`}`} />
                                 <p className='font-bold'>{courseLevelFormarter(course?.level)}</p>
                                 <p className='text-gray-500'>Nível</p>
                             </div>
@@ -389,9 +390,15 @@ function Course() {
                         <button
                             onClick={handleEnroll}
                             disabled={loadingEnroll}
-                            className={`relative mt-auto flex items-center justify-center rounded p-3 text-2xl text-white disabled:opacity-50 ${enrolled ? 'bg-red-400' : 'bg-blue-400'}`}
+                            className={`relative mt-auto flex items-center justify-center rounded p-3 text-xl md:text-2xl text-white disabled:opacity-50 ${enrolled ? 'bg-red-400' : 'bg-blue-400'}`}
                         >
-                            {loadingEnroll ? <Loading /> : (enrolled ? 'Cancelar matrícula' : 'Matricule-se')}
+                            {loadingEnroll ? (
+                                <Loading />
+                            ) : enrolled ? (
+                                'Cancelar matrícula'
+                            ) : (
+                                'Matricule-se'
+                            )}
                             <ArrowRightIcon className='absolute right-3 h-5 w-5' />
                         </button>
                         {confirmOpen &&

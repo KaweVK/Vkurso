@@ -74,13 +74,14 @@ function Register() {
     }
 
     return (
-        <div className="flex h-screen w-full">
-            <div className="flex w-3/4 items-center justify-center bg-blue-950">
-                <img alt="Logo" className="m-[5px] h-[200px] w-[200px] rounded-xl" src={Logo} />
+        <div className="flex flex-col lg:flex-row h-full min-h-screen w-full">
+            <div className="flex lg:w-3/4 items-center justify-center bg-indigo-950 lg:bg-blue-950">
+                <img alt="Logo" className="m-[5px] size-[200px] rounded-xl hidden lg:flex" src={Logo} />
             </div>
 
-            <div className="flex w-1/4 items-center justify-center bg-indigo-100 p-8 dark:bg-indigo-950">
-                {verificationMode ? (
+            {verificationMode ? (
+                <div className="flex flex-col lg:w-1/4 items-center justify-center p-8 bg-indigo-950 min-h-screen">
+                    <img alt="Logo" className="m-[5px] size-[200px] rounded-xl lg:hidden" src={Logo} />
                     <form className="flex w-full flex-col" onSubmit={handleVerification}>
                         <h1 className="mb-6 text-2xl font-bold text-gray-800 dark:text-white">Verificar email</h1>
                         <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">Digite o código enviado para {email}.</p>
@@ -103,7 +104,10 @@ function Register() {
                         </button>
                         <Link className="mt-3 text-center text-sm text-blue-600 hover:underline" to="/login">Voltar para o login</Link>
                     </form>
-                ) : (
+                </div>
+            ) : (
+                <div className="flex flex-col lg:w-1/4 items-center justify-center p-8 bg-indigo-950 min-h-screen">
+                    <img alt="Logo" className="m-[5px] size-[200px] rounded-xl lg:hidden" src={Logo} />
                     <form className="flex w-full flex-col" onSubmit={handleRegister}>
                         <h1 className="mb-6 text-2xl font-bold text-gray-800 dark:text-white">Cadastro</h1>
                         <input
@@ -143,11 +147,11 @@ function Register() {
                             {loading ? <Loading /> : 'Criar conta'}
                         </button>
                         <p className="mt-3 text-center text-sm text-white">
-                            Já possui uma conta? <Link className='text-blue-600 hover:underline' to='/login'>Entrar</Link> 
+                            Já possui uma conta? <Link className='text-blue-600 hover:underline' to='/login'>Entrar</Link>
                         </p>
                     </form>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     )
 }

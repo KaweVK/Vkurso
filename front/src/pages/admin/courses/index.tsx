@@ -21,7 +21,7 @@ export default function Courses() {
     }, [])
 
     return (
-        <div className="px-10 py-20">
+        <div className="lg:px-10 py-20">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold">

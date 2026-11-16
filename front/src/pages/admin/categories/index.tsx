@@ -32,7 +32,7 @@ export default function Categories() {
     }
 
     return (
-        <div className="px-10 py-20">
+        <div className="lg:px-10 py-20">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold">
@@ -44,7 +44,7 @@ export default function Categories() {
                     </p>
                 </div>
 
-                <Link className="rounded-lg bg-blue-500 px-4 py-2 text-white" to={`/admin/categories/create`}>
+                <Link className="rounded-lg bg-blue-500 px-4 py-2 text-white text-center" to={`/admin/categories/create`}>
                     Nova categoria
                 </Link>
             </div>

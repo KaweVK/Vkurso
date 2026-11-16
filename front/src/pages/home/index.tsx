@@ -9,8 +9,8 @@ function Home() {
     const { course, loading } = useFeaturedCourses();
 
     return (
-        <main className='bg-indigo-100/30'>
-            <div className='flex flex-col bg-blue-950 h-[520px] px-[10%] justify-center rounded-b-[30px]'>
+        <main className='bg-indigo-100/30 mx-auto'>
+            <div className='flex flex-col bg-blue-950 h-[640px] lg:h-[520px] px-[10%] justify-center rounded-b-[30px]'>
                 <p className='font-bold text-6xl text-white'>Aprenda no seu ritmo.</p>
                 <p className='font-bold text-6xl text-white mt-4'>Conquiste <span className="text-blue-600">novos objetivos.</span></p>
                 <p className='font-semibold text-2xl text-white mt-4 max-w-[350px]'>Cursos práticos, objetivos e 100% online para você evoluir na carreira e nos seus projetos pessoais.</p>
@@ -29,26 +29,22 @@ function Home() {
                     </Link>
                 </div>
             </div>
-            <div className='flex grid grid-cols-4 bg-white h-[200px] w-[75%] justify-center rounded-[30px] mt-[-40px] mx-auto shadow-lg'>
-                <div className='flex flex-col items-center justify-center col-span-1 bg-white rounded-[30px] m-[10px] shadow-md'>
-                    <RocketLaunchIcon className='text-indigo-700 font-semibold h-20 w-20' />
-                    <p className='font-semibold'>Tecnologias emergentes</p>
-                    <p className='font-semibold'>Atualidade do mercado de trabalho.</p>
+            <div className='grid grid-cols-2 md:grid-cols-4 bg-white h-full w-[75%] lg:w-[50%] justify-center rounded-3xl mt-[-3%] mx-auto shadow-lg'>
+                <div className='flex flex-col items-center justify-center text-center col-span-1 bg-white rounded-3xl m-[10px] shadow-md p-2'>
+                    <RocketLaunchIcon className='text-indigo-700 font-semibold h-14 w-14' />
+                    <p className='font-semibold max-w-[120px]'>Atualidade do mercado.</p>
                 </div>
-                <div className='flex flex-col items-center justify-center col-span-1 bg-white rounded-[30px] mt-[10px] mb-[10px] shadow-md'>
-                    <ComputerDesktopIcon className='text-indigo-700 font-semibold h-20 w-20' />
-                    <p className='font-semibold'>Aprenda onde quiser</p>
-                    <p className='font-semibold'>Aulas 100% online</p>
+                <div className='flex flex-col items-center justify-center text-center col-span-1 bg-white rounded-3xl mt-[10px] mb-[10px] shadow-md p-2'>
+                    <ComputerDesktopIcon className='text-indigo-700 font-semibold h-14 w-14' />
+                    <p className='font-semibold max-w-[120px]'>Aprenda onde quiser</p>
                 </div>
-                <div className='flex flex-col items-center justify-center col-span-1 bg-white rounded-[30px] mt-[10px] mb-[10px] ml-[10px] shadow-md'>
-                    <AcademicCapIcon className='text-indigo-700 font-semibold h-20 w-20' />
-                    <p className='font-semibold'>Certifique seu conhecimento</p>
-                    <p className='font-semibold'>Aulas práticas e teóricas</p>
+                <div className='flex flex-col items-center justify-center text-center col-span-1 bg-white rounded-3xl mt-[10px] mb-[10px] ml-[10px] shadow-md p-2'>
+                    <AcademicCapIcon className='text-indigo-700 font-semibold h-14 w-14' />
+                    <p className='font-semibold max-w-[120px]'>Certifique seu conhecimento</p>
                 </div>
-                <div className='flex flex-col items-center justify-center col-span-1 bg-white rounded-[30px] m-[10px] shadow-md'>
-                    <CodeBracketIcon className='text-indigo-700 font-semibold h-20 w-20' />
-                    <p className='font-semibold'>Programe como Sênior</p>
-                    <p className='font-semibold'>Aprenda do básico ao expert</p>
+                <div className='flex flex-col items-center justify-center text-center col-span-1 bg-white rounded-3xl m-[10px] shadow-md p-2'>
+                    <CodeBracketIcon className='text-indigo-700 font-semibold h-14 w-14' />
+                    <p className='font-semibold max-w-[120px]'>Programe como Sênior</p>
                 </div>
             </div>
             <div className='flex px-[7%] mt-20 justify-between items-center'>
@@ -60,11 +56,11 @@ function Home() {
                     <p className='text-blue-700 font-bold '>Ver todos</p> <ArrowLongRightIcon className="mt-1 text-blue-700 font-bold h-5 w-8" />
                 </Link>
             </div>
-            {loading &&
+            {loading ?
                 <div className='flex w-full items-center justify-center py-20'>
                     <Loading />
                 </div>
-            } : {
+             : 
                 <div className='flex w-full flex-wrap justify-center gap-6 px-8 py-8'>
                     {course?.map(c =>
                         c.status === 'PUBLISHED' && (

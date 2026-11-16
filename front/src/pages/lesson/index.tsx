@@ -92,7 +92,7 @@ function Lesson() {
     const currentLesson = lessons[currentIndex];
 
     return (
-        <div className="min-h-screen bg-indigo-100 dark:bg-indigo-950 p-8">
+        <div className="min-h-screen bg-indigo-950 p-8">
             <Link
                 to={`/course/${slug}`}
                 className="flex items-center gap-2 mb-5 text-white"
@@ -101,8 +101,8 @@ function Lesson() {
                 Voltar para o curso
             </Link>
 
-            <div className="flex gap-6">
-                <div className="w-3/4">
+            <div className="flex flex-col lg:flex-row gap-6">
+                <div className="lg:w-3/4">
                     <div className="aspect-video rounded-lg bg-black flex items-center justify-center text-white text-2xl">
                         <iframe
                             title="Lesson video"
@@ -132,7 +132,7 @@ function Lesson() {
                         )}
                     </div>
                 </div>
-                <div className="w-1/4 bg-indigo-100 rounded-lg p-4 flex flex-col max-h-[80vh]">
+                <div className="lg:w-1/4 bg-indigo-100 rounded-lg p-2 flex flex-col max-h-[80vh]">
                     <div className="overflow-y-auto">
                         {modules.map((module) => (
                             <Menu

@@ -46,17 +46,17 @@ function InstructorPainel() {
             </div>
 
             {/* Painel lateral */}
-            <div className="flex px-[3%] min-h-screen items-start">
-                <div className='flex flex-col w-[300px] mt-20 h-[620px] rounded-xl shadow-md bg-blue-400/10 p-8'>
-                    <div className='flex flex-col'>
+            <div className="flex flex-col md:flex-row w-full px-4 md:px-[3%] items-center md:items-start mt-20">
+                <div className='w-full md:w-[300px] shrink-0 h-full rounded-xl shadow-md bg-blue-400/10 p-8'>
+                    <div>
                         <p className='text-2xl font-semibold'>
                             Meu painel
                         </p>
-                        <p className='text-md mt-4 max-w-[220px]'>
+                        <p className='text-md mt-4 md:max-w-[220px]'>
                             Acompanhe, veja quantas pessoas assistem e crie novos cursos a qualquer momento.
                         </p>
                     </div>
-                    <div className='flex flex-col mt-20'>
+                    <div className='mt-10'>
                         <a href="#Metrics" className={`flex mb-5 p-2 rounded-md items-center hover:text-blue-900 hover:bg-blue-700/20 ${activeSection === "Metrics" ? 'text-blue-900 bg-blue-700/20' : 'text-gray-500'}`}>
                             <PresentationChartLineIcon className={`font-semibold h-10 w-10 `} />
                             <p className={`m-2 text-gray-700`}>
@@ -84,38 +84,35 @@ function InstructorPainel() {
                     </div>
                 </div>
 
-                <div className="flex flex-col">
-
+                <div className="md:ml-20 mt-20 md:mt-0 self-start md:items-center">
                     {/* Seção de Cursos Publicados */}
-                    <section id="publisheds" className="flex flex-col ml-20 mt-20">
+                    <section id="publisheds">
                         <div className='flex justify-between items-center'>
                             <p className='font-bold text-3xl text-black'>Meus Cursos</p>
                         </div>
-                        {loading ?
-                            (
-                                <div className='flex w-full items-center justify-center py-20'>
-                                    <Loading />
-                                </div>
-                            ) : published.length == 0 ?
-                                (
-                                    <div className="flex w-full items-center justify-center py-10">
-                                        <p className="text-gray-500">Nenhum curso encontrado.</p>
-                                    </div>
-                                ) : (
-                                    <div className='flex w-full flex-wrap justify-start gap-6 py-8'>
-                                        {published.map(course =>
-                                            <Link key={course.id} to={`/course/${course.slug}`}>
-                                                <CardCurso course={course} />
-                                            </Link>
-                                        )
-                                        }
-                                    </div>
+                        {loading ? (
+                            <div className='flex w-full items-center justify-center py-20'>
+                                <Loading />
+                            </div>
+                        ) : published.length == 0 && (
+                            <div className="flex w-full items-center justify-center py-10">
+                                <p className="text-gray-500">Nenhum curso encontrado.</p>
+                            </div>
+                        )}
+                        {!loading && published.length > 0 && (
+                            <div className='flex w-full flex-wrap justify-start gap-6 py-8'>
+                                {published.map(course =>
+                                    <Link key={course.id} to={`/course/${course.slug}`}>
+                                        <CardCurso course={course} />
+                                    </Link>
                                 )
-                        }
+                                }
+                            </div>
+                        )}
                     </section>
 
                     {/* Seção de Cursos Rascunhos */}
-                    <section id="drafts" className="flex flex-col ml-20 mt-20">
+                    <section id="drafts" className="mt-20">
                         <div className='flex justify-between items-center'>
                             <p className='font-bold text-3xl text-black'>Rascunhos</p>
                         </div>
@@ -131,19 +128,19 @@ function InstructorPainel() {
                                     </div>
                                 ) : (
                                     <div className='flex w-full flex-wrap justify-start gap-6 py-8'>
-                                        {drafts.map(course =>
-                                            <Link key={course.id} to={`/course/${course.slug}`}>
-                                                <CardCurso course={course} />
-                                            </Link>
-                                        )
-                                        }
+                                        {
+                                            drafts.map(course =>
+                                                <Link key={course.id} to={`/course/${course.slug}`}>
+                                                    <CardCurso course={course} />
+                                                </Link>
+                                            )}
                                     </div>
                                 )
                         }
                     </section>
 
                     {/* Seção de Cursos Arquivados */}
-                    <section id="archiveds" className="flex flex-col ml-20 mt-20">
+                    <section id="archiveds" className="mt-20">
                         <div className='flex justify-between items-center'>
                             <p className='font-bold text-3xl text-black'>Arquivados</p>
                         </div>

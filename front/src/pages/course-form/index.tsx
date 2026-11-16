@@ -36,7 +36,7 @@ function CourseForm() {
             const course = editing
                 ? await courseService.update(Number(courseId), data)
                 : await courseService.create(data);
-            if (thumbnail) await courseService.uploadThumbnail(Number(courseId), thumbnail)
+            if (thumbnail) await courseService.uploadThumbnail(course.id, thumbnail)
             navigate(`/course/${course.slug}`);
         } catch {
             setError('Não foi possível salvar o curso. Confira os dados e tente novamente.');

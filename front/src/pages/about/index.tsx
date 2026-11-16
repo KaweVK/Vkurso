@@ -29,12 +29,12 @@ function About() {
 
     return (
         <main className='bg-indigo-100/30'>
-            <div className="flex h-screen items-center justify-between rounded-b-[30px] bg-blue-950 px-[10%]">
+            <div className="flex flex-col md:flex-row md:h-screen items-center justify-between rounded-b-[30px] bg-blue-950 px-[10%]">
 
-                <div className="flex max-w-[600px] flex-col">
-                    <p className="text-6xl font-bold text-white">Sobre o projeto.</p>
-                    <p className="mt-4 text-5xl font-bold text-white">Por <span className="text-blue-600">Victor Kawê.</span></p>
-                    <p className="mt-8 max-w-[600px] text-2xl font-semibold text-white">
+                <div className="flex max-w-[600px] flex-col mt-5 md:mt-0">
+                    <p className="text-4xl md:text-6xl font-bold text-white">Sobre o projeto.</p>
+                    <p className="mt-4 text-3xl md:text-5xl font-bold text-white">Por <span className="text-blue-600">Victor Kawê.</span></p>
+                    <p className="mt-6 md:mt-8 max-w-[600px] text-xl md:text-2xl font-semibold text-white">
                         O Vkurso nasceu da vontade de desenvolver um projeto mais profissional para aprimorar as minhas habilidades pessoais com Desenvolvimento de Software, UI/UX, sistemas externos, testes e observabilidade.
                     </p>
 
@@ -50,7 +50,7 @@ function About() {
                     </div>
                 </div>
 
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center my-4 md:mt-0 justify-center">
                     <div className="flex">
                         <img src={Me} alt="Foto de Victor Kawê" className="relative h-[320px] w-[320px] rounded-2xl object-cover shadow-2xl" />
                     </div>
@@ -76,19 +76,20 @@ function About() {
             </div>
             <div className='flex min-h-screen flex-col justify-center rounded-[30px] bg-indigo-100/30 px-[10%] py-20 shadow-lg'>
 
-                <div className='flex items-center justify-between'>
+                <div className='flex flex-col lg:flex-row
+                items-start lg:items-center md:justify-between'>
                     <div>
                         <p className='text-4xl font-bold text-blue-950'>Sobre o desenvolvimento</p>
                         <p className='mt-3 max-w-[650px] text-lg font-medium text-gray-600'>O Vkurso é um projeto pensado e desenvolvido com uma arquitetura Cliente-Servidor para colocar em prática conceitos e prática de desenvolvimento de software, criando funcionalidades de matrícula no curso, progresso do usuário e concluir aulas.</p>
                     </div>
 
-                    <a href='https://github.com/KaweVK/Vkurso' target='_blank' rel='noopener noreferrer' className='flex h-12 items-center gap-2 rounded-xl bg-blue-950 px-5 font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-blue-800'>
+                    <a href='https://github.com/KaweVK/Vkurso' target='_blank' rel='noopener noreferrer' className='flex h-12 items-center gap-2 rounded-xl bg-blue-950 px-5 font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-blue-800 mt-4 lg:mt-0'>
                         <CodeBracketIcon className='h-5 w-5' />
                         GitHub
                     </a>
                 </div>
 
-                <div className='mt-12 grid grid-cols-1 gap-10 lg:grid-cols-2'>
+                <div className='mt-12 grid grid-cols-1 gap-10'>
 
                     <div className='rounded-2xl bg-white p-8 shadow-md'>
                         <p className='text-2xl font-bold text-blue-950'>Stacks utilizadas</p>
@@ -125,8 +126,12 @@ function About() {
                         </div>
                     </div>
 
-                    <div className='relative overflow-hidden rounded-2xl bg-blue-950 shadow-md'>
-                        <img src={images[currentImage]} alt={`Imagem do sistema ${currentImage + 1}`} className='h-[420px] w-full object-cover' />
+                    <div className='relative w-full overflow-hidden rounded-2xl bg-blue-950 shadow-md'>
+                        <img
+                            src={images[currentImage]}
+                            alt={`Imagem do sistema ${currentImage + 1}`}
+                            className='block h-full w-full object-cover'
+                        />
 
                         <button type='button' onClick={previousImage} className='absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-blue-950 shadow-md transition hover:scale-110'>
                             <ChevronLeftIcon className='h-6 w-6' />

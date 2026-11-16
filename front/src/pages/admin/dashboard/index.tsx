@@ -19,8 +19,7 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className="py-20">
-      <div className="px-10">
+    <div className="lg:px-10 py-20">
         <h1 className="text-2xl font-bold">
           Dashboard
         </h1>
@@ -29,7 +28,7 @@ export default function Dashboard() {
           Visão geral do sistema.
         </p>
 
-        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3">
           <div className="rounded-lg border bg-white p-5">
             <p className="text-sm text-gray-500">
               Usuários
@@ -59,7 +58,6 @@ export default function Dashboard() {
               {metrics?.totalEnrollments}
             </p>
           </div>
-        </div>
       </div>
     </div>
   );

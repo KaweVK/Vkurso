@@ -20,7 +20,7 @@ export default function Sidebar({
     items,
 }: Readonly<SidebarProps>) {
     return (
-        <div className="flex flex-col w-[300px] mt-20 h-[620px] rounded-xl shadow-md bg-blue-400/10 p-8">
+        <div className="flex flex-col lg:w-[300px] mt-20 h-full rounded-xl shadow-md bg-blue-400/10 p-8">
             <div className="flex flex-col">
                 <p className="text-2xl font-semibold">
                     {title}

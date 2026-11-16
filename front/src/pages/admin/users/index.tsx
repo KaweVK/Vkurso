@@ -33,7 +33,7 @@ export default function Users() {
     }
 
     return (
-        <div className="px-10 py-20">
+        <div className="lg:px-10 py-20">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold">
@@ -46,7 +46,7 @@ export default function Users() {
                 </div>
             </div>
 
-            <div className="flex flex-col mt-6 overflow-hidden rounded-lg border bg-white">
+            <div className="mt-6 overflow-x-auto rounded-lg border bg-white">
                 {error && <p className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
                 <table className="w-full">
                     <thead className="border-b bg-blue-100">

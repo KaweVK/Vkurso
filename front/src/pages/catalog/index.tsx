@@ -35,7 +35,7 @@ function Catalog() {
                     <p className='font-bold text-6xl text-white'>Catálogo de cursos</p>
                     <p className='text-3xl text-white mt-4'>Escolha o curso ideal para o seu momento.</p>
                 </div>
-                <div className="flex px-[7%] mt-20 justify-between items-center">
+                <div className="flex flex-col md:flex-row px-[7%] mt-20 md:justify-between md:items-center gap-2">
                     <div className="relative">
                         <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-black-700" />
 
@@ -68,11 +68,11 @@ function Catalog() {
                 <div className='flex px-[7%] mt-10 justify-between items-center'>
                     <p className='font-bold text-3xl text-black'>{courses.length} cursos encontrados</p>
                 </div>
-                {loading &&
+                {loading ?
                     <div className='flex w-full items-center justify-center py-20'>
                         <Loading />
                     </div>
-                } : {
+                    :
                     <div className='flex w-full flex-wrap justify-center gap-6 px-8 py-8'>
                         {courses.map(course =>
                             course.status === 'PUBLISHED' && (

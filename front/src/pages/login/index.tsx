@@ -77,14 +77,15 @@ function Login() {
     }
 
     return (
-        <div className="flex h-screen w-full">
-            <div className="flex w-3/4 items-center justify-center bg-blue-950">
+        <div className="flex flex-col xl:flex-row h-screen w-full">
+            <div className="flex hidden xl:flex xl:w-3/4 items-center justify-center bg-blue-950">
                 <div>
                     <img src={Logo} alt="Logo" className='rounded-xl w-[200px] h-[200px] m-[5px]' />
                 </div>
             </div>
 
-            <div className="flex w-1/4 items-center justify-center bg-indigo-100 p-8 dark:bg-indigo-950 ">
+            <div className="flex flex-col xl:flex h-full xl:w-1/4 items-center justify-center p-8 bg-indigo-950 ">
+                <img src={Logo} alt="Logo" className='rounded-xl w-[200px] h-[200px] m-[5px] xl:hidden' />
                 {verificationMode ? (
                     <form className="flex w-full flex-col" onSubmit={handleVerificationSubmit}>
                         <h1 className="mb-6 text-2xl font-bold text-gray-800 dark:text-white">
