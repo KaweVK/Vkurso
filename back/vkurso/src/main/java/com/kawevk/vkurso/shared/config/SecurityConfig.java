@@ -52,6 +52,8 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/metrics").hasRole("ADMIN")
 
+                        .requestMatchers("/api/health").permitAll()
+
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
