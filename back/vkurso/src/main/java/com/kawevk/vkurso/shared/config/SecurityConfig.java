@@ -34,12 +34,11 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/actuator/**"
                         ).permitAll()
-                        .requestMatchers("/actuator/**").authenticated()
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/verify-code", "/api/users/resend-verification").permitAll()
-                        .requestMatchers("/actuator/health").authenticated()
 
                         .requestMatchers(HttpMethod.POST, "/api/courses/*/enrollments").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/courses/*/enrollments").authenticated()
