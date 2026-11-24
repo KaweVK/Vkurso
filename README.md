@@ -78,10 +78,7 @@ A aplicação conecta alunos, instrutores e administradores em um ambiente compl
 
 - Docker
 - Docker Compose
-- Nginx
 - pgAdmin
-- Prometheus/Micrometer
-- FFmpeg
 
 ## 🗂️ Estrutura do projeto
 
