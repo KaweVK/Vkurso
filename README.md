@@ -41,7 +41,7 @@ A aplicação conecta alunos, instrutores e administradores em um ambiente compl
 - Arquitetura separada entre front-end e back-end
 - Autenticação segura com sessão HTTP e Redis
 - Controle de acesso por função de usuário
-- Armazenamento de vídeos com MinIO
+- Armazenamento de vídeos com Cloudflare R2
 - URLs temporárias para acesso seguro aos vídeos
 - PostgreSQL com migrações controladas pelo Flyway
 - Validação de dados e tratamento centralizado de erros
@@ -70,7 +70,7 @@ A aplicação conecta alunos, instrutores e administradores em um ambiente compl
 - Redis
 - PostgreSQL
 - Flyway
-- MinIO
+- Cloudflare R2
 - OpenAPI/Swagger
 - Maven
 
