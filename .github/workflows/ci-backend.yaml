@@ -1,0 +1,32 @@
+name: CI - Backend
+
+on: 
+  push:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'back/vkurso**'
+      - '.github/workflows/ci-backend.yml'
+
+permissions: 
+  content: read
+
+jobs:
+  build-andd-test:
+    runs-ons: ubuntu-latest
+
+    steps: 
+      - name: Baixar código
+        uses: actions/checkout@v7
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: back/vkurso/pom.xml
+
+      - name: Compilar e executar testes
+        working-directory: back/vkurso
+        run: mvn -B clean verify
