@@ -2,10 +2,7 @@ package com.kawevk.vkurso.module.unit;
 
 import com.kawevk.vkurso.lesson.Lesson;
 import com.kawevk.vkurso.module.exceptions.LessonOfOtherModuleException;
-import com.kawevk.vkurso.user.Role;
-import com.kawevk.vkurso.user.User;
 import com.kawevk.vkurso.module.Module;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
