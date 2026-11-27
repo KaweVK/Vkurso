@@ -6,7 +6,7 @@ on:
     branches: [main]
     paths:
       - 'back/vkurso**'
-      - '.github/workflows/ci-backend.yml'
+      - '.github/workflows/ci-backend.yaml'
 
 permissions: 
   contents: read
@@ -14,6 +14,21 @@ permissions:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: vkurso_test
+          POSTGRES_USER: vkursos
+          POSTGRES_PASSWORD: vkursos
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U vkursos -d vkurso_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps: 
       - name: Baixar código
@@ -26,6 +41,10 @@ jobs:
           java-version: '21'
           cache: maven
           cache-dependency-path: back/vkurso/pom.xml
+
+      - name: Permitir execução do Maven Wrapper
+        working-directory: back/vkurso
+        run: chmod +x mvnw
 
       - name: Compilar e executar testes
         working-directory: back/vkurso
