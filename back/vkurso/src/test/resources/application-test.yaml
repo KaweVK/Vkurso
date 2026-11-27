@@ -8,3 +8,28 @@ spring:
       ddl-auto: create-drop
   flyway:
     enabled: false
+  docker:
+    compose:
+      enabled: false
+  data:
+    redis:
+      repositories:
+        enabled: false
+
+URL_FRONTEND: http://localhost:5173
+MAIL_USERNAME: test@test.local
+RESEND_API_KEY: test-key
+
+app:
+  admin:
+    email: admin@test.local
+    password: test-password
+
+storage:
+  minio:
+    endpoint: http://localhost:9000
+    public-endpoint: http://localhost:9000
+    access-key: test-access-key
+    secret-key: test-secret-key
+    bucket: test-bucket
+    presigned-ttl-seconds: 3600
